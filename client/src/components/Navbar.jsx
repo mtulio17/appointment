@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { Disclosure, Menu, Transition} from "@headlessui/react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LuSettings2, LuSearch, LuLogOut, LuLogIn, LuMenu, LuX } from "react-icons/lu";
 import Appointment from '../assets/images/Appointment.png'
+import ProfileMenu from './ProfileMenu'
 // import UserLogged from "./UserLogged";
 
 const Navbar = () => {
@@ -133,11 +134,10 @@ const Navbar = () => {
                           <div>
                             {isAuthenticated ? (
                             <>
-                            <span>{user.name}</span>
-                            <button onClick={handleLogout}>Salir</button>
+                            <ProfileMenu handleLogout={handleLogout} user={user}/>
                             </>
                             ) : (
-                            <button onClick={loginWithRedirect}>Iniciar sesión</button>
+                            <button onClick={loginWithRedirect}>Iniciar sesión <LuLogIn/></button>
                             )}
                           </div>
                         </Menu>
