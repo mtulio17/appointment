@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { LuSettings2, LuSearch, LuLogOut, LuLogIn } from "react-icons/lu";
+import { LuSettings2, LuSearch, LuLogOut, LuLogIn, LuMenu, LuX } from "react-icons/lu";
+import Appointment from '../assets/images/Appointment.png'
 // import UserLogged from "./UserLogged";
 
 const Navbar = () => {
@@ -61,18 +62,31 @@ const Navbar = () => {
 
       return (
         <>
-          <Disclosure as="nav" className="bg-colorWhite">
+          <Disclosure as="nav" className="bg-gray-400">
             {({ open }) => (
               <>
-                <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-7xl py-2 px-2 sm:px-6 lg:px-8">
                   <div className="relative flex h-16 items-center justify-between">
-                    <div className="flex flex-1 items-center sm:justify-start md:justify-between">
+                     <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                     <Disclosure.Button>
+                      <span className="absolute -inset-0.5">
+                        <span className="sr-only">Abrir menu
+                          {open ? (
+                            <LuX className="block h-6 w-6" aria-hidden="true"/>
+                          ) : (
+                            <LuMenu className="block h-6 w-6" aria-hidden="true"/>
+                          )}
+                        </span>
+                      </span>
+                     </Disclosure.Button>
+                     </div>
                       {/* Nav */}
+                    {/* <div className="flex flex-1 items-center justify-center sm:justify-start md:justify-between"> */}
                       <div className="flex flex-shrink-0 items-center">
                         <img
-                          className="h-8 w-auto"
-                          src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                          alt="Your Company"
+                          className="h-40 sm:h-28 md:h-40 w-50"
+                          src={Appointment}
+                          alt="Appointment"
                         />
                       </div>
                       <div className="sm:ml-6">
@@ -130,7 +144,7 @@ const Navbar = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                {/* </div> */}
               </>
             )}
           </Disclosure>
