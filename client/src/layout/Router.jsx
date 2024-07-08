@@ -37,6 +37,10 @@ const BrowserRouter = createBrowserRouter([
         path: "profile/:user",
         element: <Profile />,
       },
+      // {
+      //   path: "profile/:user/create",
+      //   element: <CreateForm />,
+      // },
     ],
   },
 ]);
