@@ -1,14 +1,10 @@
 import React from 'react'
 import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import ajedrez from '../assets/images/ajedrez-event.jpg'
 
 const Profile = () => {
   const { user } = useParams();
-
-  const openModal = () => {
-    console.log('modal de nueva actividad');
-  }
-
 
   return (
     <div>
@@ -25,9 +21,9 @@ const Profile = () => {
         <hr />
 
         <div class="shrink-0 sm:flex sm:items-end py-3">
-          <button className="flex sm:w-1/4 md:w-1/5 items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" onClick={openModal}>
+          <Link to={`/profile/${user.nickname}/create`} className="flex sm:w-1/4 md:w-1/5 items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
             Crear Evento
-          </button>
+          </Link>
         </div>
       </div>
       <div className="bg-white">

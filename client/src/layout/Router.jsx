@@ -4,6 +4,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 import { TokenProvider } from "../context/AuthContext";
 import Home from "../layout/Home";
 import Profile from "../components/Profile";
+import CreateForm from "../components/CreateForm";
 
 const domain = process.env.REACT_APP_AUTH0_DOMAIN;
 const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
@@ -37,10 +38,10 @@ const BrowserRouter = createBrowserRouter([
         path: "profile/:user",
         element: <Profile />,
       },
-      // {
-      //   path: "profile/:user/create",
-      //   element: <CreateForm />,
-      // },
+      {
+        path: "profile/:user/create",
+        element: <CreateForm />,
+      },
     ],
   },
 ]);
