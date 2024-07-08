@@ -1,3 +1,4 @@
+import React from 'react';
 import Navbar from "../components/Navbar";
 import EventCard from "../components/EventCard";
 import Slider from "../components/Slider";
