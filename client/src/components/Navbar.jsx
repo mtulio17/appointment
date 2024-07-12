@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Disclosure, Menu } from "@headlessui/react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { LuLogIn } from "react-icons/lu";
+// import { LuLogIn } from "react-icons/lu";
 import Appointment from '../assets/images/Appointment.png'
 import ProfileMenu from './ProfileMenu';
 

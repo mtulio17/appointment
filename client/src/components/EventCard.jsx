@@ -3,7 +3,7 @@ import { FaStar } from "react-icons/fa";
 import { dataEvents } from "../data/dataEvents";
 
 const EventCard = () => {
-  console.log(dataEvents);
+  // console.log(dataEvents);
 
   return (
     <div className="flex items-center justify-center min-h-screen transition duration-150 ease-in-out">

@@ -1,27 +1,27 @@
-import React from 'react';
-import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import { Auth0Provider } from "@auth0/auth0-react";
+// import { Auth0Provider } from "@auth0/auth0-react";
 import { TokenProvider } from "../context/AuthContext";
-import Home from "../layout/Home";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import Profile from "../components/Profile";
 import CreateForm from "../components/CreateForm";
+import Home from "../layout/Home";
+//pages
+import Settings from "../pages/Settings";
+import Groups from "../pages/Groups";
 
-const domain = process.env.REACT_APP_AUTH0_DOMAIN;
-const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
+// const domain = import.meta.env.VITE_AUTH0_DOMAIN;
+// const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
 
 const Layout = () => {
   return (
-    <Auth0Provider
-      domain={domain}
-      clientId={clientId}
-      authorizationParams={{
-        redirect_uri: window.location.origin
-      }}
-    >
+    <>
+      <Navbar />
       <TokenProvider>
         <Outlet />
       </TokenProvider>
-    </Auth0Provider>
+      <Footer />
+    </>
   );
 };
 
@@ -30,18 +30,11 @@ const BrowserRouter = createBrowserRouter([
     path: "/",
     element: <Layout />,
     children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "profile/:user",
-        element: <Profile />,
-      },
-      {
-        path: "profile/:user/create",
-        element: <CreateForm />,
-      },
+      { path: "/", element: <Home /> },
+      { path: "mis-eventos/:nickname", element: <Profile /> }, // este componente deberia llamarse 'Events'
+      { path: "grupos/:nickname", element: <Groups /> },
+      { path: "crear-evento/formulario", element: <CreateForm /> },
+      { path: "configuración", element: <Settings /> },
     ],
   },
 ]);
