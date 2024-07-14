@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import sportIcon from '../assets/icons/sport.png';
 import indoorIcon from '../assets/icons/indoor.png';
 import winterIcon from '../assets/icons/winter.png';
+import learnIcon from '../assets/icons/learning.png';
 import aquaticIcon from '../assets/icons/aquatic.png';
 import motorIcon from '../assets/icons/motor.png';
 import teamIcon from '../assets/icons/team.png';
@@ -19,7 +20,7 @@ const categories = [
   { name: 'Deportes', icon: sportIcon },
   { name: 'Interior', icon: indoorIcon },
   { name: 'Invierno', icon: winterIcon },
-  { name: 'Invierno', icon: winterIcon },
+  { name: 'Cursos', icon: learnIcon },
   { name: 'Acuáticos', icon: aquaticIcon },
   { name: 'Motor', icon: motorIcon },
   { name: 'Equipo', icon: teamIcon },
