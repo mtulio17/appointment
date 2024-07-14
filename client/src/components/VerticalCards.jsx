@@ -20,14 +20,14 @@ const VerticalCards = () => {
                 <span className="text-gray-500">{event.startDate} - {event.endDate}</span>
               </div>
               <div className="mt-4">
-                <button className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-500">Ver Más Detalles</button>
+                <button className="bg-button text-white px-4 py-2 rounded hover:bg-buttonHover">Ver Más Detalles</button>
               </div>
             </div>
           </div>
         ))}
       </div>
       <div className="text-center mt-8">
-        <a href="#" className="bg-indigo-600 text-white px-6 py-3 rounded hover:bg-indigo-500">
+        <a href="#" className="bg-link text-white px-6 py-3 rounded hover:bg-linkHover">
           Ver Más Eventos
         </a>
       </div>

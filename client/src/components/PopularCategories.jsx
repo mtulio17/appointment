@@ -39,7 +39,7 @@ const PopularCategories = () => {
 
   const displayedCategories = showAll ? categories : categories.slice(0, 8);
   return (
-    <section className="py-7 bg-background">
+    <section className="py-7 bg-white">
       <div className="container bg-link rounded-lg max-w-7xl mx-auto px-4 py-4 shadow-md">
         <h2 className="text-2xl text-textPrimary font-bold text-center mb-8">Categorías Populares</h2>
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-8">

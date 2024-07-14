@@ -30,7 +30,7 @@ const Navbar = () => {
   }, [getAccessTokenSilently, isAuthenticated]);
 
   return (
-    <Disclosure as="nav" className="bg-gray-400">
+    <Disclosure as="nav" className="bg-link relative z-10">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl py-2 px-2 sm:px-6 lg:px-8">
@@ -50,7 +50,7 @@ const Navbar = () => {
                       <ProfileMenu handleLogout={handleLogout} user={user} />
                     ) : (
                       <button
-                        className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        className="flex w-full items-center justify-center rounded-md border border-transparent bg-button px-4 py-3 text-base font-medium text-white hover:bg-buttonHover focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                         onClick={loginWithRedirect}
                       >
                         Login
