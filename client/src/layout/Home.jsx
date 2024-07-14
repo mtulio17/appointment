@@ -13,6 +13,7 @@ const Home = () => {
     <HeroSection/>
     <PopularCategories/>
     <VerticalCards/>
+    {/* <HorizontalCards/> */}
       {/* <Slider /> */}
       {/* <EventCard /> */}
       {/* mas componentes del home inicial ..*/}
