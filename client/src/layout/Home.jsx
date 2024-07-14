@@ -3,6 +3,8 @@ import EventCard from "../components/EventCard";
 import Slider from "../components/Slider";
 import HeroSection from '../components/HeroSection';
 import PopularCategories from '../components/PopularCategories';
+import HorizontalCards from '../components/HorizontalCards';
+import VerticalCards from '../components/VerticalCards';
 
 
 const Home = () => {
@@ -10,6 +12,7 @@ const Home = () => {
     <>
     <HeroSection/>
     <PopularCategories/>
+    <VerticalCards/>
       {/* <Slider /> */}
       {/* <EventCard /> */}
       {/* mas componentes del home inicial ..*/}
