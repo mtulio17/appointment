@@ -30,10 +30,10 @@ const Navbar = () => {
   }, [getAccessTokenSilently, isAuthenticated]);
 
   return (
-    <Disclosure as="nav" className="bg-link relative z-10">
+    <Disclosure as="nav" className=" fixed top-0 left-1/2 transform -translate-x-1/2 w-3/4 bg-gradient-to-r bg-white bg-opacity-80  rounded-xl shadow-lg z-20">
       {({ open }) => (
         <>
-          <div className="mx-auto max-w-7xl py-2 px-2 sm:px-6 lg:px-8">
+          <div className="container mx-auto max-w-7xl py-0 px-2 sm:px-6 lg:px-8">
             <div className="relative flex h-16 items-center justify-between">
               <div className="flex flex-shrink-0 items-center">
                 <img
@@ -50,7 +50,7 @@ const Navbar = () => {
                       <ProfileMenu handleLogout={handleLogout} user={user} />
                     ) : (
                       <button
-                        className="flex w-full items-center justify-center rounded-md border border-transparent bg-button px-4 py-3 text-base font-medium text-white hover:bg-buttonHover focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        className="flex w-full items-center justify-center rounded-md border border-transparent bg-Button px-4 py-3 text-base font-medium text-white hover:bg-ButtonHover focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                         onClick={loginWithRedirect}
                       >
                         Login
