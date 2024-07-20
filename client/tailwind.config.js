@@ -15,7 +15,7 @@ export default {
       },
       colors: {
         primary: '#3B82F6',
-        // primaryHover: '#2563EB',
+        primaryHover: '#2563EB',
         // secondary: '#10B981',
         // secondaryHover: '#059669',
         background: '#F3F4F6',
@@ -32,7 +32,8 @@ Background1: '#e9e3d5',
 Button: '#fda521',
 ButtonHover:'#f4b85d',
 Link:'#033043',
-
+hover:'#cbd7f2',
+hover2:'#f9d298'
         // text: '#212121',
         // hover: '#388E3C',
       
