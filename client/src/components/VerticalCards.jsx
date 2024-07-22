@@ -1,11 +1,20 @@
 
 import React, {useState} from 'react'
-// import { dataEvents } from "../data/dataEvents";
+import { useNavigate } from 'react-router-dom';
 import { LuMapPin, LuCalendarClock, LuHeart   } from "react-icons/lu";
+import { useModal } from '../context/ModalContext';
 
 
 const VerticalCards = ({event}) => {
     const [favorites, setFavorites] = useState([]);
+    const navigate = useNavigate();
+    const { openModal } = useModal();
+
+
+  const handleCardClick = () => {
+    openModal(event);
+    navigate(`/evento/${event.id}`);
+  };
   
     const toggleFavorite = (id) => {
       setFavorites((prevFavorites) =>
@@ -31,14 +40,13 @@ const VerticalCards = ({event}) => {
         <span className="text-gray-500">{event.endDate}</span>
       </div>
       <div className="mt-4">
-        <button className="bg-Button text-white px-4 py-2 rounded shadow-md hover:bg-ButtonHover">Ver Más</button>
+        <button onClick={() => openModal(event)} className="bg-Button text-white px-4 py-2 rounded shadow-md hover:bg-ButtonHover" >Ver Más</button>
       </div>
     </div>
     <button
       className="absolute top-2 right-2 text-red-500"
-      onClick={() => toggleFavorite(event.id)}
     >
-      <LuHeart size={24} /> 
+      <LuHeart size={24} />
     </button>
   </div>
   )

@@ -202,7 +202,7 @@ export const dataEvents = [
     id: 0,
     activityName: "Caminata en x lugar",
     categorie:"",  
-    file: image4,
+    file: image3,
     description:
       "Disfruta de una caminata en la naturaleza y explora hermosos senderos. Disfruta de una caminata en la naturaleza y explora hermosos senderos",
     price: "Free",
@@ -252,7 +252,7 @@ export const dataEvents = [
     id: 2,
     activityName: "Caminata en x lugar",
     categorie:"",  
-    file: image4,
+    file: image2,
     description:
       "Disfruta de una caminata en la naturaleza y explora hermosos senderos. Disfruta de una caminata en la naturaleza y explora hermosos senderos",
     price: "Free",
@@ -276,7 +276,7 @@ export const dataEvents = [
     id: 3,
     activityName: "Caminata en x lugar",
     categorie:"",  
-    file: image4,
+    file: image1,
     description:
       "Disfruta de una caminata en la naturaleza y explora hermosos senderos. Disfruta de una caminata en la naturaleza y explora hermosos senderos",
     price: "Free",

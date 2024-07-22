@@ -7,6 +7,7 @@ import Profile from "../components/Profile";
 import CreateForm from "../components/CreateForm";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import EventModal from "../components/EventModal";
 
 const domain = process.env.REACT_APP_AUTH0_DOMAIN;
 const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
@@ -17,7 +18,6 @@ const Layout = () => {
       <Auth0Provider domain={domain} clientId={clientId} authorizationParams={{ redirect_uri: window.location.origin }}>
         <TokenProvider>
           <Navbar />
-
           <Suspense>
             <Outlet />
           </Suspense>

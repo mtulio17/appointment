@@ -1,8 +1,10 @@
 import React from 'react'
 import VerticalCards from './VerticalCards'
 import { dataEvents } from "../data/dataEvents";
+// import { useModal } from '../context/ModalContext';
 
 const LastestEvents = () => {
+    // const { openModal } = useModal();
   return (
     <section className="py-12 bg-white">
     <div className="container mx-auto px-4">
@@ -11,7 +13,9 @@ const LastestEvents = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {dataEvents.slice(0, 4).map((event) => (
             <VerticalCards
+            key={event.id}
               event={event}
+              //openModal={openModal}
             />
           ))}
         </div>
