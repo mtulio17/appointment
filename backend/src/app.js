@@ -28,7 +28,7 @@ const connectDB = async () => {
 connectDB();
 
 // Rutas
-app.use("/api/auth", authRoutes);
+app.use("/api", authRoutes);
 
 // Endpoint de prueba
 app.get("/", (req, res) => {

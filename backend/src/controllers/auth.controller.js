@@ -31,10 +31,14 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const userFound = await User.findOne({ email });
-    if (!userFound) return res.status(400).json({ message: "Credenciales incorrectas, usuario no encontrado." });
+    if (!userFound)
+      return res
+        .status(400)
+        .json({ message: "Credenciales incorrectas, usuario no encontrado." });
 
     const isMatch = await bcrypt.compare(password, userFound.password);
-    if (!isMatch) return res.status(400).json({ message: "Credenciales incorrectas" });
+    if (!isMatch)
+      return res.status(400).json({ message: "Credenciales incorrectas" });
 
     const token = await createAccessToken({ id: userFound._id });
 
@@ -49,6 +53,14 @@ export const login = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+};
+
+export const logout = (req, res) => {
+  res.cookie("token", "", {
+    expires: new Date(0),
+  });
+  return res.sendStatus(200);
+//   res.redirect("/");
 };
 
 // export const profile = (req, res) => {
