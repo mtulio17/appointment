@@ -14,6 +14,7 @@ app.use(cors());
 
 // Middleware
 app.use(morgan("dev"));
+app.use(express.json());
 
 // Conectar a MongoDB
 const connectDB = async () => {
