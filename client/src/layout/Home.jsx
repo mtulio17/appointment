@@ -5,6 +5,7 @@ import HeroSection from '../components/HeroSection';
 import PopularCategories from '../components/PopularCategories';
 import HorizontalCards from '../components/HorizontalCards';
 import VerticalCards from '../components/VerticalCards';
+import LastestEvents from '../components/LastestEvents';
 
 
 const Home = () => {
@@ -12,7 +13,7 @@ const Home = () => {
     <>
     <HeroSection/>
     <PopularCategories/>
-    <VerticalCards/>
+    <LastestEvents/>
     {/* <HorizontalCards/> */}
       {/* <Slider /> */}
       {/* <EventCard /> */}

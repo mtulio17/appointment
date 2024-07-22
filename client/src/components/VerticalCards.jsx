@@ -1,39 +1,46 @@
-import React from 'react'
-import { dataEvents } from "../data/dataEvents";
+
+import React, {useState} from 'react'
+// import { dataEvents } from "../data/dataEvents";
+import { LuMapPin, LuCalendarClock, LuHeart   } from "react-icons/lu";
 
 
-const VerticalCards = () => {
+const VerticalCards = ({event}) => {
+    const [favorites, setFavorites] = useState([]);
+  
+    const toggleFavorite = (id) => {
+      setFavorites((prevFavorites) =>
+        prevFavorites.includes(id)
+          ? prevFavorites.filter((favId) => favId !== id)
+          : [...prevFavorites, id]
+      );
+    };
+  console.log(event);
   return (
-<section className="py-12 bg-gray-100">
-  <div className="container mx-auto px-4">
-    <h2 className="text-3xl font-bold text-center mb-8">Ultimos Eventos</h2>
-    <div className="max-w-5xl mx-auto">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {dataEvents.slice(0, 4).map((event) => (
-          <div key={event.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-            <img src={event.file} alt={event.activityName} className="w-full h-48 object-cover" />
-            <div className="p-4">
-              <h3 className="text-xl font-semibold mb-2">{event.activityName}</h3>
-              <p className="text-sm text-gray-600 line-clamp-3">{event.description}</p>
-              <div className="flex items-center justify-between mt-4">
-                <span className="text-gray-500">{event.city}, {event.state}</span>
-                <span className="text-gray-500">{event.startDate} - {event.endDate}</span>
-              </div>
-              <div className="mt-4">
-                <button className="bg-button text-white px-4 py-2 rounded hover:bg-buttonHover">Ver Más Detalles</button>
-              </div>
-            </div>
-          </div>
-        ))}
+    <div key={event.id} className="relative bg-white rounded-lg shadow-md overflow-hidden">
+    <img src={event.file} alt={event.activityName} className="w-full h-48 object-cover" />
+    <div className="p-4">
+      <h3 className="text-xl font-semibold mb-2">{event.activityName}</h3>
+      <p className="text-sm text-gray-600 line-clamp-3">{event.description}</p>
+      <div className="flex items-center justify-start mt-4">
+        <LuMapPin />
+        <span className="text-gray-500 mx-2">{event.city}, {event.state}</span>
       </div>
-      <div className="text-center mt-8">
-        <a href="#" className="bg-link text-white px-6 py-3 rounded hover:bg-linkHover">
-          Ver Más Eventos
-        </a>
+      <div className="flex flex-row items-center justify-start mt-4">
+        <LuCalendarClock />
+        <span className="text-gray-500">{event.startDate}</span>
+        <span className="text-gray-500">{event.endDate}</span>
+      </div>
+      <div className="mt-4">
+        <button className="bg-Button text-white px-4 py-2 rounded shadow-md hover:bg-ButtonHover">Ver Más</button>
       </div>
     </div>
+    <button
+      className="absolute top-2 right-2 text-red-500"
+      onClick={() => toggleFavorite(event.id)}
+    >
+      <LuHeart size={24} /> 
+    </button>
   </div>
-</section>
   )
 }
 
