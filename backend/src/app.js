@@ -1,34 +1,37 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const PORT = process.env.PORT || 5000;
-const userRoutes = require('./routes/users');
-// require('dotenv').config();
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import morgan from "morgan";
+import authRoutes from "./routes/auth.routes.js";
 
+const PORT = process.env.PORT || 5000;
+
+// Crear el servidor
 const app = express();
 
 // Configurar CORS
 app.use(cors());
 
 // Middleware
-app.use(express.json());
+app.use(morgan("dev"));
 
 // Conectar a MongoDB
-mongoose.connect('mongodb://localhost:27017/appointment', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => {
-  console.log('MongoDB conectado');
-}).catch((error) => {
-  console.error('Error conectando a MongoDB:', error.message);
-});
+const connectDB = async () => {
+  try {
+    await mongoose.connect("mongodb://localhost:27017/appointment", {});
+    console.log(">>>> MongoDB conectado");
+  } catch (error) {
+    console.error("---- Error conectando a MongoDB ----- :", error.message);
+  }
+};
+connectDB();
 
 // Rutas
-app.use('/api', userRoutes);
+app.use("/api/auth", authRoutes);
 
 // Endpoint de prueba
-app.get('/', (req, res) => {
-  res.send('Bienvenido a la API de appointment');
+app.get("/", (req, res) => {
+  res.send("Bienvenido a la API de appointment");
 });
 
 // Iniciar servidor
@@ -36,4 +39,4 @@ app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
 
-module.exports = app;
+export default app;
