@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+//rutas
 import authRoutes from "./routes/auth.routes.js";
+import eventRoutes from "./routes/event.routes.js";
 
 const PORT = process.env.PORT || 5000;
 
@@ -31,6 +33,7 @@ connectDB();
 
 // Rutas
 app.use("/api", authRoutes);
+app.use("/api", eventRoutes);
 
 // Endpoint de prueba
 app.get("/", (req, res) => {
