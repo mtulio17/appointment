@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import morgan from "morgan";
+import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes.js";
 
 const PORT = process.env.PORT || 5000;
@@ -15,6 +16,7 @@ app.use(cors());
 // Middleware
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(cookieParser());
 
 // Conectar a MongoDB
 const connectDB = async () => {
