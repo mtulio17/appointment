@@ -53,31 +53,31 @@ const Navbar = () => {
               />
             </div>
             <div className="flex items-center space-x-4">
-              <div className="hidden lg:flex items-center gap-4">
+              <div className="hidden lg:flex items-center">
                 <input
                   type="text"
                   placeholder="Busca una actividad..."
                   value={activity}
                   onChange={(e) => setActivity(e.target.value)}
-                  className="px-4 py-2 rounded-lg text-gray-800 bg-background shadow-md "
+                  className="px-4 py-2 rounded-l-lg text-TextColor bg-white shadow border border-gray-200"
                 />
                 <input
                   type="text"
                   placeholder="Ingresa tu ubicación..."
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="px-4 py-2 rounded-lg text-gray-800 bg-background shadow-md"
+                  className="px-4 py-2 rounded-r-lg text-TextColor bg-white shadow border border-gray-200"
                 />
                 <button
                   onClick={handleSearch}
-                  className="bg-Button text-white px-6 py-2 rounded-lg hover:bg-ButtonHover shadow-md"
+                  className="bg-Button text-white py-3 px-3 rounded-lg hover:bg-ButtonHover shadow ml-2"
                 >
-                  Buscar
+                  <LuSearch/>
                 </button>
               </div>
               <div className="lg:hidden flex items-center gap-4">
                 <button
-                  className="text-Button"
+                  className="text-Button font-medium"
                   onClick={() => setIsExpanded(!isExpanded)}
                 >
                   <LuSearch className="w-6 h-6" />
@@ -89,7 +89,7 @@ const Navbar = () => {
                     <ProfileMenu handleLogout={handleLogout} user={user} />
                   ) : (
                     <button
-                      className="flex w-full items-center justify-center rounded-md border border-transparent bg-Button px-3 py-2 md:px-4 md:py-3 text-base font-medium text-white hover:bg-ButtonHover focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-md"
+                      className="flex w-full items-center justify-center rounded-lg border border-transparent bg-Button px-3 py-2 md:px-4 md:py-3 text-base font-medium text-white hover:bg-ButtonHover focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow"
                       onClick={loginWithRedirect}
                     >
                       Login
