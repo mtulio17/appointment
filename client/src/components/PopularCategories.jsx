@@ -83,14 +83,14 @@ const PopularCategories = () => {
         <h2 className="text-2xl text-H2Color font-bold text-center mb-8">Categorías Populares</h2>
         <div className="relative">
           <div
-            className="flex max-w-6xl mx-auto"
+            className="grid grid-cols-2 md:grid-cols-8 max-w-6xl mx-auto"
             ref={scrollContainerRef}
             style={{ scrollBehavior: 'smooth' }}
           >
             {categories.map((category) => (
               <div
                 key={category.name}
-                className="flex flex-none my-2 flex-col items-center text-center cursor-pointer mx-2"
+                className="flex flex-none flex-col items-center text-center cursor-pointer mt-2 mx-auto"
                 style={{ width: '120px' }}
               >
                 <div className='p-4 bg-white rounded-full shadow-md'>
