@@ -14,8 +14,8 @@ const Home = () => {
     <>
       <ModalProvider>
         <HeroSection />
-        <PopularCategories />
         <LastestEvents />
+        <PopularCategories />
         <EventModal />
       </ModalProvider>
     </>
