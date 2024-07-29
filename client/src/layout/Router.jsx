@@ -40,11 +40,11 @@ const BrowserRouter = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "perfil/:user",
+        path: "perfil/",
         element: <Profile />,
       },
       {
-        path: "perfil/:user/crear-evento",
+        path: "perfil/crear-evento",
         element: <CreateForm />,
       },
     ],

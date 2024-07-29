@@ -8,6 +8,7 @@ import HorizontalCards from '../components/HorizontalCards';
 import VerticalCards from '../components/VerticalCards';
 import LastestEvents from '../components/LastestEvents';
 import EventModal from '../components/EventModal';
+import HowItWorks from '../components/HowItWorks'
 
 const Home = () => {
   return (
@@ -16,6 +17,7 @@ const Home = () => {
         <HeroSection />
         <LastestEvents />
         <PopularCategories />
+        <HowItWorks/>
         <EventModal />
       </ModalProvider>
     </>
