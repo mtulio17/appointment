@@ -81,9 +81,10 @@ const CreateForm = () => {
     return (
 
 
-        <form onSubmit={handleSubmit} className="space-y-12 mx-auto max-w-4xl p-6 bg-white shadow-md rounded-md">
-      <div className="border-b border-gray-900/10 pb-12">
-        <div className="mt-10  grid grid-cols-1 grid-cols-6 col-start-2 col-end-6 gap-x-6 gap-y-8">
+        <form onSubmit={handleSubmit} className="mx-auto max-w-4xl p-6 bg-white">
+      <div className=" pb-12 mt-20">
+      <h2 className='text-Button font-semibold leading-6 text-lg text-center my-10'>Crear evento</h2>
+        <div className="max-w-2xl gap-y-8 mx-auto border-b border-gray-900/10">
           <TextInput
             label="Nombre de la Actividad"
             id="activityName"
