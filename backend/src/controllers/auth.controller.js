@@ -4,19 +4,29 @@ import { createAccessToken } from "../libs/jwt.js";
 
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
+  
   try {
+    // verificar si el email ya está en uso
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'El email ya está en uso. Intenta con otro.' });
+    }
     const passwordHashed = await bcrypt.hash(password, 14);
+
     const newUser = new User({
       username,
       email,
       password: passwordHashed,
     });
+
     const userSaved = await newUser.save();
-    const token = await createAccessToken({ id: userSaved._id });
-    res.cookie("token", token);
+
+    // crear y devolver un token de acceso
+    const token = createAccessToken({ id: userSaved._id });
+    res.cookie('token', token);
 
     res.json({
-      id: userSaved.id,
+      id: userSaved._id,
       username: userSaved.username,
       email: userSaved.email,
       createdAt: userSaved.createdAt,
