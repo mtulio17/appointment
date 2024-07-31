@@ -20,7 +20,7 @@ const VerticalCards = ({ event }) => {
         : [...prevFavorites, id]
     );
   };
-  console.log(event);
+  // console.log(event);
 
   function truncateText(text, wordLimit) {
     const words = text.split(" ");

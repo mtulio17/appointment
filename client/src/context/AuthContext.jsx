@@ -1,23 +1,15 @@
-import { createContext, useState, useEffect } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
+import { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
-const TokenProvider = ({ children }) => {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const [token, setToken] = useState(undefined);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const getToken = async () => {
-      let result = await getAccessTokenSilently();
-      setToken(result);
-    };
-    if (isAuthenticated) {
-      getToken();
-    }
-  }, [isAuthenticated]);
-
-  return <AuthContext.Provider value={token}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, setUser }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-export { AuthContext, TokenProvider };
+export const useAuth = () => useContext(AuthContext);

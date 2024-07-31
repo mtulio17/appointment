@@ -1,7 +1,6 @@
 import React from 'react'
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import ajedrez from '../assets/images/ajedrez-event.jpg'
 import HorizontalCards from './HorizontalCards';
 import { dataEvents } from "../data/dataEvents";
 
@@ -40,7 +39,7 @@ const Profile = () => {
 
         <hr />
 
-        <div class="shrink-0 sm:flex sm:items-end py-3">
+        <div className="shrink-0 sm:flex sm:items-end py-3">
           {/* <Link to={`/profile/${user.nickname}/create`} className="flex sm:w-1/4 md:w-1/5 items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
             Crear Evento
           </Link> */}

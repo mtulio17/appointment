@@ -20,12 +20,7 @@ const Navbar = () => {
     }
   };
 
-  const handleLoginClick = () => {
-    navigate('/login');
-  }
-
   const handleSearch = () => {
-
     console.log('Buscar actividad:', activity);
     console.log('Buscar ubicación:', location);
   };
@@ -51,13 +46,12 @@ const Navbar = () => {
       <>
         <div className="container mx-auto max-w-full py-2 px-2 sm:px-6 lg:px-8 border-b border-gray-200/80">
           <div className="relative flex h-16 items-center justify-between">
+            <Link to="/">
             <div className="flex flex-shrink-0 items-center">
-              <img
-                className="h-40 w-40 sm:h-28 md:h-40 lg:w-36 lg:h-36"
-                src={Appointment}
-                alt="Appointment"
+              <img className="h-40 w-40 sm:h-28 md:h-40 lg:w-36 lg:h-36" src={Appointment} alt="Appointment"
               />
             </div>
+            </Link>
             <div className="flex-1 justify-start items-start space-x-4 ml-10">
               <div className="hidden lg:flex items-center">
                 <input
@@ -65,14 +59,14 @@ const Navbar = () => {
                   placeholder="Buscar actividades..."
                   value={activity}
                   onChange={(e) => setActivity(e.target.value)}
-                  className="p-2 pl-3 px-24 bg-transparent border border-gray-300 rounded-l-lg focus:outline-none placeholder:text-[16px] placeholder:font-medium focus:border-gray-800 placeholder:text-[#212121]/80"
+                  className="p-2 pl-3 px-24 bg-transparent border border-gray-300 rounded-l-lg focus:outline-none placeholder:text-[16px] placeholder:font-normal focus:border-gray-800 placeholder:text-gray-700"
                   />
                 <input
                   type="text"
                   placeholder="Ciudad o barrio..."
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="p-2 pl-3 px-10 bg-transparent border-t border-b border-gray-300 focus:outline-none placeholder:text-[16px] placeholder:font-medium focus:border-gray-800 placeholder:text-[#212121]/80"
+                  className="p-2 pl-3 px-10 bg-transparent border-t border-b border-gray-300 focus:outline-none placeholder:text-[16px] placeholder:font-normal focus:border-gray-800 placeholder:text-gray-700"
                 />
                 <button
                   onClick={handleSearch}
@@ -95,12 +89,12 @@ const Navbar = () => {
                     <ProfileMenu handleLogout={handleLogout} user={user} />
                   ) : (
                     <div className="flex justify-between items-center space-x-2">    
-                    <button
-                      className=" text-[#212121]/80 font-semibold tracking-normal rounded-lg border border-transparent px-2 py-2 md:px-4 md:py-3 lg:px-4 lg:py-2.5 text-[16px] font-semibold duration-300 hover:text-Button focus:outline-none"
-                      onClick={handleLoginClick}
+                    <Link
+                      className="font-normal text-gray-800 rounded-lg border border-transparent px-2 py-2 md:px-4 md:py-3 lg:px-4 lg:py-2.5 text-[16px] font-semibold duration-300 hover:text-Button focus:outline-none"
+                      to="sign-in"
                     >
                     Iniciar sesión
-                    </button>
+                    </Link>
                     <button className="text-white font-medium rounded-lg border border-transparent bg-Button px-2 py-2 md:px-4 md:py-3 lg:px-4 lg:py-2.5 text-sm font-semibold hover:bg-ButtonHover duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow"
                     // onClick={handleLoginClick}
                     >

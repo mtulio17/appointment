@@ -8,11 +8,11 @@ export default {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        raleway: ["Raleway", "sans-serif"],
-        montserrat: ["Montserrat", "sans-serif"],
-        nunitoSans: ["Nunito Sans", "sans-serif"],
-      },
+      // fontFamily: {
+      //   raleway: ["Raleway", "sans-serif"],
+      //   montserrat: ["Montserrat", "sans-serif"],
+      //   nunitoSans: ["Nunito Sans", "sans-serif"],
+      // },
       colors: {
         // primary: '#3B82F6',
         // primaryHover: '#2563EB',
@@ -36,8 +36,8 @@ export default {
         // hover2: '#f9d298'
         // text: '#212121',
         // hover: '#388E3C',
-        Primary: '#6366F1',
-Button: '#6366F1',
+        Primary: '#212121',
+Button: '#1E488F',
 ButtonHover: '#4F52DC',
 SectionBg: '#F1F3FF',
 TextColor: '#2C3E50',

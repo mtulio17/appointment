@@ -46,44 +46,15 @@ const PopularCategories = () => {
   }, []);
 
   const scrollContainerRef = React.createRef();
-
-  const scrollLeft = () => {
-    scrollContainerRef.current.scrollBy({
-      left: -150,
-      behavior: 'smooth',
-    });
-  };
-
-  const scrollRight = () => {
-    scrollContainerRef.current.scrollBy({
-      left: 150,
-      behavior: 'smooth',
-    });
-  };
-
-  const itemsPerPage = isMobile ? 2 : 5;
-
-  // const itemsPerPage = isMobile ? itemsPerPageMobile : itemsPerPageDesktop; 
-  // const nextSlide = () => {
-  //   setCurrentIndex((prevIndex) => (prevIndex + 1) % categories.length);
-  // };
-
-  // const prevSlide = () => {
-  //   setCurrentIndex((prevIndex) =>
-  //     prevIndex - 1 < 0 ? categories.length - 1 : prevIndex - 1
-  //   );
-  // };
-
-  // const displayedCategories = categories.slice(currentIndex, currentIndex + itemsPerPage);
   return (
 
 
-    < section className="py-2 bg-SectionBg" >
+    < section className="py-8 bg-SectionBg" >
       <div className="container rounded-lg max-w-7xl mx-auto px-4 py-4">
-        <h2 className="text-2xl text-H2Color font-bold text-center mb-8">Categorías Populares</h2>
+        <h2 className="text-3xl text-[#2C2C2C] font-bold text-center mb-10">Categorías Populares</h2>
         <div className="relative">
           <div
-            className="grid grid-cols-2 md:grid-cols-8 max-w-6xl mx-auto"
+            className="grid grid-cols-2 md:grid-cols-8 max-w-7xl mx-auto"
             ref={scrollContainerRef}
             style={{ scrollBehavior: 'smooth' }}
           >
@@ -93,27 +64,13 @@ const PopularCategories = () => {
                 className="flex flex-none flex-col items-center text-center cursor-pointer mt-2 mx-auto"
                 style={{ width: '120px' }}
               >
-                <div className='p-4 bg-white rounded-full shadow-md'>
-                  <img src={category.icon} alt={category.name} className="w-12 h-12 mb-1" />
+                <div className='p-2.5 bg-white rounded-full shadow-md mb-2'>
+                  <img src={category.icon} alt={category.name} className="w-9 h-9" />
                 </div>
-                <h3 className="text-xl font-semibold text-H1Color">{category.name}</h3>
+                <h3 className="text-[16px] font-semibold text-H1Color">{category.name}</h3>
               </div>
             ))}
           </div>
-          {/* <div className="flex justify-between absolute top-1/2 transform -translate-y-1/2 w-full px-4">
-            <button
-              onClick={scrollLeft}
-              className="px-5 py-5 rounded-full text-4xl text-white hover:bg-ButtonHover"
-            >
-              <LuArrowLeft />
-            </button>
-            <button
-              onClick={scrollRight}
-              className="px-5 py-5 rounded-full text-4xl text-white hover:bg-ButtonHover"
-            >
-              <LuArrowRight />
-            </button>
-          </div> */}
         </div>
       </div>
     </section >

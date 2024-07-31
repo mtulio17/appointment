@@ -42,7 +42,12 @@ export const login = async (req, res) => {
 
     const token = await createAccessToken({ id: userFound._id });
 
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+    });
+
     res.json({
       id: userFound.id,
       username: userFound.username,
@@ -54,6 +59,7 @@ export const login = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 export const logout = (req, res) => {
   res.cookie("token", "", {
