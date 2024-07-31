@@ -8,6 +8,9 @@ import CreateForm from "../components/CreateForm";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import EventModal from "../components/EventModal";
+import Login from "../components/Login";
+
+
 
 const domain = process.env.REACT_APP_AUTH0_DOMAIN;
 const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
@@ -40,11 +43,15 @@ const BrowserRouter = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "perfil/:user",
-        element: <Profile />,
+        path: "login/",
+        element: <Login />,
       },
       {
-        path: "perfil/:user/crear-evento",
+        path: "perfil/",
+        element: <Profile />,
+      },     
+      {
+        path: "perfil/crear-evento",
         element: <CreateForm />,
       },
     ],
