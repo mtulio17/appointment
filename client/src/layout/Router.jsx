@@ -8,6 +8,7 @@ import CreateForm from "../components/CreateForm";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import EventModal from "../components/EventModal";
+import Login from "../components/Login";
 
 
 
@@ -40,6 +41,10 @@ const BrowserRouter = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "login",
+        element: <Login />,
       },
       {
         path: "perfil/",
