@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from 'react-router-dom';
 import { Disclosure, Menu } from "@headlessui/react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LuLogIn, LuSearch } from "react-icons/lu";
@@ -10,6 +11,7 @@ const Navbar = () => {
   const [activity, setActivity] = useState('');
   const [location, setLocation] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate();
   const { loginWithRedirect, user, isAuthenticated, getAccessTokenSilently, logout } = useAuth0();
 
   const handleLogout = async () => {
@@ -17,6 +19,10 @@ const Navbar = () => {
       await logout({ returnTo: window.location.origin });
     }
   };
+
+  const handleLoginClick = () => {
+    navigate('/login');
+  }
 
   const handleSearch = () => {
 
@@ -90,7 +96,7 @@ const Navbar = () => {
                   ) : (
                     <button
                       className="flex w-full items-center justify-center rounded-lg border border-transparent bg-Button px-3 py-2 md:px-4 md:py-3 text-base font-medium text-white hover:bg-ButtonHover focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow"
-                      onClick={loginWithRedirect}
+                      onClick={handleLoginClick}
                     >
                       Login
                     </button>

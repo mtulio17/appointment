@@ -1,37 +1,41 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     try {
-      const response = await fetch('mongodb://localhost:27017/appointment', {
+      const response = await fetch('http://localhost:5000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
+        credentials: 'include', 
       });
 
       const data = await response.json();
 
       if (response.ok) {
-      
         onLoginSuccess(data);
+        navigate('/profile'); 
       } else {
-        setError(data.message || 'An error occurred during login.');
+        setError(data.message || 'Ocurrio un error al intentar login.');
       }
     } catch (error) {
-      setError('An error occurred during login.');
+      setError('Ocurrio un error al intentar login.');
     }
   };
 
   return (
+    <section className='w-full'>
     <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
       <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
@@ -66,6 +70,7 @@ const Login = ({ onLoginSuccess }) => {
         </button>
       </form>
     </div>
+    </section>
   );
 };
 
