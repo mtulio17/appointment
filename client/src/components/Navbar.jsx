@@ -46,39 +46,39 @@ const Navbar = () => {
 
   return (
     // <Disclosure as="nav" className=" fixed top-0 left-1/2 transform -translate-x-1/2 w-3/4 bg-gradient-to-r bg-white bg-opacity-80  rounded-xl shadow-lg z-20">
-    <Disclosure as="nav" className="absolute top-0 w-full rounded-xl  z-20">
+    <Disclosure as="nav" className="absolute top-0 w-full rounded-xl z-20">
     {({ open }) => (
       <>
-        <div className="container mx-auto max-w-7xl py-2 px-2 sm:px-6 lg:px-8">
+        <div className="container mx-auto max-w-full py-2 px-2 sm:px-6 lg:px-8 border-b border-gray-200/80">
           <div className="relative flex h-16 items-center justify-between">
             <div className="flex flex-shrink-0 items-center">
               <img
-                className="h-40 sm:h-28 md:h-40 w-50"
+                className="h-40 w-40 sm:h-28 md:h-40 lg:w-36 lg:h-36"
                 src={Appointment}
                 alt="Appointment"
               />
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex-1 justify-start items-start space-x-4 ml-10">
               <div className="hidden lg:flex items-center">
                 <input
                   type="text"
-                  placeholder="Busca una actividad..."
+                  placeholder="Buscar actividades..."
                   value={activity}
                   onChange={(e) => setActivity(e.target.value)}
-                  className="px-4 py-2 rounded-l-lg text-TextColor bg-white shadow border border-gray-200"
-                />
+                  className="p-2 pl-3 px-24 bg-transparent border border-gray-300 rounded-l-lg focus:outline-none placeholder:text-[16px] placeholder:font-medium focus:border-gray-800 placeholder:text-[#212121]/80"
+                  />
                 <input
                   type="text"
-                  placeholder="Ingresa tu ubicación..."
+                  placeholder="Ciudad o barrio..."
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="px-4 py-2 rounded-r-lg text-TextColor bg-white shadow border border-gray-200"
+                  className="p-2 pl-3 px-10 bg-transparent border-t border-b border-gray-300 focus:outline-none placeholder:text-[16px] placeholder:font-medium focus:border-gray-800 placeholder:text-[#212121]/80"
                 />
                 <button
                   onClick={handleSearch}
-                  className="bg-Button text-white py-3 px-3 rounded-lg hover:bg-ButtonHover shadow ml-2"
+                  className="p-3 bg-Button border border-Button/40 rounded-r-xl text-white focus:outline-none"
                 >
-                  <LuSearch/>
+                  <LuSearch className="text-white" />
                 </button>
               </div>
               <div className="lg:hidden flex items-center gap-4">
@@ -86,7 +86,7 @@ const Navbar = () => {
                   className="text-Button font-medium"
                   onClick={() => setIsExpanded(!isExpanded)}
                 >
-                  <LuSearch className="w-6 h-6" />
+                  <LuSearch className="w-5 h-5" />
                 </button>
               </div>
             </div>
@@ -94,12 +94,19 @@ const Navbar = () => {
                   {isAuthenticated ? (
                     <ProfileMenu handleLogout={handleLogout} user={user} />
                   ) : (
+                    <div className="flex justify-between items-center space-x-2">    
                     <button
-                      className="flex w-full items-center justify-center rounded-lg border border-transparent bg-Button px-3 py-2 md:px-4 md:py-3 text-base font-medium text-white hover:bg-ButtonHover focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow"
+                      className=" text-[#212121]/80 font-semibold tracking-normal rounded-lg border border-transparent px-2 py-2 md:px-4 md:py-3 lg:px-4 lg:py-2.5 text-[16px] font-semibold duration-300 hover:text-Button focus:outline-none"
                       onClick={handleLoginClick}
                     >
-                      Login
+                    Iniciar sesión
                     </button>
+                    <button className="text-white font-medium rounded-lg border border-transparent bg-Button px-2 py-2 md:px-4 md:py-3 lg:px-4 lg:py-2.5 text-sm font-semibold hover:bg-ButtonHover duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow"
+                    // onClick={handleLoginClick}
+                    >
+                     Registrarme
+                    </button>
+                    </div>
                   )}
                 </div>
           </div>
