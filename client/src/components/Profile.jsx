@@ -1,15 +1,13 @@
 import React from 'react'
-import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import HorizontalCards from './HorizontalCards';
 import { dataEvents } from "../data/dataEvents";
 
 
 
-
-
 const Profile = () => {
-  const { user } = useParams();
+  const {user} = useAuth();
 
   return (
     <div>
@@ -24,7 +22,7 @@ const Profile = () => {
             </div>
           </div>
           <div className="min-w-0 flex-auto my-auto">
-            <h2 className="text-xl font-semibold leading-6 text-TextColor">Hola, {user}!</h2>
+            <h2 className="text-xl font-semibold leading-6 text-TextColor">Hola, {user}! 👋</h2>
           </div>
           <div className='min-w-0 my-auto'>
             <button
@@ -36,7 +34,6 @@ const Profile = () => {
             </button>
           </div>
         </div>
-
         <hr />
 
         <div className="shrink-0 sm:flex sm:items-end py-3">
@@ -65,8 +62,6 @@ const Profile = () => {
                   </a>
                 </div>
               </div>
-           
-
         </div>
       </div>
 

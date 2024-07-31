@@ -89,17 +89,16 @@ const Navbar = () => {
                     <ProfileMenu handleLogout={handleLogout} user={user} />
                   ) : (
                     <div className="flex justify-between items-center space-x-2">    
-                    <Link
-                      className="font-normal text-gray-800 rounded-lg border border-transparent px-2 py-2 md:px-4 md:py-3 lg:px-4 lg:py-2.5 text-[16px] font-semibold duration-300 hover:text-Button focus:outline-none"
-                      to="sign-in"
+                    <Link className="font-normal text-gray-800 rounded-lg border border-transparent px-2 py-2 md:px-4 md:py-3 lg:px-4 lg:py-2.5 text-[16px] font-semibold duration-300 hover:text-Button focus:outline-none"
+                    to="sign-in"
                     >
                     Iniciar sesión
                     </Link>
-                    <button className="text-white font-medium rounded-lg border border-transparent bg-Button px-2 py-2 md:px-4 md:py-3 lg:px-4 lg:py-2.5 text-sm font-semibold hover:bg-ButtonHover duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow"
-                    // onClick={handleLoginClick}
+                    <Link className="text-white font-medium rounded-lg border border-transparent bg-Button px-2 py-2 md:px-4 md:py-3 lg:px-4 lg:py-2.5 text-sm font-semibold hover:bg-ButtonHover duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow"
+                    to="sign-up"
                     >
                      Registrarme
-                    </button>
+                    </Link>
                     </div>
                   )}
                 </div>
