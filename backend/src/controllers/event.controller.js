@@ -65,3 +65,39 @@ export const deleteEvent = async (req, res) => {
   if(!event) return res.status(404).json({ message: "Evento no encontrado." });
   res.json(event);
 };
+
+
+export const searchEvents = async (req, res) => {
+  const {
+    activityName,
+    city,
+    state,
+    country,
+    startDate,
+    endDate,
+    gender,
+    age,
+    priceMin,
+    priceMax,
+  } = req.query;
+
+  const query = {};
+
+  if (activityName) query.activityName = { $regex: activityName, $options: "i" };
+  if (city) query.city = city;
+  if (state) query.state = state;
+  if (country) query.country = country;
+  if (startDate) query.startDate = { $gte: new Date(startDate) };
+  if (endDate) query.endDate = { $lte: new Date(endDate) };
+  if (gender) query.gender = gender;
+  if (age) query.age = age;
+  if (priceMin) query.price = { $gte: priceMin };
+  if (priceMax) query.price = { ...query.price, $lte: priceMax };
+
+  try {
+    const events = await Event.find(query);
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ message: "Error al buscar eventos", error });
+  }
+};
