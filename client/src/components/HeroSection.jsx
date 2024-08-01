@@ -1,5 +1,6 @@
 import React from "react";
 import heroImg from "../assets/images/HeroSection3.png";
+import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
@@ -21,9 +22,9 @@ const HeroSection = () => {
             </p>
             <div className="flex justify-center lg:justify-start">
               <div className="flex items-center mt-4">
-                <button className="bg-Button text-white font-medium px-3.5 py-3.5 rounded-lg hover:bg-ButtonHover duration-300 shadow-md">
+                <Link to="/sign-up" className="bg-Button text-white font-medium px-3.5 py-3.5 rounded-lg hover:bg-ButtonHover duration-300 shadow-md">
                   Quiero ser parte de Appointment
-                </button>
+                </Link>
               </div>
             </div>
           </div>

@@ -10,21 +10,18 @@ const Navbar = () => {
   const [activity, setActivity] = useState('');
   const [location, setLocation] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
-  const { user, setUser } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:5000/api/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
-      setUser(null);
+      await logout();
       navigate('/');
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
     }
   };
+
   const handleSearch = () => {
     console.log('Buscar actividad:', activity);
     console.log('Buscar ubicación:', location);

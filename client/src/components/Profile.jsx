@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
+// import React from 'react'
+// import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import HorizontalCards from './HorizontalCards';
 import { dataEvents } from "../data/dataEvents";
@@ -17,14 +17,6 @@ const Profile = () => {
     <div>
       <div className="mx-auto max-w-4xl px-4 mt-14 sm:px-6 lg:px-8">
         <div className="flex justify-between gap-x-6 py-10">
-          <div className="flex flex-col min-w-0 gap-x-4 ">
-            <div className=''>
-              <img className="h-14 w-14 flex-none rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixdivb=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-            </div>
-            <div>
-              <a className="text-sm" href="#">Editar Perfil</a>
-            </div>
-          </div>
           <div className="min-w-0 flex-auto my-auto">
             <h2 className="text-xl font-bold leading-6 text-TextColor">Hola, {user.username} 👋</h2>
           </div>
