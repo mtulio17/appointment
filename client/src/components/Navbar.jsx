@@ -37,7 +37,7 @@ const Navbar = () => {
     {({ open }) => (
       <>
         <div className="bg-[#fbfbfb] container mx-auto max-w-full py-2 px-2 sm:px-6 lg:px-8 border-b border-gray-200/80 shadow fixed">
-          <div className="relative flex h-16 items-center justify-between">
+          <div className="relative flex h-14 items-center justify-between">
             <Link to="/">
             <div className="flex flex-shrink-0 items-center">
               <img className="h-40 w-40 sm:h-28 md:h-40 lg:w-36 lg:h-36" src={Appointment} alt="Appointment"

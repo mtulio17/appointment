@@ -51,7 +51,7 @@ const PopularCategories = () => {
 
     < section className="py-8 bg-SectionBg" >
       <div className="container rounded-lg max-w-7xl mx-auto px-4 py-4">
-        <h2 className="text-3xl text-[#2C2C2C] font-bold text-center mb-10">Categorías Populares</h2>
+        <h2 className="text-2xl text-[#2C2C2C] font-bold text-center mb-10">Categorías Populares</h2>
         <div className="relative">
           <div
             className="grid grid-cols-2 md:grid-cols-8 max-w-7xl mx-auto"
