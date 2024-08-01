@@ -35,9 +35,8 @@ const Login = () => {
     }
   };
 
-
   return (
-    <section className='w-full h-screen py-40'>
+    <section className='w-full h-screen py-48'>
     <div className="max-w-md mx-auto mt-10 p-10 bg-[#ffffff] shadow-md rounded-lg">
       <h2 className="text-3xl font-bold text-center mb-6">Iniciar Sesión</h2>
       {error && <p className="text-red-500 text-center mb-6 mt-2">{error}</p>}
@@ -68,11 +67,15 @@ const Login = () => {
             required
           />
         </div>
+        <div className='flex justify-center items-center my-6'>
+            <h3 className='text-md'>¿Aún no sos miembro? {"|"}</h3>
+            <a href="/sign-up" className='text-md ml-1 underline text-Button'>Regístrate</a>
+          </div>
         <button
           type="submit"
           className="w-full mt-6 bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
-          Login
+         Iniciar Sesión
         </button>
       </form>
     </div>

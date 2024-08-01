@@ -14,7 +14,7 @@ const SignUp = () => {
 
     // validación del formato del email
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setError('Email inválido.');
+      setError('Email inválido. intente con otro.');
       return;
     }
 
@@ -83,6 +83,10 @@ const SignUp = () => {
               placeholder='tu contraseña'
               required
             />
+          </div>
+          <div className='flex justify-center items-center my-6'>
+            <h3 className='text-md'>¿Ya estás registrado? {"|"}</h3>
+            <a href="/sign-in" className='text-md ml-1 underline'>Iniciar Sesión</a>
           </div>
           <button
             type="submit"

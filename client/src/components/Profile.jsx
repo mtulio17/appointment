@@ -9,6 +9,10 @@ import { dataEvents } from "../data/dataEvents";
 const Profile = () => {
   const {user} = useAuth();
 
+  if(!user){
+    return <div>Cargando...</div>;
+  }
+
   return (
     <div>
       <div className="mx-auto max-w-4xl px-4 mt-14 sm:px-6 lg:px-8">
@@ -22,13 +26,12 @@ const Profile = () => {
             </div>
           </div>
           <div className="min-w-0 flex-auto my-auto">
-            <h2 className="text-xl font-semibold leading-6 text-TextColor">Hola, {user}! 👋</h2>
+            <h2 className="text-xl font-bold leading-6 text-TextColor">Hola, {user.username} 👋</h2>
           </div>
           <div className='min-w-0 my-auto'>
             <button
               className="text-Button font-medium"
-              onClick={() => setIsExpanded(!isExpanded)}
-     
+              // onClick={() => setIsExpanded(!isExpanded)}
             >
               Crear Evento
             </button>
