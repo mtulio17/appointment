@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { Disclosure, Menu } from "@headlessui/react";
 import { LuSearch } from "react-icons/lu";
@@ -41,25 +41,25 @@ const Navbar = () => {
               />
             </div>
             </Link>
-            <div className="flex-1 justify-start items-start space-x-4 ml-10">
+            <div className="flex-1 justify-start items-start space-x-2 ml-8">
               <div className="hidden lg:flex items-center">
                 <input
                   type="text"
                   placeholder="Buscar actividades..."
                   value={activity}
                   onChange={(e) => setActivity(e.target.value)}
-                  className="p-2 pl-3 px-24 bg-[#fbfbfb] border border-gray-300 rounded-l-lg focus:outline-none placeholder:text-[16px] placeholder:font-normal focus:border-gray-800 placeholder:text-gray-700"
+                  className="p-1.5 pl-2 px-16 bg-[#fbfbfb] border border-gray-300 rounded-l-lg focus:outline-none placeholder:text-[15px] placeholder:font-normal focus:border-gray-800 placeholder:text-gray-700"
                   />
                 <input
                   type="text"
                   placeholder="Ciudad o barrio..."
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="p-2 pl-3 px-10 bg-[#fbfbfb] border-t border-b border-gray-300 focus:outline-none placeholder:text-[16px] placeholder:font-normal focus:border-gray-800 placeholder:text-gray-700"
+                  className="p-1.5 pl-2 px-10 bg-[#fbfbfb] border-t border-b border-gray-300 focus:outline-none placeholder:text-[15px] placeholder:font-normal focus:border-gray-800 placeholder:text-gray-700"
                 />
                 <button
                   onClick={handleSearch}
-                  className="p-3 bg-Button border border-Button/40 rounded-r-xl text-white focus:outline-none"
+                  className="p-2.5 bg-Button border border-Button/40 rounded-r-xl text-white focus:outline-none"
                 >
                   <LuSearch className="text-white" />
                 </button>

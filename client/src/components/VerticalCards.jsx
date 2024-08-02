@@ -35,10 +35,10 @@ const VerticalCards = ({ event }) => {
       <img
         src={event.file}
         alt={event.activityName}
-        className="w-full h-40 lg:h-48 lg:w-full object-cover object-center rounded-md hover:opacity-80 duration-200 mb-2"
+        className="mx-auto w-full h-40 lg:h-44 lg:w-full object-cover object-center rounded-md hover:opacity-80 duration-200 mb-2"
       />
       <div className="p-1">
-        <h3 className="text-xl font-semibold hover:underline cursor-pointer mb-1">
+        <h3 className="text-lg font-semibold hover:underline cursor-pointer mb-1">
           {event.activityName}
         </h3>
         <p className="text-sm font-medium text-gray-600 mb-3">
