@@ -20,9 +20,10 @@ const Login = () => {
     setError('');
 
     try {
-      await login(credentials);
+     await login(credentials);
       const user = JSON.parse(localStorage.getItem('user')); // almacenamos el usuario en localStorage
       if (user) {
+     
         const queryParams = new URLSearchParams({
           location: user.location || '', // usa un valor por defecto si no existe
           interests: user.interests ? user.interests.join(',') : '', // usa un valor por defecto si no existe

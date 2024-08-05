@@ -1,8 +1,8 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react';
 
 // Componente reutilizable para los inputs de texto
 const TextInput = ({ label, id, name, type = "text", value, onChange, placeholder }) => (
-    <div className="col-span-6 sm:col-span-4">
+  <div className="col-span-6 sm:col-span-4">
     <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-900">
       {label}
     </label>
@@ -44,39 +44,96 @@ const SelectInput = ({ label, id, name, value, onChange, options }) => (
 );
 
 const CreateForm = () => {
+  const [error, setError] = useState("");
+  const defaultImage = 'https://via.placeholder.com/150';
+  const [formData, setFormData] = useState({
+    activityName: '',
+    description: '',
+    file: null,
+    price: '',
+    streetAddress: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    country: 'Argentina',
+    genderRestriction: 'No preferencia',
+    ageRange: '',
+    startDate: '',
+    startTime: '',
+    endDate: '',
+    endTime: '',
+  });
 
-    const [formData, setFormData] = useState({
-        activityName: '',
-        description: '',
-        file: null,
-        price: '',
-        streetAddress: '',
-        city: '',
-        state: '',
-        postalCode: '',
-        country: 'Argentina',
-        genderRestriction: 'No preferencia',
-        ageRange: '',
-        startDate: '',
-        startTime: '',
-        endDate: '',
-        endTime: '',
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setFormData({
+      ...formData,
+      [name]: files ? files[0] : value,
+    });
+  };
+
+  const handleSubmit = async (e, req) => {
+    e.preventDefault();
+    setError("");
+
+    const {
+      activityName,
+      description,
+      file,
+      price,
+      streetAddress,
+      city,
+      state,
+      postalCode,
+      country,
+      genderRestriction,
+      ageRange,
+      startDate,
+      startTime,
+      endDate,
+      endTime,
+    } = formData;
+
+    const imageUrl = file ? URL.createObjectURL(file) : defaultImage;
+
+    const dataToSend = {
+      activityName,
+      description,
+      image: imageUrl,
+      price,
+      streetAddress,
+      city,
+      state,
+      postalCode,
+      country,
+      genderRestriction,
+      ageRange,
+      startDate,
+      startTime,
+      endDate,
+      endTime,
+    };
+
+    try {
+        const response = await fetch('http://localhost:5000/api/events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
       });
-    
-      const handleChange = (e) => {
-        const { name, value, files } = e.target;
-        setFormData({
-          ...formData,
-          [name]: files ? files[0] : value,
-        });
-      };
-    
-      const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Form Data:', formData);
-        // Aquí puedes añadir el código para enviar los datos del formulario a tu backend o API
-      };
 
+      const responseData = await response.json();
+      if (response.ok) {
+        console.log('Evento creado');
+      } else {
+        setError(responseData.message || 'Ocurrió un error al crear el evento.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Ocurrió un error al crear el evento.');
+    }
+  };
 
     return (
 
@@ -231,7 +288,7 @@ const CreateForm = () => {
         </div>
       </div>
       <div className="mt-6 flex items-center justify-center gap-x-6">
-        <button type="button" className="text-sm font-semibold leading-6 text-gray-900">
+        <button type="button" className="text-sm font-semibold leading-6 text-gray-900" src='/profile/user:'>
           Cancel
         </button>
         <button

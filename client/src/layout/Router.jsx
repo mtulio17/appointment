@@ -19,7 +19,7 @@ const router = () => (
         <Route path="sign-up" element={<SignUp />} />
         <Route path="profile" element={<PrivateRoute element={<Profile />} />} />
         <Route path="suggested-events" element={<PrivateRoute element={<SuggestedEvents />} />} />
-        <Route path="profile/create-event" element={<PrivateRoute element={<CreateForm />} />} />
+        <Route path="profile/:user/create-event" element={<PrivateRoute element={<CreateForm />} />} />
       </Route>
     </Routes>
   </Router>
