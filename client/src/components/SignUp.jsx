@@ -55,7 +55,7 @@ const SignUp = () => {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="username" className="block text-gray-700 text-sm mb-2">
-              Nombre de usuario:
+              Nombre de usuario<span className="text-red-500">*</span>
             </label>
             <input
               autoComplete="on"
@@ -70,7 +70,7 @@ const SignUp = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-700 text-sm mb-2">
-              Email*:
+              Email<span className="text-red-500">*</span>
             </label>
             <input
               autoComplete="on"
@@ -85,7 +85,7 @@ const SignUp = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="password" className="block text-gray-700 text-sm mb-2">
-              Contraseña*:
+              Contraseña<span className="text-red-500">*</span>
             </label>
             <input
               autoComplete="on"

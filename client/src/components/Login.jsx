@@ -52,8 +52,8 @@ const Login = () => {
         {authError && <p className="text-red-500 text-center mb-6 mt-2">{authError}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700 mb-2">
-              Email*:
+            <label htmlFor="email" className="block text-gray-700 text-sm mb-2">
+              Email<span className="text-red-500">*</span>
             </label>
             <input
               autoComplete="on"
@@ -68,8 +68,8 @@ const Login = () => {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="password" className="block text-gray-700 mb-2">
-              Contraseña*:
+            <label htmlFor="password" className="block text-gray-700 text-sm mb-2">
+              Contraseña<span className="text-red-500">*</span>
             </label>
             <input
               autoComplete="on"
