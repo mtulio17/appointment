@@ -41,10 +41,14 @@ const Login = () => {
     }
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://localhost:5000/auth/google';
+  };
+
   return (
-    <section className="w-full h-screen py-36">
+    <section className="w-full py-24">
       <div className="max-w-md mx-auto mt-10 p-10 bg-[#ffffff] shadow-md rounded-lg">
-        <h2 className="text-3xl font-bold text-center mb-6">Iniciar Sesión</h2>
+        <h2 className="text-4xl font-sans font-semibold text-center mb-10">Appointment</h2>
         {authError && <p className="text-red-500 text-center mb-6 mt-2">{authError}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -59,7 +63,7 @@ const Login = () => {
               className="w-full bg-[#fbfbfb] px-4 py-2 border rounded-lg focus:outline-none"
               value={credentials.email}
               onChange={handleChange}
-              placeholder="tu correo electronico"
+              placeholder="Correo electrónico"
               required
             />
           </div>
@@ -73,26 +77,38 @@ const Login = () => {
               id="password"
               name="password"
               className="w-full bg-[#fbfbfb] px-4 py-2 border rounded-lg focus:outline-none"
-              placeholder="tu contraseña"
+              placeholder="Contraseña"
               value={credentials.password}
               onChange={handleChange}
               required
             />
           </div>
-          <div className="flex justify-center items-center my-6">
-            <h3 className="text-md">¿Aún no sos miembro? {"|"}</h3>
-            <a href="/sign-up" className="text-md ml-1 underline text-Button">
-              Regístrate
+          <div className="flex justify-center items-center mt-1">
+            <a href="#" className="text-sm font-medium hover:underline ml-1">
+              ¿Olvidaste tu contraseña?
             </a>
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-6 bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
+            className="flex justify-center items-center w-full max-w-80 mx-auto mt-6 bg-Button text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
             Iniciar Sesión
           </button>
         </form>
+        <button type="button" onClick={handleGoogleLogin} className="flex justify-center items-center w-full max-w-80 mx-auto mt-4 border border-gray-300 bg-white text-gray-700 py-2 px-4 rounded-lg shadow-sm hover:bg-sky-100/50 focus:outline-sky-100 duration-300">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png" alt="Google" className="h-5 w-5 mr-3"
+          />
+          Continuar con Google
+         </button>
+          <div className="flex justify-center items-center mt-6">
+            <h3 className="text-xs">¿Aún no sos miembro?</h3>
+            <a href="/sign-up" className="text-xs font-medium hover:underline ml-1">
+              Registrate
+            </a>
+          </div>
+          <hr className="border-gray-200 mx-20 mt-2" />
+          <p className="justify-center items-center text-center text-gray-700 text-pretty mt-4 text-xs">Si continúas, aceptas los <a href="#" className="font-medium hover:underline">Términos del servicio</a> de Appointment y confirmas que has leído nuestra <a href="#" className="font-medium hover:underline">Política de privacidad</a>.</p>
       </div>
     </section>
   );
