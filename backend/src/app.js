@@ -1,7 +1,9 @@
 import express from "express";
 import mongoose from "mongoose";
+import session from 'express-session';
 import cors from "cors";
 import morgan from "morgan";
+import passport from './controllers/passport.js';
 import cookieParser from "cookie-parser";
 //rutas
 import authRoutes from "./routes/auth.routes.js";
@@ -17,6 +19,17 @@ app.use(cors({
   origin: 'http://localhost:5173',
   credentials: true,
 }));
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'my_secret_key',
+  resave: false,
+  saveUninitialized: false,
+  // cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }
+}));
+
+// passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Middleware
 app.use(morgan("dev"));
