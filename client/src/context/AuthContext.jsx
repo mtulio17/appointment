@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:5000/api/login", {
+      const response = await fetch("http://localhost:5000/auth/login", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('Error de inicio de sesión:', error);
-      setError('Error de inicio de sesión.');
+      setError('Error de inicio de sesión. Por favor, inténtalo de nuevo.');
     } finally {
       setLoading(false);
     }
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await fetch("http://localhost:5000/api/logout", {
+      await fetch("http://localhost:5000/auth/logout", {
         method: 'POST',
         credentials: 'include',
       });
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/profile", {
+      const response = await fetch("http://localhost:5000/auth/profile", {
         method: 'GET',
         credentials: 'include',
       });
