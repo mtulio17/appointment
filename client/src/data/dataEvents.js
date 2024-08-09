@@ -203,7 +203,7 @@ export const dataEvents = [
     chat_id: "chat_id_4",
   },
   {
-    id: 1,
+    id: 9,
     activityName: "Ciclismo en la Reserva",
     categorie: "Deportes al Aire Libre",  
     file: image1,
@@ -228,7 +228,7 @@ export const dataEvents = [
     chat_id: "chat_id_5",
 },
 {
-    id: 2,
+    id: 10,
     activityName: "Yoga al Aire Libre",
     categorie: "Actividades Recreativas",  
     file: image2,
@@ -253,7 +253,7 @@ export const dataEvents = [
     chat_id: "chat_id_6",
 },
 {
-    id: 3,
+    id: 11,
     activityName: "Taller de Fotografía",
     categorie: "Actividades Recreativas",  
     file: image3,
@@ -278,7 +278,7 @@ export const dataEvents = [
     chat_id: "chat_id_7",
 },
 {
-    id: 4,
+    id: 12,
     activityName: "Clase de Cocina Saludable",
     categorie: "Actividades Recreativas",  
     file: image4,
@@ -303,7 +303,7 @@ export const dataEvents = [
     chat_id: "chat_id_8",
 },
 {
-    id: 5,
+    id: 13,
     activityName: "Caminata Nocturna",
     categorie: "Deportes al Aire Libre",  
     file: image5,
