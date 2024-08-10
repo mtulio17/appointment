@@ -1,5 +1,6 @@
 // controllers/event.controller.js
 import Event from "../models/event.model.js";
+import {getNearbyEvents} from "../utils/getNearbyEvents.js";
 
 export const getEvents = async (req, res) => {
   const events = await Event.find();
@@ -10,6 +11,19 @@ export const getEvent = async (req, res) => {
   const event = await Event.findById(req.params.id);
   if (!event) return res.status(404).json({ message: "Evento no encontrado." });
   res.json(event);
+};
+
+export const getNearbyEventsController = async (req, res) => {
+  const { lat, lng, maxDistance } = req.query;
+  if (!lat || !lng) {
+    return res.status(400).json({ message: "Se requieren latitud y longitud" });
+  }
+  try {
+    const events = await getNearbyEvents(parseFloat(lat), parseFloat(lng), maxDistance);
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener eventos cercanos", error });
+  }
 };
 
 export const createEvent = async (req, res) => {
@@ -50,8 +64,7 @@ export const createEvent = async (req, res) => {
     endTime,
   });
   const savedEvent = await newEvent.save();
-
-  res.json(savedEvent);
+  res.status(201).json(savedEvent);
 };
 
 export const updateEvent = async (req, res) => {
@@ -111,6 +124,7 @@ export const searchEvents = async (req, res) => {
     const events = await Event.find(query);
     res.json(events);
   } catch (error) {
+    console.error("Error al buscar eventos:", error); // Agrega este console.log
     res.status(500).json({ message: "Error al buscar eventos", error });
   }
 };

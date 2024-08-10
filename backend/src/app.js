@@ -8,15 +8,17 @@ import cookieParser from "cookie-parser";
 //rutas
 import authRoutes from "./routes/auth.routes.js";
 import eventRoutes from "./routes/event.routes.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
-// Crear el servidor
+// crear el servidor
 const app = express();
 
-// Configurar CORS
+// configurar CORS
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'http://localhost:5173',  // Asegúrate de que este es el correcto
   credentials: true,
 }));
 
@@ -24,19 +26,19 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'my_secret_key',
   resave: false,
   saveUninitialized: false,
-  // cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }
+  cookie: { secure: false, httpOnly: true }
 }));
 
 // passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Middleware
+// middlewares
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());
 
-// Conectar a MongoDB
+// conectar a MongoDB
 const connectDB = async () => {
   try {
     await mongoose.connect("mongodb://localhost:27017/appointment", {});
@@ -47,16 +49,16 @@ const connectDB = async () => {
 };
 connectDB();
 
-// Rutas
-app.use("/api", authRoutes);
+// rutas
+app.use("/auth", authRoutes);
 app.use("/api", eventRoutes);
 
-// Endpoint de prueba
+// endpoint de prueba
 app.get("/", (req, res) => {
   res.send("Bienvenido a la API de appointment");
 });
 
-// Iniciar servidor
+// iniciar servidor
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });

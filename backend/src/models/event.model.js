@@ -6,7 +6,7 @@ const eventSchema = new mongoose.Schema(
     activityName: { type: String, required: true },
     description: { type: String, required: true },
     // file: { type: String }, // URL o nombre del archivo
-    price: { type: Number, required: true },
+    price: { type: Number, required: true, default: "$0" },
     address: { type: String, required: true },
     city: { type: String, required: true },
     state: { type: String, required: true },
