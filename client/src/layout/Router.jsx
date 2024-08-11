@@ -9,6 +9,7 @@ import SignUp from "../components/SignUp";
 import SuggestedEvents from "../components/SuggestedEvents";
 import PrivateRoute from "../components/PrivateRoute";
 import EventDetails from '../components/EventDetails';
+import EditProfile from '../components/EditProfile';
 
 
 const router = () => (
@@ -20,6 +21,9 @@ const router = () => (
         <Route path="sign-up" element={<SignUp />} />
         <Route path="events" element={<EventDetails />} />
         <Route path="profile" element={<PrivateRoute element={<Profile />} />} />
+        {/* <Route path="account" element={<PrivateRoute element={<EditProfile />} />} /> */}
+        <Route path="account" element={<EditProfile />} />
+        <Route path="profile/:user/create-event" element={<PrivateRoute element={<CreateForm />} />} />
         <Route path="suggested-events" element={<PrivateRoute element={<SuggestedEvents />} />} />
         <Route path="profile/:user/create-event" element={<PrivateRoute element={<CreateForm />} />} />
       </Route>
