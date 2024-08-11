@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import avatar from '../assets/images/user.webp';
 import yogaImg from '../assets/images/hero2.jpg';
 import { Pin, CalendarClock, TicketPercent, UserCheck, Heart, Share } from "lucide-react";
+import EventParticipantsModal from './EventParticipantsModal';
 
 const participants = [
     { id: 1, name: 'Richie G.', role: 'Co-organizer', isHost: true, image: 'https://via.placeholder.com/50' },
@@ -13,7 +14,12 @@ const participants = [
     { id: 7, name: 'Ryan', role: 'Co-organizer', isHost: true, image: 'https://via.placeholder.com/50' },
 ];
 
+
 const EventDetails = () => {
+    const [showModal, setShowModal] = useState(false);
+
+    const openModal = () => setShowModal(true);
+    const closeModal = () => setShowModal(false);
     return (
         <div className="relative max-w-7xl mx-auto p-4 bg-white rounded-lg shadow-md my-28 ">
             <div className='m-5'>
@@ -82,46 +88,47 @@ const EventDetails = () => {
                 <div className="max-w-3xl p-4">
                     <div className='flex align-center justify-between my-5'>
                         <h2 className="text-2xl font-semibold">Asistentes ({participants.length}) </h2>
-                        <button className="text-sm text-gray-600 hover:text-gray-800 focus:outline-none">
+                        <button onClick={openModal} className="text-sm text-gray-600 hover:text-gray-800 focus:outline-none">
                             Ver más
                         </button>
                     </div>
                     <div className='bg-gray-100 px-3 py-3 rounded' >
-                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 gap-4">
-                        {participants.slice(0, 3).map((participant) => (
-                            <div key={participant.id} className="bg-white rounded-lg shadow-md p-4 text-center">
-                                <img src={participant.image} alt={participant.name} className="w-16 h-16 rounded-full mx-auto mb-2" />
-                                <p className="font-semibold">{participant.name}</p>
-                                <p className="text-sm text-gray-500">{participant.role}</p>
-                                {participant.isHost && <span className="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded-full">Host</span>}
-                            </div>
-                        ))}
+                        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 gap-4">
+                            {participants.slice(0, 3).map((participant) => (
+                                <div key={participant.id} className="bg-white rounded-lg shadow-md p-4 text-center">
+                                    <img src={participant.image} alt={participant.name} className="w-16 h-16 rounded-full mx-auto mb-2" />
+                                    <p className="font-semibold">{participant.name}</p>
+                                    <p className="text-sm text-gray-500">{participant.role}</p>
+                                    {participant.isHost && <span className="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded-full">Host</span>}
+                                </div>
+                            ))}
 
-                        {participants.length > 3 && (
-                            <div className="bg-white rounded-lg shadow-md p-4 text-center flex items-center justify-center">
-                                <div>
-                                    <div className="flex align-start justify-center">
-                                        {participants.slice(3, 7).map((participant, index) => (
-                                            <img
-                                                key={participant.id}
-                                                src={participant.image}
-                                                alt={participant.name}
-                                                className="w-16 h-16 rounded-full  mb-2"
-                                                style={{ marginLeft: index === 0 ? 0 : '-48px' }}
-                                            />
-                                        ))}
+                            {participants.length > 3 && (
+                                <div className="bg-white rounded-lg shadow-md p-4 text-center flex items-center justify-center">
+                                    <div>
+                                        <div className="flex align-start justify-center">
+                                            {participants.slice(3, 7).map((participant, index) => (
+                                                <img
+                                                    key={participant.id}
+                                                    src={participant.image}
+                                                    alt={participant.name}
+                                                    className="w-16 h-16 rounded-full  mb-2"
+                                                    style={{ marginLeft: index === 0 ? 0 : '-48px' }}
+                                                />
+                                            ))}
+                                        </div>
+                                        <span className="text-gray-500 mt-2">+{participants.length - 3} mas</span>
+
                                     </div>
-                                    <span className="text-gray-500 mt-2">+{participants.length - 3} mas</span>
 
                                 </div>
+                            )}
+                        </div>
+                    </div>
 
-                            </div>
-                        )}
-                    </div>
-                    </div>
-            
                 </div>
             </div>
+            <EventParticipantsModal participants={participants} showModal={showModal} closeModal={closeModal}/>
         </div>
     );
 };
