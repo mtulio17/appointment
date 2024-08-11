@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import avatar from '../assets/images/user.webp';
 import yogaImg from '../assets/images/hero2.jpg';
 import { Pin, CalendarClock, TicketPercent, UserCheck, Heart, Share } from "lucide-react";
 import EventParticipantsModal from './EventParticipantsModal';
+import ShareModal from './ShareModal';
 
 const participants = [
     { id: 1, name: 'Richie G.', role: 'Co-organizer', isHost: true, image: 'https://via.placeholder.com/50' },
@@ -16,10 +17,17 @@ const participants = [
 
 
 const EventDetails = () => {
-    const [showModal, setShowModal] = useState(false);
+    const [showShareModal, setShowShareModal] = useState(false);
+    const eventUrl = 'http://localhost:5173/events/12345';
 
-    const openModal = () => setShowModal(true);
-    const closeModal = () => setShowModal(false);
+    const openShareModal = () => setShowShareModal(true);
+    const closeShareModal = () => setShowShareModal(false);
+
+
+    const [showParticipantsModal, setShowParticipantsModal] = useState(false);
+
+    const openParticipantsModal = () => setShowParticipantsModal(true);
+    const closeParticipantsModal = () => setShowParticipantsModal(false);
     return (
         <div className="relative max-w-7xl mx-auto p-4 bg-white rounded-lg shadow-md my-28 ">
             <div className='m-5'>
@@ -40,8 +48,7 @@ const EventDetails = () => {
                         <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-4">
                             <div className="flex items-center justify-between mb-4">
                                 <p className="font-semibold">Yoga al Aire Libre</p>
-                                <button ><Share className='w-5 h-5' /></button>
-                                {/* <span className="text-sm text-gray-500 ml-2">Grupo público</span> */}
+                                <button onClick={openShareModal}><Share className='w-5 h-5' /></button>
                             </div>
                             <div className="flex items-center text-sm font-medium text-gray-900 mb-3">
                                 <CalendarClock className="w-5 h-5 mr-3 opacity-60" />
@@ -88,7 +95,7 @@ const EventDetails = () => {
                 <div className="max-w-3xl p-4">
                     <div className='flex align-center justify-between my-5'>
                         <h2 className="text-2xl font-semibold">Asistentes ({participants.length}) </h2>
-                        <button onClick={openModal} className="text-sm text-gray-600 hover:text-gray-800 focus:outline-none">
+                        <button onClick={openParticipantsModal} className="text-sm text-gray-600 hover:text-gray-800 focus:outline-none">
                             Ver más
                         </button>
                     </div>
@@ -128,7 +135,8 @@ const EventDetails = () => {
 
                 </div>
             </div>
-            <EventParticipantsModal participants={participants} showModal={showModal} closeModal={closeModal}/>
+            <ShareModal eventUrl={eventUrl} showModal={showShareModal} closeModal={closeShareModal} />
+            <EventParticipantsModal showModal={showParticipantsModal} closeModal={closeParticipantsModal} />
         </div>
     );
 };

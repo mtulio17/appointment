@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { X } from "lucide-react";
 
 
 const EventParticipantsModal = ({participants, showModal, closeModal}) => {
@@ -11,7 +12,7 @@ const EventParticipantsModal = ({participants, showModal, closeModal}) => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Lista de Participantes</h2>
         <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">
-          &times;
+        <X />
         </button>
       </div>
       <div className="max-h-64 overflow-y-auto">
