@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import session from 'express-session';
 import cors from "cors";
 import morgan from "morgan";
-import passport from './controllers/passport.js';
 import cookieParser from "cookie-parser";
 //rutas
 import authRoutes from "./routes/auth.routes.js";
@@ -29,9 +28,6 @@ app.use(session({
   cookie: { secure: false, httpOnly: true }
 }));
 
-// passport
-app.use(passport.initialize());
-app.use(passport.session());
 
 // middlewares
 app.use(morgan("dev"));
