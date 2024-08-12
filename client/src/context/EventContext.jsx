@@ -6,8 +6,10 @@ const EventContext = createContext();
 export const EventProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // crear un evento nuevo
+
+  // creaar un evento nuevo
   const createEvent = async (eventData) => {
     try {
       const response = await fetch("http://localhost:5000/api/events", {
@@ -34,33 +36,59 @@ export const EventProvider = ({ children }) => {
     }
   };
 
-  // función para obtener todos los eventos (puede ser por cercanía o según la ubicación del usuario)
-  const fetchEvents = async (lat, lng) => {
+  const fetchEvents = async (filters = {}) => {
     setLoading(true);
+    setError(null);
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/events/nearby?lat=${lat}&lng=${lng}`
-      );
+      const queryString = new URLSearchParams(filters).toString();
+      const response = await fetch(`http://localhost:5000/api/events?${queryString}`);
+      
       if (response.ok) {
         const data = await response.json();
         setEvents(data);
       } else {
-        console.error("Error al obtener eventos");
+        const errorText = await response.text();
+        console.error("Error al obtener eventos:", errorText);
+        setError(errorText);
       }
     } catch (error) {
       console.error("Error en la solicitud de eventos:", error);
+      setError("Error en la solicitud de eventos");
     } finally {
       setLoading(false);
     }
   };
 
+    // Búsqueda avanzada de eventos
+    const searchEvents = async (searchParams) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const queryString = new URLSearchParams(searchParams).toString();
+        const response = await fetch(`http://localhost:5000/api/events/search?${queryString}`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          setEvents(data);
+        } else {
+          const errorText = await response.text();
+          console.error("Error al buscar eventos:", errorText);
+          setError(errorText);
+        }
+      } catch (error) {
+        console.error("Error en la solicitud de búsqueda de eventos:", error);
+        setError("Error en la solicitud de búsqueda de eventos");
+      } finally {
+        setLoading(false);
+      }
+    };
+
   useEffect(() => {
-    // acá se podria llamar a fetchEvents con la ubicación actual del usuario al cargar la página
-    // fetchEvents(userLocation.lat, userLocation.lng);
+    fetchEvents();
   }, []);
 
   return (
-    <EventContext.Provider value={{ events, loading, fetchEvents, createEvent }}>
+    <EventContext.Provider value={{ events, loading, error, fetchEvents, createEvent, searchEvents }}>
       {children}
     </EventContext.Provider>
   );

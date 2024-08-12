@@ -1,4 +1,5 @@
 import { createContext, useContext, useState} from "react";
+// import { supabase } from "../supabase/client";
 
 const AuthContext = createContext();
 
@@ -69,6 +70,7 @@ export const AuthProvider = ({ children }) => {
       setError('No se pudo cargar el usuario.');
     }
   };
+
 
   return (
     <AuthContext.Provider value={{ user, login,logout, loading, error }}>

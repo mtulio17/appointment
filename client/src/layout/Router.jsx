@@ -9,6 +9,7 @@ import SignUp from "../components/SignUp";
 import SuggestedEvents from "../components/SuggestedEvents";
 import PrivateRoute from "../components/PrivateRoute";
 import EventDetails from '../components/EventDetails';
+import SearchResults from '../components/SearchResults';
 
 
 const router = () => (
@@ -18,10 +19,11 @@ const router = () => (
         <Route path="/" element={<Home />} />
         <Route path="sign-in" element={<Login />} />
         <Route path="sign-up" element={<SignUp />} />
-        <Route path="events" element={<EventDetails />} />
+        <Route path="search/" element={<SearchResults />} />
+        <Route path="events/:id" element={<EventDetails />} />
         <Route path="profile" element={<PrivateRoute element={<Profile />} />} />
+        <Route path="profile/create-event/:user" element={<PrivateRoute element={<CreateForm />} />} />
         <Route path="suggested-events" element={<PrivateRoute element={<SuggestedEvents />} />} />
-        <Route path="profile/:user/create-event" element={<PrivateRoute element={<CreateForm />} />} />
       </Route>
     </Routes>
   </Router>

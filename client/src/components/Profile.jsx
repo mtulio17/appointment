@@ -33,7 +33,7 @@ const Profile = () => {
         <hr />
 
         <div className="shrink-0 sm:flex sm:items-end py-3">
-          <Link to={`/profile/${user.username}/create-event`} className="flex sm:w-1/4 md:w-1/5 items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+          <Link to={`create-event/${user.username}`} className="flex sm:w-1/4 md:w-1/5 items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
             Crear Evento
           </Link>
         </div>

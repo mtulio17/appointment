@@ -5,8 +5,7 @@ const eventSchema = new mongoose.Schema(
   {
     activityName: { type: String, required: true },
     description: { type: String, required: true },
-    // file: { type: String }, // URL o nombre del archivo
-    price: { type: Number, required: true, default: "$0" },
+    price: { type: Number, required: true, default: 0 },
     address: { type: String, required: true },
     city: { type: String, required: true },
     state: { type: String, required: true },
@@ -19,8 +18,12 @@ const eventSchema = new mongoose.Schema(
     endDate: { type: Date },
     endTime: { type: String },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );
+
+// crea el índice geoespacial en el campo 'location'
+// eventSchema.index({ location: '2dsphere' });
 
 export default mongoose.model("Event", eventSchema);
