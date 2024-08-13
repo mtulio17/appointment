@@ -19,6 +19,7 @@ const eventSchema = new mongoose.Schema(
     endTime: { type: String },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    maxParticipants: { type: Number, default: -1 }, // -1 indica que es sin limite
   },
   { timestamps: true }
 );

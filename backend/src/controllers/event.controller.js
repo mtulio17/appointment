@@ -32,10 +32,12 @@ export const getEvent = async (req, res) => {
 };
 
 export const createEvent = async (req, res) => {
+  if (!req.user || !req.user.id) {
+    return res.status(400).json({ message: "No se encontró el usuario autenticado" });
+  }
   const {
     activityName,
     description,
-    // file,
     price,
     address,
     city,
@@ -48,20 +50,12 @@ export const createEvent = async (req, res) => {
     startTime,
     endDate,
     endTime,
-    // lat,
-    // lng,
   } = req.body;
 
-  // if (lat === undefined || lng === undefined) {
-  //   return res
-  //     .status(400)
-  //     .json({ message: "Se requieren latitud y longitud para el evento" });
-  // }
   const newEvent = new Event({
-    user: req.user._id,
+    user: req.user.id, // Aquí se usa el ID del usuario autenticado
     activityName,
     description,
-    // file,
     price,
     address,
     city,
@@ -74,10 +68,6 @@ export const createEvent = async (req, res) => {
     startTime,
     endDate,
     endTime,
-    // location: {
-    //   type: "Point",
-    //   coordinates: [lng, lat], // coordenadas en el orden [lng, lat]
-    // },
   });
 
   try {
@@ -87,6 +77,7 @@ export const createEvent = async (req, res) => {
     res.status(500).json({ message: "Error al crear el evento", error });
   }
 };
+
 
 export const updateEvent = async (req, res) => {
   try {
@@ -166,28 +157,51 @@ export const searchEvents = async (req, res) => {
 
 export const participateInEvent = async (req, res) => {
   const { id } = req.params;
-  const userId = req.user._id; 
-
-  console.log('Request body:', req.body);
-  console.log('User ID:', req.user._id);
-  console.log('Event ID:', req.params.id);
+  const userId = req.user.id;
   try {
-
     const event = await Event.findById(id);
     if (!event) {
-      return res.status(404).json({ message: 'Evento no encontrado' });
+      return res.status(404).json({ message: "Evento no encontrado" });
+    }
+    // verifica si el usuario es el creador del evento
+    if (event.user.toString() === userId) {
+      return res.status(400).json({ message: "No puedes unirte a tu propio evento" });
     }
     if (event.participants.includes(userId)) {
-      return res.status(400).json({ message: 'Ya estás participando en este evento' });
+      return res.status(400).json({ message: "Ya estás participando en este evento" });
     }
-    if (event.maxParticipants > 0 && event.participants.length >= event.maxParticipants) {
-      return res.status(400).json({ message: 'El evento ha alcanzado el número máximo de participantes' });
+    if (event.maxParticipants !== -1 && event.participants.length >= event.maxParticipants) {
+      return res.status(400).json({ message: "El evento ha alcanzado el límite de participantes" });
     }
     event.participants.push(userId);
     await event.save();
-    res.status(200).json({ event });
+
+    return res.json({ message: "Te has unido al evento", event });
   } catch (error) {
-    console.error('Error al participar en el evento:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    return res.status(500).json({ message: "Error al unirse al evento", error });
+  }
+};
+
+export const cancelParticipation = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const event = await Event.findById(id);
+
+    if (!event) {
+      return res.status(404).json({ message: "Evento no encontrado" });
+    }
+
+    if (!event.participants.includes(userId)) {
+      return res.status(400).json({ message: "No estás participando en este evento" });
+    }
+
+    event.participants = event.participants.filter(participant => participant.toString() !== userId);
+    await event.save();
+
+    return res.json({ message: "Has cancelado tu participación en el evento", event });
+  } catch (error) {
+    return res.status(500).json({ message: "Error al cancelar la participación en el evento", error });
   }
 };

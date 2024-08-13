@@ -29,24 +29,24 @@ const EventDetails = () => {
   
     fetchEventDetails();
   }, [id, user?._id]);
-
+  
   const handleParticipate = async () => {
     if (!user) {
-      navigate('/sign-up'); // Redirige si el usuario no está autenticado
+      navigate('/sign-up'); // redirige si el usuario no está autenticado
       return;
     }
     try {
       const response = await axios.post(
         `http://localhost:5000/api/events/${id}/participate`,
         {},
-        { withCredentials: true } // Incluye cookies para enviar el token
+        { withCredentials: true } // inclues las cookies para enviar el token
       );
       setEvent(response.data.event);
-      setParticipants(response.data.event.participants);
+      setParticipants(prevParticipants => [...prevParticipants, user._id]);
       setIsParticipating(true);
     } catch (error) {
-      if (error.response?.status === 401) {
-        navigate('/sign-up'); // Redirige si el usuario no está autenticado
+      if (error.response && error.response.status === 400) {
+        alert('Actualmente ya estás participando en este evento', error.response.data.message);
       } else {
         console.error('Error al unirse al evento:', error);
       }
@@ -62,7 +62,7 @@ const EventDetails = () => {
       const response = await axios.post(
         `http://localhost:5000/api/events/${id}/cancel`,
         {},
-        { withCredentials: true } // Incluye cookies para enviar el token
+        { withCredentials: true } //incluye las cookies para enviar el token
       );
       setEvent(response.data.event);
       setParticipants(response.data.event.participants);
@@ -139,12 +139,12 @@ const EventDetails = () => {
                 </div>
               ) : (
                 <button
-                  onClick={handleParticipate}
-                  disabled={participants.length >= event.maxParticipants && event.maxParticipants !== -1}
-                  className="bg-red-600 text-white px-5 py-2 rounded hover:bg-red-500"
-                >
-                  Participar
-                </button>
+              onClick={handleParticipate}
+              disabled={isParticipating || (participants.length >= event.maxParticipants && event.maxParticipants !== -1)}
+              className="bg-red-600 text-white px-5 py-2 rounded hover:bg-red-500"
+            >
+              Participar
+            </button>
               )}
             </div>
           </div>

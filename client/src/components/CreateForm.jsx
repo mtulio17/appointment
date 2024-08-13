@@ -1,39 +1,40 @@
 // components/CreateForm.jsx
-import { useState } from "react";
-import { useEvent } from "../context/EventContext";
+import {useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
+import { useEvent } from "../context/EventContext";
+
+//esquema de validación con Yup
+const schema = yup.object().shape({
+  activityName: yup.string().required("El nombre de la actividad es obligatorio"),
+  description: yup.string().required("La descripción es obligatoria"),
+  price: yup.number().min(0, "El precio no puede ser negativo").required("El precio es obligatorio"),
+  address: yup.string().required("La dirección es obligatoria"),
+  city: yup.string().required("La ciudad es obligatoria"),
+  state: yup.string().required("La provincia es obligatoria"),
+  postalCode: yup.string().required("El código postal es obligatorio"),
+  country: yup.string().required("El país es obligatorio"),
+  gender: yup.string().required("El género es obligatorio"),
+  age: yup.string().required("La edad es obligatoria"),
+  startDate: yup.date().required("La fecha de inicio es obligatoria"),
+  startTime: yup.string().required("La hora de inicio es obligatoria"),
+  endDate: yup.date().required("La fecha de finalización es obligatoria"),
+  endTime: yup.string().required("La hora de finalización es obligatoria"),
+});
+
 
 const CreateForm = () => {
   const { createEvent } = useEvent();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    activityName: "",
-    description: "",
-    price: 0,
-    address: "",
-    city: "",
-    state: "",
-    postalCode: "",
-    country: "",
-    gender: "",
-    age: "",
-    startDate: "",
-    startTime: "",
-    endDate: "",
-    endTime: "",
+
+  // Utilizar useForm con validación
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(schema),
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const newEvent = await createEvent(formData);
+  const onSubmit = async (data) => {
+    const newEvent = await createEvent(data);
     if (newEvent) {
       navigate("/suggested-events"); // redirigir
     } else {
@@ -42,175 +43,126 @@ const CreateForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto max-w-4xl p-6 bg-white">
-      <div className=" pb-12 mt-20">
-      <h2 className='text-Button font-semibold leading-6 text-lg text-center my-10'>Crear evento</h2>
-        <div className="max-w-2xl gap-y-8 mx-auto border-b border-gray-900/10">
-          <input
-            label="Nombre de la Actividad"
-            id="activityName"
-            name="activityName"
-            value={formData.activityName}
-            onChange={handleChange}
-            placeholder="Nombre de la actividad"
-            className="placeholder:text-sm"
-          />
-          <div className="col-span-6 sm:col-span-4">
-            <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
-              Descripción de la actividad
-            </label>
-            <div className="mt-2">
-              <textarea
-                id="description"
-                name="description"
-                rows={3}
-                className="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                value={formData.description}
-                onChange={handleChange}
-              />
-            </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-4xl p-6 bg-white">
+    <div className="pb-12 mt-20">
+      <h2 className="text-Button font-semibold leading-6 text-lg text-center my-10">Crear evento</h2>
+      <div className="max-w-2xl gap-y-8 mx-auto border-b border-gray-900/10">
+        <input
+          placeholder="Nombre de la actividad"
+          {...register("activityName")}
+          className={`placeholder:text-sm ${errors.activityName ? 'border-red-500' : ''}`}
+        />
+        {errors.activityName && <p className="text-red-500 text-sm">{errors.activityName.message}</p>}
+
+        <div className="col-span-6 sm:col-span-4">
+          <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
+            Descripción de la actividad
+          </label>
+          <div className="mt-2">
+            <textarea
+              id="description"
+              {...register("description")}
+              rows={3}
+              className={`block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.description ? 'border-red-500' : ''}`}
+            />
+            {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
           </div>
-          {/* <div className="col-span-6 sm:col-span-4">
-            <label htmlFor="file-upload" className="block text-sm font-medium leading-6 text-gray-900">
-              Foto
-            </label>
-            <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-              <div className="text-center">
-                <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                  <label
-                    htmlFor="file-upload"
-                    className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                  >
-                    <span>Upload a file</span>
-                    <input
-                      id="file-upload"
-                      name="file"
-                      type="file"
-                      className="sr-only"
-                      onChange={handleChange}
-                    />
-                  </label>
-                  <p className="pl-1">or drag and drop</p>
-                </div>
-                <p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
-              </div>
-            </div>
-          </div> */}
-          <input
-            label="Precio"
-            id="price"
-            name="price"
-            type="number"
-            placeholder="precio"
-            value={formData.price}
-            onChange={handleChange}
-          />
-          <input
-            label="Dirección de la Actividad"
-            id="streetAddress"
-            name="streetAddress"
-            value={formData.streetAddress}
-            onChange={handleChange}
-            placeholder="Siempre Viva 123"
-          />
-          <input
-            label="Ciudad"
-            id="city"
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            placeholder="San Miguel de Tucumán"
-          />
-          <input
-            label="Provincia"
-            id="state"
-            name="state"
-            value={formData.state}
-            onChange={handleChange}
-            placeholder="Tucumán"
-          />
-          <input
-            label="Código postal"
-            id="postalCode"
-            name="postalCode"
-            placeholder="CP XXXX"
-            value={formData.postalCode}
-            onChange={handleChange}
-          />
-          <select
-            label="País"
-            id="country"
-            name="country"
-            value={formData.country}
-            onChange={handleChange}
-            >
-            <option value="">Seleccione un país</option>
-            <option value="Argentina">Argentina</option>
-            <option value="Australia">Australia</option>
-            <option value="Mexico">México</option>
-          </select>
-          <select
-            label="Género"
-            id="genderRestriction"
-            name="genderRestriction"
-            value={formData.genderRestriction}
-            onChange={handleChange}
-            >
-            <option value="">Seleccione un género</option>
-            <option value="Argentina">No preferencia</option>
-            <option value="Australia">Hombre</option>
-            <option value="Mexico">Mujer</option>
-            </select>
-          <input
-            label="Edades"
-            id="ageRange"
-            name="ageRange"
-            value={formData.ageRange}
-            onChange={handleChange}
-          />
-          <input
-            label="Fecha de inicio"
-            id="startDate"
-            name="startDate"
-            type="date"
-            value={formData.startDate}
-            onChange={handleChange}
-          />
-          <input
-            label="Hora de inicio"
-            id="startTime"
-            name="startTime"
-            type="time"
-            value={formData.startTime}
-            onChange={handleChange}
-          />
-          <input
-            label="Fecha de finalización"
-            id="endDate"
-            name="endDate"
-            type="date"
-            value={formData.endDate}
-            onChange={handleChange}
-          />
-          <input
-            label="Hora de finalización"
-            id="endTime"
-            name="endTime"
-            type="time"
-            value={formData.endTime}
-            onChange={handleChange}
-          />
         </div>
+
+        <input
+          placeholder="Precio"
+          type="number"
+          {...register("price")}
+          className={`placeholder:text-sm ${errors.price ? 'border-red-500' : ''}`}
+        />
+        {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
+
+        <input
+          placeholder="Siempre Viva 123"
+          {...register("address")}
+          className={`placeholder:text-sm ${errors.address ? 'border-red-500' : ''}`}
+        />
+        {errors.address && <p className="text-red-500 text-sm">{errors.address.message}</p>}
+
+        <input
+          placeholder="San Miguel de Tucumán"
+          {...register("city")}
+          className={`placeholder:text-sm ${errors.city ? 'border-red-500' : ''}`}
+        />
+        {errors.city && <p className="text-red-500 text-sm">{errors.city.message}</p>}
+
+        <input
+          placeholder="Tucumán"
+          {...register("state")}
+          className={`placeholder:text-sm ${errors.state ? 'border-red-500' : ''}`}
+        />
+        {errors.state && <p className="text-red-500 text-sm">{errors.state.message}</p>}
+
+        <input
+          placeholder="CP XXXX"
+          {...register("postalCode")}
+          className={`placeholder:text-sm ${errors.postalCode ? 'border-red-500' : ''}`}
+        />
+        {errors.postalCode && <p className="text-red-500 text-sm">{errors.postalCode.message}</p>}
+
+        <select {...register("country")} className={`placeholder:text-sm ${errors.country ? 'border-red-500' : ''}`}>
+          <option value="">Seleccione un país</option>
+          <option value="Argentina">Argentina</option>
+          <option value="Australia">Australia</option>
+          <option value="Mexico">México</option>
+        </select>
+        {errors.country && <p className="text-red-500 text-sm">{errors.country.message}</p>}
+
+        <select {...register("gender")} className={`placeholder:text-sm ${errors.gender ? 'border-red-500' : ''}`}>
+          <option value="">Seleccione un género</option>
+          <option value="No preferencia">No preferencia</option>
+          <option value="Hombre">Hombre</option>
+          <option value="Mujer">Mujer</option>
+        </select>
+        {errors.gender && <p className="text-red-500 text-sm">{errors.gender.message}</p>}
+
+        <input
+          placeholder="Edades"
+          {...register("age")}
+          className={`placeholder:text-sm ${errors.age ? 'border-red-500' : ''}`}
+        />
+        {errors.age && <p className="text-red-500 text-sm">{errors.age.message}</p>}
+
+        <input
+          type="date"
+          {...register("startDate")}
+          className={`placeholder:text-sm ${errors.startDate ? 'border-red-500' : ''}`}
+        />
+        {errors.startDate && <p className="text-red-500 text-sm">{errors.startDate.message}</p>}
+
+        <input
+          type="time"
+          {...register("startTime")}
+          className={`placeholder:text-sm ${errors.startTime ? 'border-red-500' : ''}`}
+        />
+        {errors.startTime && <p className="text-red-500 text-sm">{errors.startTime.message}</p>}
+
+        <input
+          type="date"
+          {...register("endDate")}
+          className={`placeholder:text-sm ${errors.endDate ? 'border-red-500' : ''}`}
+        />
+        {errors.endDate && <p className="text-red-500 text-sm">{errors.endDate.message}</p>}
+
+        <input
+          type="time"
+          {...register("endTime")}
+          className={`placeholder:text-sm ${errors.endTime ? 'border-red-500' : ''}`}
+        />
+        {errors.endTime && <p className="text-red-500 text-sm">{errors.endTime.message}</p>}
       </div>
-      <div className="mt-6 flex items-center justify-center gap-x-6">
-        <button type="button" className="text-sm font-semibold leading-6 text-gray-900" src='/profile/user:'>
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          Guardar
+    </div>
+    <div className="mt-6 flex items-center justify-center gap-x-6">
+      <button type="button" className="text-sm font-semibold leading-6 text-gray-900">
+        Cancelar
+      </button>
+      <button type="submit" className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        Guardar
         </button>
       </div>
     </form>
