@@ -1,4 +1,5 @@
 // components/CreateForm.jsx
+import { useState } from "react";
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -25,6 +26,7 @@ const schema = yup.object().shape({
 
 
 const CreateForm = () => {
+  const [image, setImage] = useState(null);
   const { createEvent } = useEvent();
   const navigate = useNavigate();
 
@@ -33,15 +35,39 @@ const CreateForm = () => {
     resolver: yupResolver(schema),
   });
 
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    setImage(file);
+  };
+
   const onSubmit = async (data) => {
-    const newEvent = await createEvent(data);
+    const formData = new FormData();
+    formData.append('activityName', data.activityName);
+    formData.append('description', data.description);
+    formData.append('price', data.price);
+    formData.append('address', data.address);
+    formData.append('city', data.city);
+    formData.append('state', data.state);
+    formData.append('postalCode', data.postalCode);
+    formData.append('country', data.country);
+    formData.append('gender', data.gender);
+    formData.append('age', data.age);
+    formData.append('startDate', data.startDate);
+    formData.append('startTime', data.startTime);
+    formData.append('endDate', data.endDate);
+    formData.append('endTime', data.endTime);
+    if (image) {
+      formData.append('image', image);
+    }
+  
+    const newEvent = await createEvent(formData);
     if (newEvent) {
       navigate("/suggested-events"); // redirigir
     } else {
       console.error("Error al crear el evento");
     }
   };
-
+  
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-4xl p-6 bg-white">
     <div className="pb-12 mt-20">
@@ -53,7 +79,10 @@ const CreateForm = () => {
           className={`placeholder:text-sm ${errors.activityName ? 'border-red-500' : ''}`}
         />
         {errors.activityName && <p className="text-red-500 text-sm">{errors.activityName.message}</p>}
-
+          <div>
+            <label>Imagen</label>
+            <input type="file" onChange={handleImageChange} />
+          </div>
         <div className="col-span-6 sm:col-span-4">
           <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
             Descripción de la actividad

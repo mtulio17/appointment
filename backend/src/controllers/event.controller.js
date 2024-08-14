@@ -52,8 +52,13 @@ export const createEvent = async (req, res) => {
     endTime,
   } = req.body;
 
+  // procesa la imagen
+  const imageUrl = req.file ? `/uploads/events/${req.file.filename}` : null;
+  console.log("Ruta de la imagen guardada:", imageUrl);
+  
+
   const newEvent = new Event({
-    user: req.user.id, // Aquí se usa el ID del usuario autenticado
+    user: req.user.id,
     activityName,
     description,
     price,
@@ -68,6 +73,7 @@ export const createEvent = async (req, res) => {
     startTime,
     endDate,
     endTime,
+    imageUrl,
   });
 
   try {

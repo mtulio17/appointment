@@ -4,6 +4,8 @@ import session from 'express-session';
 import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import path from 'path';
+import { fileURLToPath } from 'url';
 //rutas
 import authRoutes from "./routes/auth.routes.js";
 import eventRoutes from "./routes/event.routes.js";
@@ -11,6 +13,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // crear el servidor
 const app = express();
@@ -48,6 +53,9 @@ connectDB();
 // rutas
 app.use("/auth", authRoutes);
 app.use("/api", eventRoutes);
+
+// archivos estáticos
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // endpoint de prueba
 app.get("/", (req, res) => {

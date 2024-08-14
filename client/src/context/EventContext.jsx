@@ -14,13 +14,10 @@ export const EventProvider = ({ children }) => {
     try {
       const response = await fetch("http://localhost:5000/api/events", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         credentials: "include",
-        body: JSON.stringify(eventData),
+        body: eventData, // directamente envia la FormData
       });
-
+  
       if (response.ok) {
         const newEvent = await response.json();
         setEvents((prevEvents) => [...prevEvents, newEvent]);
@@ -35,7 +32,8 @@ export const EventProvider = ({ children }) => {
       return null;
     }
   };
-
+  
+  // obtener eventos
   const fetchEvents = async (filters = {}) => {
     setLoading(true);
     setError(null);
@@ -59,8 +57,8 @@ export const EventProvider = ({ children }) => {
     }
   };
 
-    // Búsqueda avanzada de eventos
-    const searchEvents = async (searchParams) => {
+  // Búsqueda avanzada de eventos
+  const searchEvents = async (searchParams) => {
       setLoading(true);
       setError(null);
       try {

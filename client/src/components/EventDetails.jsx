@@ -99,7 +99,7 @@ const EventDetails = () => {
           </div>
         </div>
         <div className='flex flex-col md:flex-row justify-center justify-between'>
-          <img src={event.image} alt={event.activityName} className="max-w-3xl max-h-3xl object-cover rounded-lg mb-4" />
+          <img src={event.imageUrl} alt={event.activityName} className="max-w-3xl max-h-3xl object-cover rounded-lg mb-4" />
           <div className="w-full md:w-1/3">
             <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-4">
               <div className="flex items-center justify-between mb-4">

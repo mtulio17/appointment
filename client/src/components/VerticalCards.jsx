@@ -20,7 +20,7 @@ const VerticalCards = ({ event }) => {
     <div key={event._id} className="relative overflow-hidden cursor-pointer pb-8 my-8">
       <Link to={`/events/${event._id}`}>
       <img
-        src={event.file}
+        src={`http://localhost:5000${event.imageUrl}`}
         alt={event.activityName}
         className="mx-auto w-full h-40 lg:h-44 lg:w-full object-cover object-center rounded-md hover:opacity-80 duration-200 mb-2"
       />

@@ -6,10 +6,16 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:5000', // Cambia esto al puerto de tu backend
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
       },
+      '/uploads':{
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/uploads/, '/uploads'),
+      }
     },
   },
 });

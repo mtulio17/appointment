@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 
 const eventSchema = new mongoose.Schema(
   {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     activityName: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true, default: 0 },
@@ -17,14 +18,11 @@ const eventSchema = new mongoose.Schema(
     startTime: { type: String, required: true },
     endDate: { type: Date },
     endTime: { type: String },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    imageUrl: { type: String },
     participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     maxParticipants: { type: Number, default: -1 }, // -1 indica que es sin limite
   },
   { timestamps: true }
 );
-
-// crea el índice geoespacial en el campo 'location'
-// eventSchema.index({ location: '2dsphere' });
 
 export default mongoose.model("Event", eventSchema);

@@ -22,7 +22,7 @@ const LastestEvents = () => {
       </h2>
       <div className="mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          {events.slice(0, 8).map((event) => (
+          {events.slice(0, 16).map((event) => (
             <VerticalCards key={event._id} event={event} />
           ))}
         </div>
