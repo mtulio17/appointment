@@ -10,7 +10,10 @@ import SuggestedEvents from "../components/SuggestedEvents";
 import PrivateRoute from "../components/PrivateRoute";
 import EventDetails from '../components/EventDetails';
 import SearchResults from '../components/SearchResults';
-
+import EditProfile from '../components/EditProfile'
+import PersonalInfo from '../components/PersonalInfo';
+import Account from '../components/Account';
+import AccountManagement from '../components/AccountManagement';
 
 const router = () => (
   <Router>
@@ -19,6 +22,15 @@ const router = () => (
         <Route path="/" element={<Home />} />
         <Route path="sign-in" element={<Login />} />
         <Route path="sign-up" element={<SignUp />} />
+
+        <Route path="cuenta" element={<Account />}>
+          <Route path="editar-perfil" element={<EditProfile />} />
+          <Route path="personal" element={<PersonalInfo />} />
+          <Route path="gestion" element={<AccountManagement />} />
+
+        </Route>
+       
+
         <Route path="search/" element={<SearchResults />} />
         <Route path="events/:id" element={<EventDetails />} />
         <Route path="profile" element={<PrivateRoute element={<Profile />} />} />
