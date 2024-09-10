@@ -10,7 +10,7 @@ const sections = [
   { name: 'Privacidad', icon: <Lock />, path: '/privacidad' },
   { name: 'Intereses', icon: <Heart />, path: '/interests' },
   { name: 'Notifications', icon: <Bell />, path: '/notifications' },
-  { name: 'Ayuda', icon: <CircleHelp />, path: 'ayuda' },
+  // { name: 'Ayuda', icon: <CircleHelp />, path: '/ayuda' },
 ];
 
 const SettingsSidebar = () => {
@@ -41,6 +41,16 @@ const SettingsSidebar = () => {
             </button>
           </li>
         ))}
+        <li>
+          <button className='block text-left w-full p-2 rounded-lg  ' 
+                  >
+                    <a href="ayuda" className='flex items-center bg-blue-500 bg-transparent text-gray-700 hover:bg-blue-100'>
+                    <span className="mr-3 text-xl"> <CircleHelp /></span>
+                    <span className="hidden md:inline">Ayuda</span>
+                    </a>
+                     
+                  </button>
+        </li>
       </ul>
     </div>
   );

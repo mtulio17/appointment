@@ -44,11 +44,11 @@ const Help = () => {
   const [activeIndex, setActiveIndex] = useState(null);
 
   const toggleAccordion = (index) => {
-    setActiveIndex(index === activeIndex ? null : index); // Cerrar si se vuelve a hacer clic
+    setActiveIndex(index === activeIndex ? null : index); 
   };
 
   return (
-    <div className="w-full max-w-4xl  my-20">
+    <div className="w-full max-w-4xl mx-auto my-20">
       <h2 className="text-3xl font-bold mb-6 text-center">Centro de Ayuda</h2>
       {faqs.map((faq, index) => (
         <div key={index} className="border-b">

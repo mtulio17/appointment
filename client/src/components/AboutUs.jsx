@@ -2,7 +2,7 @@ import React from 'react';
 
 const AboutUs = () => {
   return (
-    <div className="about-us p-8 max-w-4xl mx-auto bg-white shadow-lg rounded-lg">
+    <div className="about-us p-8 max-w-4xl mx-auto bg-white shadow-lg rounded-lg my-20">
       <h1 className="text-3xl font-bold mb-6 text-indigo-700">Sobre Nosotros</h1>
 
       <h2 className="text-2xl font-semibold mb-4 text-indigo-600">La historia de Appointment</h2>
