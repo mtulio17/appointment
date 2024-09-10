@@ -41,7 +41,7 @@ const Navbar = () => {
               <Link to="/">
                 <div className="flex flex-shrink-0 items-center">
                   <img
-                    className="h-40 w-40 sm:h-28 md:h-40 lg:w-36 lg:h-36"
+                    className="h-20 w-20 sm:h-20 md:h-20 lg:w-20 lg:h-20"
                     src={Appointment}
                     alt="Appointment"
                   />

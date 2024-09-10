@@ -14,6 +14,9 @@ import EditProfile from '../components/EditProfile'
 import PersonalInfo from '../components/PersonalInfo';
 import Account from '../components/Account';
 import AccountManagement from '../components/AccountManagement';
+import Help from '../components/Help';
+import PrivacyPolicy from '../components/PrivacyPolicy';
+import AboutUs from '../components/AboutUs';
 
 const router = () => (
   <Router>
@@ -29,6 +32,11 @@ const router = () => (
           <Route path="gestion" element={<AccountManagement />} />
 
         </Route>
+        <Route path="ayuda" element={<Help />} />
+        <Route path="politicas-de-privacidad" element={<PrivacyPolicy />} />
+        <Route path="nosotros" element={<AboutUs />} />
+
+
        
 
         <Route path="search/" element={<SearchResults />} />

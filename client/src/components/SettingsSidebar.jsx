@@ -7,12 +7,10 @@ const sections = [
   { name: 'Informacion Personal', icon: <BookText />, path: 'personal' },
   { name: 'Gestion de Cuentas', icon: <Wrench />, path: 'gestion' },
   { name: 'Actualizacion por Email', icon: <Mail />, path: '/email-updates' },
-  { name: 'Privacidad', icon: <Lock />, path: '/privacy' },
-  { name: 'Social Media', icon: <Hash />, path: '/social-media' },
+  { name: 'Privacidad', icon: <Lock />, path: '/privacidad' },
   { name: 'Intereses', icon: <Heart />, path: '/interests' },
   { name: 'Notifications', icon: <Bell />, path: '/notifications' },
-  { name: 'Metodos de Pago', icon: <CreditCard />, path: '/payment-methods' },
-  { name: 'Ayuda', icon: <CircleHelp />, path: '/help' },
+  { name: 'Ayuda', icon: <CircleHelp />, path: 'ayuda' },
 ];
 
 const SettingsSidebar = () => {
