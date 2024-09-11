@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import InputField from './InputField';
 import TextareaField from './TextareaField';
 import ToggleSwitch from './ToggleSwitch';
@@ -9,6 +10,12 @@ const EditProfile = () => {
   const [bio, setBio] = useState('');
   const [showInterests, setShowInterests] = useState(true);
  
+  const {user} = useAuth();
+console.log('from Edit', user);
+
+  if(!user){
+    return <div>Cargando...</div>;
+  }
 
   return (
   

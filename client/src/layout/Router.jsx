@@ -25,20 +25,14 @@ const router = () => (
         <Route path="/" element={<Home />} />
         <Route path="sign-in" element={<Login />} />
         <Route path="sign-up" element={<SignUp />} />
-
-        <Route path="cuenta" element={<Account />}>
-          <Route path="editar-perfil" element={<EditProfile />} />
-          <Route path="personal" element={<PersonalInfo />} />
-          <Route path="gestion" element={<AccountManagement />} />
-
+        <Route path="cuenta" element={<PrivateRoute element={<Account />} />}>
+          <Route path="editar-perfil" element={<PrivateRoute element={<EditProfile />} />} />
+          <Route path="personal" element={<PrivateRoute element={<PersonalInfo />} />} />
+          <Route path="gestion" element={<PrivateRoute element={<AccountManagement />} />} />
         </Route>
         <Route path="ayuda" element={<Help />} />
         <Route path="politicas-de-privacidad" element={<PrivacyPolicy />} />
         <Route path="nosotros" element={<AboutUs />} />
-
-
-       
-
         <Route path="search/" element={<SearchResults />} />
         <Route path="events/:id" element={<EventDetails />} />
         <Route path="profile" element={<PrivateRoute element={<Profile />} />} />
