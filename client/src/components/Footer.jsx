@@ -12,9 +12,9 @@ const Footer = () => {
         </div>
         <div className="flex space-x-4 ">
           <a href="/" className="text-sm text-center hover:underline">Inicio</a>
-          <a href="#" className="text-sm text-center hover:underline">Sobre Nosotros</a>
+          <a href="nosotros" className="text-sm text-center hover:underline">Sobre Nosotros</a>
           <a href="#" className="text-sm text-center hover:underline">Contacto</a>
-          <a href="#" className="text-sm text-center hover:underline">Política de Privacidad</a>
+          <a href="politicas-de-privacidad" className="text-sm text-center hover:underline">Política de Privacidad</a>
         </div>
         <ul className='relative flex justify-center m-5 gap-5'>
           <li className='socialIcons-Item'>
