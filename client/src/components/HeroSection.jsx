@@ -1,5 +1,5 @@
 import React from "react";
-import heroImg from "../assets/images/HeroSection3.png";
+import heroImg from "../assets/images/HeroSection3.webp";
 import { Link } from "react-router-dom";
 
 const HeroSection = () => {
@@ -10,7 +10,7 @@ const HeroSection = () => {
       <div className="flex items-center justify-center h-full">
         <div className="flex flex-col lg:flex-row items-center justify-between w-full max-w-7xl sm:my-5 px-4">
           <div className="relative z-10 p-4 rounded-lg text-center lg:text-left w-full lg:w-2/3 mx-auto">
-            <h3 className="text-4xl md:text-6xl lg:text-5xl font-extrabold tracking-normal mb-4 text-[#212121]/90">
+            <h3 className="text-3xl md:text-6xl lg:text-[48px] font-bold tracking-normal mb-4 text-[#212121]/90">
               La plataforma de las personas: {" "}
               <h2 className="text-primaryHover">donde las actividades se</h2>
               <h2>convierten en experiencias</h2>
@@ -22,7 +22,7 @@ const HeroSection = () => {
             </p>
             <div className="flex justify-center lg:justify-start">
               <div className="flex items-center mt-4">
-                <Link to="/sign-up" className="bg-Button text-white font-medium px-3.5 py-3.5 rounded-lg hover:bg-ButtonHover duration-300 shadow-md">
+                <Link to="/?sign-in=true" className="bg-Button text-white font-medium px-3.5 py-3.5 rounded-lg hover:bg-ButtonHover duration-300 shadow-md">
                   Quiero ser parte de Appointment
                 </Link>
               </div>

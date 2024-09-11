@@ -1,79 +1,103 @@
-import { createContext, useContext, useState} from "react";
-// import { supabase } from "../supabase/client";
+import { createContext, useContext, useState, useEffect} from "react";
+// import jwt from "jsonwebtoken";
+import axios from "axios";
+// import { supabase } from "../supabase/supabase.config";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetchUserProfile(token);
+    } else {
+      setLoading(false);
+    }
+  }, []);
 
   const login = async (credentials) => {
     setLoading(true);
     setError(null);
-
     try {
-      const response = await fetch("http://localhost:5000/auth/login", {
-        method: 'POST',
+      const response = await axios.post("http://localhost:5000/auth/login", credentials, {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(credentials),
-        credentials: 'include',
       });
 
-      if (response.ok) {
-        await fetchUserProfile();
+      if (response.status === 200) {
+        const token = response.data.token;
+        localStorage.setItem("token", token);
+        console.log('Token almacenado:', token);
+        await fetchUserProfile(token);
+        setIsAuthenticated(true);
       } else {
-        const errorText = await response.json();
-        setError(errorText.message);
-        console.error('Error de inicio de sesión:', errorText);
+        setError(response.data.message || "Error desconocido");
+        console.error("Error de inicio de sesión:", response.data);
       }
     } catch (error) {
-      console.error('Error de inicio de sesión:', error);
-      setError('Error de inicio de sesión. Por favor, inténtalo de nuevo.');
+      console.error("Error de inicio de sesión:", error);
+      setError("Error de inicio de sesión. Por favor, inténtalo de nuevo.");
     } finally {
       setLoading(false);
     }
   };
+  
+  const fetchUserProfile = async (token) => {
+    console.log('Fetching user profile with token:', token);
+    try {
+      const response = await axios.get("http://localhost:5000/auth/profile", {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+  
+      if (response.status === 200) {
+        const userData = response.data;
+        console.log("User data:", userData);
+        setUser(userData);
+        localStorage.setItem("user", JSON.stringify(userData));
+        setIsAuthenticated(true);
+      } else {
+        setError(response.data.message || "Error desconocido");
+        setIsAuthenticated(false);
+        localStorage.removeItem('token');
+      }
+    } catch (error) {
+      console.error("Error al cargar el usuario:", error);
+      setError("No se pudo cargar el usuario.");
+      setIsAuthenticated(false);
+      localStorage.removeItem('token');
+    } finally {
+      setLoading(false); // Marca la carga como completa al final
+    }
+  };
+
 
   const logout = async () => {
     try {
-      await fetch("http://localhost:5000/auth/logout", {
-        method: 'POST',
-        credentials: 'include',
-      });
+      await axios.post("http://localhost:5000/auth/logout", {}, { withCredentials: true });
       setUser(null);
+      setIsAuthenticated(false);
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     } catch (error) {
-      console.error('Error al cerrar sesión:', error);
-    }
-  };
-
-  const fetchUserProfile = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/auth/profile", {
-        method: 'GET',
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData)); // Guarda los datos del usuario en localStorage
-      } else {
-        const errorText = await response.json();
-        setError(errorText.message);
-        console.error('No se pudo cargar el usuario, respuesta:', errorText);
-      }
-    } catch (error) {
-      console.error('Error al cargar el usuario:', error);
-      setError('No se pudo cargar el usuario.');
+      console.error("Error al cerrar sesión:", error);
     }
   };
 
 
+  
   return (
-    <AuthContext.Provider value={{ user, login,logout, loading, error }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, loading, isAuthenticated, error }}
+    >
       {children}
     </AuthContext.Provider>
   );

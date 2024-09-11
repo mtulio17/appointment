@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url';
 //rutas
 import authRoutes from "./routes/auth.routes.js";
 import eventRoutes from "./routes/event.routes.js";
+import categoryRoutes from "./routes/category.routes.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -24,6 +25,7 @@ const app = express();
 app.use(cors({
   origin: 'http://localhost:5173',
   credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 app.use(session({
@@ -53,6 +55,7 @@ connectDB();
 // rutas
 app.use("/auth", authRoutes);
 app.use("/api", eventRoutes);
+app.use("/api", categoryRoutes);
 
 // archivos estáticos
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));

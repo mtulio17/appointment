@@ -1,13 +1,6 @@
 import { Router } from "express";
-import {
-  register,
-  login,
-  logout,
-  profile,
-} from "../controllers/auth.controller.js";
+import { register, login, logout, profile} from "../controllers/auth.controller.js";
 import { authRequired } from "../middleware/validateToken.js";
-// import { createAccessToken } from "../libs/jwt.js";
-// import passport from "passport";
 
 const router = Router();
 

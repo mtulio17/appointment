@@ -12,10 +12,12 @@ const userSchema = new mongoose.Schema({
     trim: true,
     unique: true,
   },
-  password: {
-    type: String,
+  clerkId: {
+    type: String,  // almacena el ID del usuario en Clerk
     required: true,
+    unique: true,
   },
+  events: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }],
 }, {
   timestamps: true,
 });

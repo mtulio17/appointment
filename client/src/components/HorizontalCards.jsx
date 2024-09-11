@@ -5,7 +5,7 @@ import { LuMapPin, LuCalendarClock, LuHeart } from "react-icons/lu";
 
 
 const HorizontalCards = ({ event }) => {
-    console.log(event.id);
+    // console.log(event.id);
     
     return (
         <section className="">

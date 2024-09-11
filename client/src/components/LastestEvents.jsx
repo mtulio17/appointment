@@ -1,40 +1,57 @@
-import { useEffect} from 'react';
-import { useEvent } from "../context/EventContext";
+import { useEffect } from "react";
+import { getEvents } from "../api/apievents";
+import useFetch from "../hooks/use-fetch";
+import { useSession } from "@clerk/clerk-react";
 import VerticalCards from './VerticalCards';
-
+// import { BarLoader } from "react-spinners";
 
 const LastestEvents = () => {
-  const { events, loading, fetchEvents } = useEvent();
+  const { isLoaded } = useSession();
+  const {
+    fn: fnEvents,
+    data: events,
+    // isLoading: loadingEvents,
+    error: fetchError,
+  } = useFetch(getEvents, {});
+
+  console.log(events);
 
   useEffect(() => {
-    fetchEvents();
-  }, []);
+    if (isLoaded) fnEvents();
+  }, [isLoaded]);
+  
+  // if (loadingEvents) {
+  //     return <BarLoader className="mt-4" width={"100%"} color="#2C2C2C" />;
+  // }
 
-  if (loading) {
-    return <p className='flex justify-center items-center'>Cargando eventos ...</p>;
+  if (fetchError) {
+    return <div className="flex justify-center text-center">Error cargando eventos: {fetchError.message}</div>;
   }
 
   return (
-    <section className="py-4 bg-transparent">
+    <section className="py-10 bg-transparent">
     <div className="container mx-auto px-4 max-w-7xl">
-      <h2 className="flex justify-start text-start text-[#2C2C2C] text-2xl font-bold mb-2">
-        Últimos Eventos cerca de tu zona:
-      </h2>
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-[#2C2C2C] text-2xl font-bold">
+          Próximos Eventos
+        </h2>
+        <a
+          href="#"
+          className="text-sm text-Button font-medium hover:underline px-6 py-3"
+        >
+         Ver todos los eventos
+        </a>
+      </div>
       <div className="mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          {events.slice(0, 16).map((event) => (
+          {events && events.slice(0, 12).map((event) => (
             <VerticalCards key={event._id} event={event} />
           ))}
-        </div>
-        <div className="text-center mt-8">
-          <a href="#" className="bg-link text-white px-6 py-3 rounded hover:bg-linkHover">
-            Ver Más Eventos
-          </a>
         </div>
       </div>
     </div>
   </section>
-  )
-}
+  );
+};
 
-export default LastestEvents
+export default LastestEvents;

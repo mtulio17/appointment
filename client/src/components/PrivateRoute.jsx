@@ -1,11 +1,19 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useUser } from "@clerk/clerk-react";
+import { Navigate } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
 const PrivateRoute = ({ element }) => {
-    const { user } = useAuth();
-  
-    return user ? element : <Navigate to="/sign-in" />;
-  };
-  
-  export default PrivateRoute;
+  const { isSignedIn, isLoaded } = useUser();
+
+  if (!isLoaded) {
+    return <div>Autenticando...</div>;
+  }
+
+  if (isLoaded && !isSignedIn && isSignedIn !== undefined) {
+    return <Navigate to="/?sign-in=true" />;
+  }
+
+  return element;
+};
+
+export default PrivateRoute;

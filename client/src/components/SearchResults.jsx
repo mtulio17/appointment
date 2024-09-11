@@ -1,39 +1,47 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import axios from 'axios';
+import { getEvents } from '../api/apievents';
+import { BarLoader } from "react-spinners";
+import { useSearchParams } from 'react-router-dom';
+import VerticalCards from './VerticalCards';
 
 const SearchResults = () => {
-  const [events, setEvents] = useState([]);
-  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const searchQuery = searchParams.get("query");
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await axios.get(`/api/events/search${location.search}`);
-        setEvents(response.data);
-      } catch (error) {
-        console.error('Error fetching search results:', error);
-      }
+    const fetchResults = async () => {
+      setIsLoading(true); // Mostrar el loader mientras se obtienen los datos
+      const data = await getEvents(null, { searchQuery });
+      setResults(data);
+      setIsLoading(false); // Ocultar el loader una vez se obtienen los datos
     };
 
-    fetchEvents();
-  }, [location.search]);
+    if (searchQuery) {
+      fetchResults();
+    } else {
+      setIsLoading(false); // En caso de que no haya `searchQuery`, también ocultamos el loader
+    }
+  }, [searchQuery]);
+
+  if (isLoading) {
+    return <BarLoader className="mt-[74px]" width={"100%"} color="#2C2C2C" />;
+  }
 
   return (
-    <div>
-      <h2>Resultados de la búsqueda</h2>
-      {events.length > 0 ? (
-        <ul>
-          {events.map(event => (
-            <li key={event._id}>
-              <h3>{event.activityName}</h3>
-              <p>{event.description}</p>
-              <p>{event.city}, {event.state}, {event.country}</p>
-            </li>
+    <div className="container mx-auto py-20 mt-8 p-16">
+      <h2 className="text-2xl font-medium mb-4">Resultado de tú busqueda relacionado con: {" "}
+        <span className='font-extrabold'>{searchQuery}</span>
+      </h2>
+      {results.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          {results && results.slice(0, 8).map((event) => (
+            <VerticalCards key={event._id} event={event} />
           ))}
-        </ul>
+          </div>
       ) : (
-        <p>No se encontraron eventos.</p>
+        <p className='flex justify-center py-36 text-center'>No se encontraron eventos con ese resultado.</p>
       )}
     </div>
   );

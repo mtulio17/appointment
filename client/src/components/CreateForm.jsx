@@ -1,15 +1,19 @@
 // components/CreateForm.jsx
-import { useState } from "react";
-import {useForm} from "react-hook-form";
-import {yupResolver} from "@hookform/resolvers/yup";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { useEvent } from "../context/EventContext";
+import { useUser } from "@clerk/clerk-react";
+import { createEvent } from "../api/apievents";
+import useFetch from "../hooks/use-fetch";
+import supabaseClient from "../utils/supabase";
 
 //esquema de validación con Yup
 const schema = yup.object().shape({
   activityName: yup.string().required("El nombre de la actividad es obligatorio"),
   description: yup.string().required("La descripción es obligatoria"),
+  category: yup.string().required("La categoría es obligatoria"),
   price: yup.number().min(0, "El precio no puede ser negativo").required("El precio es obligatorio"),
   address: yup.string().required("La dirección es obligatoria"),
   city: yup.string().required("La ciudad es obligatoria"),
@@ -24,16 +28,37 @@ const schema = yup.object().shape({
   endTime: yup.string().required("La hora de finalización es obligatoria"),
 });
 
-
 const CreateForm = () => {
   const [image, setImage] = useState(null);
-  const { createEvent } = useEvent();
+  const [categories, setCategories] = useState([]);
+  const { user } = useUser();
   const navigate = useNavigate();
 
-  // Utilizar useForm con validación
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  // Hook para manejar la creación del evento
+  const { fn: createEventFn, error, isLoading: loadingForm } = useFetch(createEvent);
+
+  const { register, handleSubmit, formState: { errors }} = useForm({
     resolver: yupResolver(schema),
   });
+
+  console.log(user.id)
+
+  useEffect(() => {
+    // Obtener categorías desde Supabase
+    const fetchCategories = async () => {
+      const { data, error } = await supabaseClient
+        .from('categories')
+        .select('*');
+        
+      if (error) {
+        console.error('Error fetching categories:', error);
+      } else {
+        setCategories(data);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -41,160 +66,242 @@ const CreateForm = () => {
   };
 
   const onSubmit = async (data) => {
-    const formData = new FormData();
-    formData.append('activityName', data.activityName);
-    formData.append('description', data.description);
-    formData.append('price', data.price);
-    formData.append('address', data.address);
-    formData.append('city', data.city);
-    formData.append('state', data.state);
-    formData.append('postalCode', data.postalCode);
-    formData.append('country', data.country);
-    formData.append('gender', data.gender);
-    formData.append('age', data.age);
-    formData.append('startDate', data.startDate);
-    formData.append('startTime', data.startTime);
-    formData.append('endDate', data.endDate);
-    formData.append('endTime', data.endTime);
+    let imageUrl = '';
+
     if (image) {
-      formData.append('image', image);
+      // Subir la imagen a Supabase Storage
+      const { data: imageData, error: imageError } = await supabaseClient.storage
+        .from('event-images')
+        .upload(`${user.id}/${image.name}`, image);
+
+      if (imageError) {
+        console.error('Error al subir la imagen:', imageError);
+        return;
+      }
+
+      // Obtener la URL pública de la imagen
+      const { publicURL, error: urlError } = supabaseClient
+        .storage
+        .from('event-images')
+        .getPublicUrl(imageData.path);
+
+      if (urlError) {
+        console.error('Error obteniendo la URL pública de la imagen:', urlError);
+        return;
+      }
+
+      imageUrl = publicURL; // Guardar la URL pública
     }
-  
-    const newEvent = await createEvent(formData);
-    if (newEvent) {
-      navigate("/suggested-events"); // redirigir
+
+    // Preparar los datos del evento
+    const eventData = {
+      activityName: data.activityName,
+      description: data.description,
+      category: data.category,
+      price: data.price,
+      address: data.address,
+      city: data.city,
+      state: data.state,
+      postalCode: data.postalCode,
+      country: data.country,
+      gender: data.gender,
+      age: data.age,
+      startDate: data.startDate,
+      startTime: data.startTime,
+      endDate: data.endDate,
+      endTime: data.endTime,
+      image: imageUrl, // Guardar la URL de la imagen
+      host_id: user.id, // ID del usuario actual como host
+    };
+
+    await createEventFn(eventData); // Llamar a la función de creación del evento
+
+    if (!error) {
+      navigate('/my-created-events'); // Navegar a otra página después de la creación
     } else {
-      console.error("Error al crear el evento");
+      console.error('Error al crear el evento:', error);
     }
   };
-  
+
+  const handleCancel = () => {
+    navigate('/');
+  };
+
+  if (loadingForm) {
+    return <div>Creando evento...</div>;
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-4xl p-6 bg-white">
-    <div className="pb-12 mt-20">
-      <h2 className="text-Button font-semibold leading-6 text-lg text-center my-10">Crear evento</h2>
-      <div className="max-w-2xl gap-y-8 mx-auto border-b border-gray-900/10">
+    <form onSubmit={handleSubmit(onSubmit)} className="max-w-5xl bg-white mx-auto p-28 rounded-lg shadow">
+    <h2 className="text-2xl font-semibold text-start mb-8">Crear un Evento</h2>
+  
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label htmlFor="activityName" className="block text-sm font-medium text-gray-700">Nombre de la Actividad</label>
         <input
-          placeholder="Nombre de la actividad"
-          {...register("activityName")}
-          className={`placeholder:text-sm ${errors.activityName ? 'border-red-500' : ''}`}
+          id="activityName"
+          placeholder="Yoga en el parque"
+          {...register("activityName", { required: "Activity Name es obligatorio" })}
+          className={`mt-1 block w-full px-3 py-2 border ${errors.activityName ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
         />
-        {errors.activityName && <p className="text-red-500 text-sm">{errors.activityName.message}</p>}
-          <div>
-            <label>Imagen</label>
-            <input type="file" onChange={handleImageChange} />
-          </div>
-        <div className="col-span-6 sm:col-span-4">
-          <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
-            Descripción de la actividad
-          </label>
-          <div className="mt-2">
-            <textarea
-              id="description"
-              {...register("description")}
-              rows={3}
-              className={`block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.description ? 'border-red-500' : ''}`}
-            />
-            {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
-          </div>
-        </div>
+        {errors.activityName && <p className="text-red-500 text-sm mt-1">{errors.activityName.message}</p>}
+      </div>
 
+      <div>
+        <label htmlFor="city" className="block text-sm font-medium text-gray-700">Ciudad</label>
         <input
-          placeholder="Precio"
+          id="city"
+          placeholder="Buenos Aires, Capital"
+          {...register("city", { required: "City is required" })}
+          className={`mt-1 block w-full px-3 py-2 border ${errors.city ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+        />
+        {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city.message}</p>}
+      </div>
+
+      <div>
+        <label htmlFor="postalCode" className="block text-sm font-medium text-gray-700">Código Postal</label>
+        <input
+          id="postalCode"
+          placeholder="X5000"
+          {...register("postalCode", { required: "Postal Code is required" })}
+          className={`mt-1 block w-full px-3 py-2 border ${errors.postalCode ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+        />
+        {errors.postalCode && <p className="text-red-500 text-sm mt-1">{errors.postalCode.message}</p>}
+      </div>
+
+      <div>
+        <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Género</label>
+        <select
+          id="gender"
+          {...register("gender", { required: "Género es obligatorio." })}
+          className={`mt-1 block w-full px-3 py-2 border ${errors.gender ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+        >
+          <option value="">Seleccionar género</option>
+          <option value="Male">Sin preferencia</option>
+          <option value="Female">Mujer</option>
+          <option value="Female">Hombre</option>
+          <option value="Female">Otro</option>
+        </select>
+        {errors.gender && <p className="text-red-500 text-sm mt-1">{errors.gender.message}</p>}
+      </div>
+
+      <div>
+        <label htmlFor="age" className="block text-sm font-medium text-gray-700">Edad</label>
+        <select
+          id="age"
+          {...register("age", { required: "Edad es obligatorio." })}
+          className={`mt-1 block w-full px-3 py-2 border ${errors.age ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+        >
+          <option value="">Seleccionar Rango de Edad</option>
+          <option value="18-25">18-25</option>
+          <option value="25-35">25-35</option>
+          <option value="35-50">35-50</option>
+          <option value="50-70">50-70</option>
+          {/* Age options here */}
+        </select>
+        {errors.age && <p className="text-red-500 text-sm mt-1">{errors.age.message}</p>}
+      </div>
+
+      <div>
+        <label htmlFor="category" className="block text-sm font-medium text-gray-700">Categoría</label>
+        <select id="category" {...register("category")} className={`mt-1 block w-full px-3 py-2 border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}>
+          <option value="">Seleccionar Categoría</option>
+          {categories.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {cat.nombre}
+            </option>
+          ))}
+        </select>
+        {errors.category && <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>}
+      </div>
+
+      <div>
+        <label htmlFor="price" className="block text-sm font-medium text-gray-700">Precio</label>
+        <input
+          id="price"
           type="number"
-          {...register("price")}
-          className={`placeholder:text-sm ${errors.price ? 'border-red-500' : ''}`}
+          placeholder="0"
+          {...register("price", { required: "Precio es obligatorio." })}
+          className={`mt-1 block w-full px-3 py-2 border ${errors.price ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
         />
-        {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
+        {errors.price && <p className="text-red-500 text-sm mt-1">{errors.price.message}</p>}
+      </div>
 
-        <input
-          placeholder="Siempre Viva 123"
-          {...register("address")}
-          className={`placeholder:text-sm ${errors.address ? 'border-red-500' : ''}`}
-        />
-        {errors.address && <p className="text-red-500 text-sm">{errors.address.message}</p>}
-
-        <input
-          placeholder="San Miguel de Tucumán"
-          {...register("city")}
-          className={`placeholder:text-sm ${errors.city ? 'border-red-500' : ''}`}
-        />
-        {errors.city && <p className="text-red-500 text-sm">{errors.city.message}</p>}
-
-        <input
-          placeholder="Tucumán"
-          {...register("state")}
-          className={`placeholder:text-sm ${errors.state ? 'border-red-500' : ''}`}
-        />
-        {errors.state && <p className="text-red-500 text-sm">{errors.state.message}</p>}
-
-        <input
-          placeholder="CP XXXX"
-          {...register("postalCode")}
-          className={`placeholder:text-sm ${errors.postalCode ? 'border-red-500' : ''}`}
-        />
-        {errors.postalCode && <p className="text-red-500 text-sm">{errors.postalCode.message}</p>}
-
-        <select {...register("country")} className={`placeholder:text-sm ${errors.country ? 'border-red-500' : ''}`}>
-          <option value="">Seleccione un país</option>
+      <div>
+        <label htmlFor="country" className="block text-sm font-medium text-gray-700">País</label>
+        <select
+          id="country"
+          {...register("country", { required: "Género es obligatorio." })}
+          className={`mt-1 block w-full px-3 py-2 border ${errors.country ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+        >
+          <option value="">Seleccionar un País</option>
           <option value="Argentina">Argentina</option>
+          <option value="México">México</option>
           <option value="Australia">Australia</option>
-          <option value="Mexico">México</option>
         </select>
-        {errors.country && <p className="text-red-500 text-sm">{errors.country.message}</p>}
+        {errors.country && <p className="text-red-500 text-sm mt-1">{errors.country.message}</p>}
+      </div>
 
-        <select {...register("gender")} className={`placeholder:text-sm ${errors.gender ? 'border-red-500' : ''}`}>
-          <option value="">Seleccione un género</option>
-          <option value="No preferencia">No preferencia</option>
-          <option value="Hombre">Hombre</option>
-          <option value="Mujer">Mujer</option>
-        </select>
-        {errors.gender && <p className="text-red-500 text-sm">{errors.gender.message}</p>}
-
-        <input
-          placeholder="Edades"
-          {...register("age")}
-          className={`placeholder:text-sm ${errors.age ? 'border-red-500' : ''}`}
+      <div className="col-span-2">
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700">Descripción</label>
+        <textarea
+          id="description"
+          placeholder="Breve descripción de tu evento.."
+          {...register("description", { required: "Description is required" })}
+          rows={3}
+          className={`mt-1 block w-full px-3 py-2 border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
         />
-        {errors.age && <p className="text-red-500 text-sm">{errors.age.message}</p>}
+        {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
+      </div>
 
+      <div>
+        <label htmlFor="image" className="block text-sm font-medium text-gray-700">Imagen del Evento</label>
+        <input id="image" type="file" onChange={handleImageChange} className="mt-1 block w-full text-gray-900 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+      </div>
+
+      <div className="col-span-2">
+        <label htmlFor="address" className="block text-sm font-medium text-gray-700">Dirección - Calle</label>
         <input
+          id="address"
+          placeholder="123 Main St"
+          {...register("address", { required: "Address is required" })}
+          className={`mt-1 block w-full px-3 py-2 border ${errors.address ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+        />
+        {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
+      </div>
+
+      <div>
+        <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
+        <input
+          id="startDate"
           type="date"
-          {...register("startDate")}
-          className={`placeholder:text-sm ${errors.startDate ? 'border-red-500' : ''}`}
+          {...register("startDate", { required: "Start Date is required" })}
+          className={`mt-1 block w-full px-3 py-2 border ${errors.startDate ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
         />
-        {errors.startDate && <p className="text-red-500 text-sm">{errors.startDate.message}</p>}
+        {errors.startDate && <p className="text-red-500 text-sm mt-1">{errors.startDate.message}</p>}
+      </div>
 
+      <div>
+        <label htmlFor="startTime" className="block text-sm font-medium text-gray-700">Hora de Inicio</label>
         <input
+          id="startTime"
           type="time"
-          {...register("startTime")}
-          className={`placeholder:text-sm ${errors.startTime ? 'border-red-500' : ''}`}
+          {...register("startTime", { required: "Start Time is required" })}
+          className={`mt-1 block w-full px-3 py-2 border ${errors.startTime ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
         />
-        {errors.startTime && <p className="text-red-500 text-sm">{errors.startTime.message}</p>}
-
-        <input
-          type="date"
-          {...register("endDate")}
-          className={`placeholder:text-sm ${errors.endDate ? 'border-red-500' : ''}`}
-        />
-        {errors.endDate && <p className="text-red-500 text-sm">{errors.endDate.message}</p>}
-
-        <input
-          type="time"
-          {...register("endTime")}
-          className={`placeholder:text-sm ${errors.endTime ? 'border-red-500' : ''}`}
-        />
-        {errors.endTime && <p className="text-red-500 text-sm">{errors.endTime.message}</p>}
+        {errors.startTime && <p className="text-red-500 text-sm mt-1">{errors.startTime.message}</p>}
       </div>
     </div>
-    <div className="mt-6 flex items-center justify-center gap-x-6">
-      <button type="button" className="text-sm font-semibold leading-6 text-gray-900">
+
+    <div className="mt-12 flex justify-start text-start">
+      <button type="submit" className="w-full md:w-auto bg-blue-600 text-white font-medium py-2 px-4 rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        Crear Evento
+      </button>
+      <button type="button" onClick={handleCancel} className="w-full md:w-auto bg-blue-600 text-white font-medium py-2 px-4 rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
         Cancelar
       </button>
-      <button type="submit" className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-        Guardar
-        </button>
-      </div>
-    </form>
+    </div>
+  </form>
   );
 };
 

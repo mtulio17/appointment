@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {CalendarSearch, Plus} from 'lucide-react'
 const HowItWorks = () => {
     return (
@@ -30,7 +31,7 @@ const HowItWorks = () => {
                 <p className="text-gray-700 mb-5 font-medium text-base">
                   Crea tu primer evento y sé el anfitrión de tu propio evento gratis en minutos.
                 </p>
-                <a href="#" className="text-Button hover:underline font-semibold">Crear evento</a>
+                <a href="/post-event" className="text-Button hover:underline font-semibold">Crear evento</a>
               </div>
             </div>
           </div>
