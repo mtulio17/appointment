@@ -7,6 +7,8 @@ import EventDetails from '../components/EventDetails';
 import SearchResults from '../components/SearchResults';
 import EventsCreated from '../components/EventsCreated';
 import SavedEvents from '../pages/saved-events';
+import EventsPage from '../pages/events-page';
+import CategoryResult from '../pages/category-result';
 
 const AppRouter = () => (
   <Router>
@@ -15,6 +17,8 @@ const AppRouter = () => (
         <Route path="/" element={<Home />} />
         <Route path="search/" element={<SearchResults />} />
         <Route path="/event/:id" element={<EventDetails />} />
+        <Route path="/events/category/:categoryId" element={<CategoryResult />} />
+        <Route path="/all-events" element={<EventsPage />} />
         {/* Rutas protegidas */}
         <Route path="/post-event" element={<PrivateRoute element={<PostEvent />} />} />
         <Route path="/my-created-events" element={<PrivateRoute element={<EventsCreated />} />} />

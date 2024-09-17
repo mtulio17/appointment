@@ -37,12 +37,12 @@ export default {
         // text: '#212121',
         // hover: '#388E3C',
         Primary: '#212121',
-Button: '#1E488F',
-ButtonHover: '#4F52DC',
-SectionBg: '#F1F3FF',
-TextColor: '#2C3E50',
-H1Color: '#2C3E50',
-H2Color: '#3949AB',
+        Button: '#003366',
+        ButtonHover: '#66CCFF',
+        SectionBg: '#F1F3FF',
+        TextColor: '#2C3E50',
+        H1Color: '#2C3E50',
+        H2Color: '#3949AB',
 
 FooterBg: '#4F52DC',
 

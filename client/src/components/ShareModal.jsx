@@ -19,7 +19,7 @@ const ShareModal = ({ eventUrl, showModal, closeModal }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
+    <div className="fixed inset-0 flex items-center justify-center z-20">
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="bg-white rounded-lg shadow-lg p-6 z-10 max-w-md w-full">
         <div className="flex justify-between items-center mb-4">

@@ -1,21 +1,28 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from "vite";
+import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  plugins: [react()],
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-        secure: false,
+  plugins: [
+    react(),
+    ViteImageOptimizer({
+      includePublic: true,
+      jpg: {
+        quality: 80,
       },
-      '/uploads':{
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/uploads/, '/uploads'),
-      }
-    },
-  },
+      webp: {
+        quality: 80,
+      },
+      png: {
+        quality: [0.5, 0.7],
+      },
+      jpeg: {
+        quality: 80,
+      },
+      svg: {
+        removeViewBox: true,
+        removeDimensions: true,
+      },
+    }),
+  ],
 });

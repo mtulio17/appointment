@@ -1,125 +1,199 @@
 /* eslint-disable no-unused-vars */
 import { useForm, Controller } from "react-hook-form";
-import { useEffect} from "react";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
-// import { BarLoader } from "react-spinners";
-import { createEvent, getCategories} from "../api/apievents";
+import supabase from "../utils/supabase";
+import { createEvent, getCategories } from "../api/apievents";
 import ImageUpload from "../ui/ImageUpload";
 import useFetch from "../hooks/use-fetch";
 import { useUser } from "@clerk/clerk-react";
 
 const eventSchema = yup.object().shape({
-    image: yup.mixed().required("Image is required"),
-    name: yup.string().required("Event name is required"),
-    gender: yup.string().required("Gender is required"),
-    description: yup.string().required("Description is required"),
-    age: yup.string().required("Age is required"),
-    category_id: yup.string().required("Category is required"),
-    price: yup.number().required("Price is required"),
-    address: yup.string().required("Address is required"),
-    country: yup.string().required("Country is required"),
-    city: yup.string().required("City is required"),
-    start_date: yup.date().required("Start date is required"),
-    start_time: yup.string().required("Start time is required"),
-  });
-  
-  const PostEvent = () => {
-    const {user} = useUser();
-    const navigate = useNavigate();
-    const { register, handleSubmit, control, setValue, formState: { errors } } = useForm({
-      resolver: yupResolver(eventSchema),
-    });
-  
-    const { data: categories, error: categoriesError, fn: fetchCategories } = useFetch(getCategories);
-    const { loading, error: createEventError, fn: createEventFn } = useFetch(createEvent);
+  image: yup.string().required("Image is required"),
+  name: yup.string().required("Event name is required"),
+  gender: yup.string().required("Gender is required"),
+  description: yup.string().required("Description is required"),
+  age: yup.number().integer().positive().required("Age is required"),
+  category_id: yup
+    .number()
+    .integer()
+    .positive()
+    .required("Category is required"),
+  price: yup.number().positive().required("Price is required"),
+  address: yup.string().required("Address is required"),
+  country: yup.string().required("Country is required"),
+  city: yup.string().required("City is required"),
+  start_date: yup.date().required("Start date is required"),
+  start_time: yup.string().required("Start time is required"),
+});
 
-    useEffect(() => {
-      fetchCategories();
-    }, [fetchCategories]);
-  
-    const onSubmit = async (data) => {
-        if (user) {
-          const eventData = {
-            ...data,
-            host_id: user.id // Aquí se asigna el ID del usuario autenticado al campo host_id
-          };
-          const result = await createEventFn(null, eventData);
-          if (result) navigate("/my-created-events");
+const PostEvent = () => {
+  const { user } = useUser();
+  const navigate = useNavigate();
+  const [imageURL, setImageURL] = useState("");
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(eventSchema) });
+
+  const { data: categories, error: categoriesError, fn: fetchCategories } = useFetch(getCategories);
+  const { loading, error: createEventError, fn: createEventFn } = useFetch(createEvent);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  const onSubmit = async (data) => {
+    if (user) {
+      // Primero sube la imagen y obtiene la URL
+      const imageFile = data.image[0];
+      const imageURL = await handleImageUpload(imageFile);
+
+      if (imageURL) {
+        // Luego crea el evento con la URL de la imagen
+        const eventData = {
+          ...data,
+          host_id: user.id,
+          image: imageURL,  // Asegúrate de que el campo para la imagen sea correcto
+        };
+        console.log("Datos del evento antes de enviar:", eventData);
+
+        const result = await createEventFn(null, eventData);
+        console.log("Resultado de createEventFn:", result);
+
+        if (result) {
+          navigate("/my-created-events");
         } else {
-          console.error("User not authenticated");
+          console.error("No se pudo crear el evento");
         }
-      };
-    const handleImageUpload = (url) => {
-      setValue("image", url);
-    };
-
-    if (loading) return <p>Loading...</p>;
-  
-    if (categoriesError) return <p>Error loading categories: {categoriesError.message}</p>;
-  
-    return (
-        <div>
-        <h1 className="container py-36 font-extrabold text-5xl sm:text-7xl text-center pb-8">
-          Crear un Evento
-        </h1>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 p-4 pb-0">
-          <Controller
-            name="image"
-            control={control}
-            render={({ field }) => (
-              <ImageUpload onUpload={handleImageUpload} />
-            )}
-          />
-          {errors.image && <p className="text-red-500">{errors.image.message}</p>}
-  
-          <input placeholder="Nombre del Evento" {...register("name")} />
-          {errors.name && <p className="text-red-500">{errors.name.message}</p>}
-  
-          <textarea placeholder="Descripción del Evento" {...register("description")} />
-          {errors.description && <p className="text-red-500">{errors.description.message}</p>}
-  
-          <input type="number" placeholder="Edad mínima" {...register("age")} />
-          {errors.age && <p className="text-red-500">{errors.age.message}</p>}
-  
-          <input type="text" placeholder="Género" {...register("gender")} />
-          {errors.gender && <p className="text-red-500">{errors.gender.message}</p>}
-  
-          <select {...register("category_id")} placeholder="Categoría">
-            <option value="">Selecciona una categoría</option>
-            {categories?.map(category => (
-              <option key={category.id} value={category.id}>{category.name}</option>
-            ))}
-          </select>
-          {errors.category_id && <p className="text-red-500">{errors.category_id.message}</p>}
-  
-          <input type="number" placeholder="Precio" {...register("price")} />
-          {errors.price && <p className="text-red-500">{errors.price.message}</p>}
-  
-          <input placeholder="Dirección" {...register("address")} />
-          {errors.address && <p className="text-red-500">{errors.address.message}</p>}
-  
-          <input placeholder="País" {...register("country")} />
-          {errors.country && <p className="text-red-500">{errors.country.message}</p>}
-  
-          <input placeholder="Ciudad" {...register("city")} />
-          {errors.city && <p className="text-red-500">{errors.city.message}</p>}
-  
-          <input type="date" placeholder="Fecha de Inicio" {...register("start_date")} />
-          {errors.start_date && <p className="text-red-500">{errors.start_date.message}</p>}
-  
-          <input type="time" placeholder="Hora de Inicio" {...register("start_time")} />
-          {errors.start_time && <p className="text-red-500">{errors.start_time.message}</p>}
-  
-          {createEventError && <p className="text-red-500">{createEventError.message}</p>}
-  
-          <button type="submit" className="mt-2 text-lg">
-            Crear Evento
-          </button>
-        </form>
-      </div>
-    );
+      } else {
+        console.error("No se pudo obtener la URL de la imagen");
+      }
+    } else {
+      console.error("User not authenticated");
+    }
   };
+
+  const handleImageUpload = async (file) => {
+    if (file) {
+      const fileName = `${Date.now()}_${file.name}`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("event-images")
+        .upload(fileName, file);
+
+      if (uploadError) {
+        console.error("Error uploading file:", uploadError);
+        return null;
+      }
+
+      const { publicURL, error: urlError } = supabase.storage
+        .from("event-images")
+        .getPublicUrl(fileName);
+
+      if (urlError) {
+        console.error("Error getting public URL:", urlError);
+        return null;
+      }
+
+      return publicURL;
+    }
+    return null;
+  };
+
+  if (loading) return <p>Loading...</p>;
+
+  if (categoriesError)
+    return <p>Error loading categories: {categoriesError.message}</p>;
+
+  return (
+    <div>
+      <h1 className="container py-28 font-extrabold lg:text-2xl text-center pb-8">
+        Crear un Evento
+      </h1>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 p-4 pb-0">
+         <ImageUpload onUpload={handleImageUpload} token={user?.token} />
+
+          {/* Mostrar errores para el campo de la imagen */}
+        {errors.image && <p className="text-red-500">{errors.image.message}</p>}
+        <input
+          {...register("name")}
+          placeholder="Nombre del evento o actividad"
+          className={`input ${errors.name ? "input-error" : ""}`}
+        />
+        <input
+          {...register("gender")}
+          placeholder="Genero"
+          className={`input ${errors.gender ? "input-error" : ""}`}
+        />
+        <textarea
+          {...register("description")}
+          placeholder="Descripción del evento o actividad"
+          className={`input ${errors.description ? "input-error" : ""}`}
+        />
+        <input
+          {...register("age")}
+          type="number"
+          placeholder="Edad minima"
+          className={`input ${errors.age ? "input-error" : ""}`}
+        />
+        <select
+          {...register("category_id")}
+          className={`input ${errors.category_id ? "input-error" : ""}`}
+        >
+          <option value="">Seleccionar Categoria</option>
+          {categories &&
+            categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+        </select>
+        <input
+          {...register("price")}
+          type="number"
+          placeholder="Precio por persona"
+          className={`input ${errors.price ? "input-error" : ""}`}
+        />
+        <input
+          {...register("address")}
+          placeholder="Dirección"
+          className={`input ${errors.address ? "input-error" : ""}`}
+        />
+        <input
+          {...register("city")}
+          placeholder="Ciudad"
+          className={`input ${errors.city ? "input-error" : ""}`}
+        />
+        <input
+          {...register("country")}
+          placeholder="Pais"
+          className={`input ${errors.country ? "input-error" : ""}`}
+        />
+        <input
+          {...register("start_date")}
+          type="date"
+          placeholder="Dia de inicio"
+          className={`input ${errors.start_date ? "input-error" : ""}`}
+        />
+        <input
+          {...register("start_time")}
+          type="time"
+          placeholder="Hora de inicio"
+          className={`input ${errors.start_time ? "input-error" : ""}`}
+        />
+        {createEventError && (
+          <p className="text-red-500">{createEventError.message}</p>
+        )}
+        <button type="submit" className="btn-primary mt-4" disabled={loading}>
+          Crear Evento
+        </button>
+      </form>
+    </div>
+  );
+};
 
 export default PostEvent;

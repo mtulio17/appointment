@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import InputField from './InputField';
 import TextareaField from './TextareaField';
 import ToggleSwitch from './ToggleSwitch';
-import SettingsSidebar from './SettingsSidebar';
 
 const EditProfile = () => {
   const [name, setName] = useState('Tulio Moya');
-  const [location, setLocation] = useState('Adelaide, Australia');
+  const [location, setLocation] = useState('Sydney, Australia');
   const [bio, setBio] = useState('');
-  const [showMeetupGroups, setShowMeetupGroups] = useState(true);
   const [showInterests, setShowInterests] = useState(true);
-  const [selectedSection, setSelectedSection] = useState('Edit Profile');
+ 
+  const {user} = useAuth();
+console.log('from Edit', user);
+
+  if(!user){
+    return <div>Cargando...</div>;
+  }
 
   return (
-    <div className="flex mt-20">
-      <SettingsSidebar
-        selectedSection={selectedSection}
-        onSelect={setSelectedSection}
-      />
-      <div className="w-3/4 md:w-1/2 bg-white p-8">
+  
+      <div className="max-w-2xl p-6 bg-white rounded-lg shadow mt-20">
         <h1 className="text-2xl font-bold mb-8">Editar Perfil</h1>
         <div className="flex items-center mb-6">
           <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-xl text-gray-500 mr-4">
@@ -51,18 +52,12 @@ const EditProfile = () => {
           value={bio}
           onChange={(e) => setBio(e.target.value)}
         />
-        {/* <ToggleSwitch
-          label="Show Meetup groups"
-          enabled={showMeetupGroups}
-          onToggle={() => setShowMeetupGroups(!showMeetupGroups)}
-        /> */}
         <ToggleSwitch
           label="Show interests"
           enabled={showInterests}
           onToggle={() => setShowInterests(!showInterests)}
         />
       </div>
-    </div>
   );
 };
 

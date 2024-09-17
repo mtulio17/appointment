@@ -1,12 +1,10 @@
-import supabaseClient from "../utils/supabase";
+import supabase, {setSupabaseSession} from "../utils/supabase";
 
 // función para obtener eventos con posibilidad de filtrado por ubicación y nombre del evento
-export async function getEvents(token, {country, searchQuery }) {
-  const supabase = await supabaseClient(token);
+export async function getEvents(token, { country = "", searchQuery = "" } = {}) {
+  await setSupabaseSession(token);
 
-  let query = supabase
-  .from("events")
-  .select("*");
+  let query = supabase.from("events").select("*");
 
   if (country) {
     query = query.eq("country", country);
@@ -24,38 +22,9 @@ export async function getEvents(token, {country, searchQuery }) {
   return data;
 }
 
-export async function getCategories(token) {
-  const supabase = await supabaseClient(token);
-
-  const { data, error } = await supabase.from("categories").select("*");
-
-  if (error) {
-    console.error("Error fetcheando las categorias", error);
-    return null;
-  }
-
-  return data;
-}
-
-export async function getEventsByCategory(token, categoryId) {
-  console.log("Category ID:", categoryId); // Añade esta línea para verificar el valor de categoryId
-  const supabase = await supabaseClient(token);
-
-  const { data, error } = await supabase
-    .from("events")
-    .select("*")
-    .eq("category_id", categoryId);
-
-  if (error) {
-    console.error("Error fetching events by category:", error);
-    return null;
-  }
-
-  return data;
-}
 
 export async function getMyEvents(token, { host_id }) {
-  const supabase = await supabaseClient(token);
+  await setSupabaseSession(token);
 
   const { data, error } = await supabase
     .from("events")
@@ -70,9 +39,43 @@ export async function getMyEvents(token, { host_id }) {
   return data;
 }
 
+export async function getCategories(token) {
+  await setSupabaseSession(token);
+
+  const { data, error } = await supabase.from("categories").select("*");
+
+  if (error) {
+    console.error("Error fetcheando las categorias", error);
+    return null;
+  }
+  
+  return data;
+}
+
+
+export async function getEventsByCategory(token, categoryId) {
+  console.log("Category ID:", categoryId); // Añade esta línea para verificar el valor de categoryId
+  await setSupabaseSession(token);
+
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("category_id", categoryId);
+
+  if (error) {
+    console.error("Error fetching events by category:", error);
+    return null;
+  }
+
+  return data;
+}
+
+
 // función para crear nuevo evento en la db
 export async function createEvent(token, _, eventData) {
-  const supabase = await supabaseClient(token);
+  console.log("Datos enviados a Supabase:", eventData); // Agrega esto
+
+  await setSupabaseSession(token);
 
   const { data, error } = await supabase
     .from("events")
@@ -80,16 +83,73 @@ export async function createEvent(token, _, eventData) {
     .single();
 
   if (error) {
-    console.error("Error creando el evento", error);
+    console.error("Error creando el evento:", error);
     return null;
   }
+
+  console.log("Evento creado con éxito:", data); // Agrega esto
   return data;
 }
 
-// Método para participar en un evento
+
+// Función para eliminar un evento
+export async function deleteEvent(token, eventId) {
+  await setSupabaseSession(token);
+
+  const { data, error } = await supabase
+    .from("events")
+    .delete()
+    .eq("id", eventId)
+    .single();
+
+  if (error) {
+    console.error("Error eliminando el evento:", error);
+    return null;
+  }
+
+  return data;
+}
+
+// Función para cancelar un evento (podría ser una actualización del estado del evento)
+export async function cancelEvent(token, eventId) {
+  await setSupabaseSession(token);
+
+  const { data, error } = await supabase
+    .from("events")
+    .update({ status: "cancelled" })
+    .eq("id", eventId)
+    .single();
+
+  if (error) {
+    console.error("Error cancelando el evento:", error);
+    return null;
+  }
+
+  return data;
+}
+
+// Función para editar un evento
+export async function editEvent(token, eventId, updatedData) {
+  await setSupabaseSession(token);
+
+  const { data, error } = await supabase
+    .from("events")
+    .update(updatedData)
+    .eq("id", eventId)
+    .single();
+
+  if (error) {
+    console.error("Error editando el evento:", error);
+    return null;
+  }
+
+  return data;
+}
+
+
 // Método para participar en un evento
 export async function participateInEvent(token, eventId, userId) {
-  const supabase = await supabaseClient(token);
+  await setSupabaseSession(token);
 
   // Verificar si el usuario ya está participando en el evento
   const { data: existingParticipation, error: checkError } = await supabase
@@ -111,7 +171,8 @@ export async function participateInEvent(token, eventId, userId) {
   // Insertar nueva participación
   const { data, error } = await supabase
     .from("event_participants")
-    .insert([{ event_id: eventId, user_id: userId, joined_at: new Date().toISOString(), status: 'active', role: 'participant' }])
+    .insert([{ event_id: eventId, user_id: userId, joined_at: new Date().toISOString(),
+      status: 'confirmed', role: 'participant' }])
     .single();
 
   if (error) {
@@ -121,16 +182,14 @@ export async function participateInEvent(token, eventId, userId) {
   return data;
 }
 
-
-// función para obtener los participantes de un evento
 // Función para obtener los participantes de un evento
 export async function getEventParticipants(token, eventId) {
-  const supabase = await supabaseClient(token);
+  await setSupabaseSession(token);
 
   const { data, error } = await supabase
     .from("event_participants")
-    .select("user_id")  // Asegúrate de ajustar esto a los campos que realmente necesitas
-    .eq("event_id", eventId);
+    .select("user_id")
+    .eq("event_id", Number(eventId));  // Asegúrate de que eventId es un número
 
   if (error) {
     console.error("Error al obtener los participantes del evento", error);
@@ -142,7 +201,7 @@ export async function getEventParticipants(token, eventId) {
 
 
 export async function getSingleEvent(token, { event_id }) {
-  const supabase = await supabaseClient(token);
+  await setSupabaseSession(token);
 
   let query = supabase.from("events").select("*").eq("id", event_id).single();
 
@@ -158,9 +217,9 @@ export async function getSingleEvent(token, { event_id }) {
 
 // - Add / Remove saveEvent
 export async function saveEvent(token, { alreadySaved }, saveData) {
-  const supabase = await supabaseClient(token);
+  await setSupabaseSession(token);
 
-  // Verificar si el evento ya está guardado
+  // verificar si el evento ya está guardado
   const { data: existingEvents, error: selectError } = await supabase
     .from("saved_events")
     .select("*")
@@ -172,14 +231,8 @@ export async function saveEvent(token, { alreadySaved }, saveData) {
     return { error: selectError };
   }
 
-  if (alreadySaved && existingEvents.length === 0) {
-    // El evento debería estar guardado pero no lo está
-    console.warn("El evento no está guardado en favoritos.");
-    return { error: "El evento no está guardado en favoritos." };
-  }
-
   if (alreadySaved) {
-    // Eliminar el evento de favoritos
+    // si ya está guardado y se desea desmarcar (eliminar)
     const { data, error: deleteError } = await supabase
       .from("saved_events")
       .delete()
@@ -190,9 +243,10 @@ export async function saveEvent(token, { alreadySaved }, saveData) {
       console.error("Error eliminando eventos guardados", deleteError);
       return { error: deleteError };
     }
+
     return { data };
-  } else {
-    // Añadir el evento a favoritos
+  } else if (existingEvents.length === 0) {
+    // si no está guardado, se agrega a favoritos
     const { data, error: insertError } = await supabase
       .from("saved_events")
       .insert([saveData])
@@ -204,18 +258,22 @@ export async function saveEvent(token, { alreadySaved }, saveData) {
     }
 
     return { data };
+  } else {
+    // si ya está guardado, no se inserta dos veces
+    console.warn("El evento ya está guardado en favoritos.");
+    return { data: existingEvents };
   }
 }
 
 
+
 // - Get saved events
 export async function getSavedEvents(token) {
-  const supabase = await supabaseClient(token);
+  await setSupabaseSession(token);
 
   const { data, error } = await supabase
     .from("saved_events")
-    .select(`
-      id,
+    .select(`id,
       event: events (*)
     `);
 

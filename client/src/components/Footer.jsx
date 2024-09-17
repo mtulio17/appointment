@@ -1,5 +1,5 @@
 import { BsFacebook, BsInstagram } from "react-icons/bs";
-import calendar from '../assets/images/calendar3.png';
+// import calendar from '../assets/images/calendar3.png';
 
 
 const Footer = () => {

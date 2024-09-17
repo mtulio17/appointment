@@ -1,72 +1,108 @@
-import React from "react";
-import axios from "axios";
-import sportIcon from "../assets/icons/sport.webp";
-import learnIcon from "../assets/icons/learning.webp";
-import adventureIcon from "../assets/icons/adventure.webp";
-import wellbeingIcon from "../assets/icons/wellbeing.webp";
-import recreationalIcon from "../assets/icons/recreational.webp";
-import mentalIcon from "../assets/icons/mental.webp";
-import socialIcon from "../assets/icons/social.webp";
-import culturalIcon from "../assets/icons/cultural.webp";
+import { useUser } from "@clerk/clerk-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getCategories } from "../api/apievents";
+import { ChevronLeft, ChevronLeftCircle, ChevronRight, ChevronRightCircle } from "lucide-react";
+import useFetch from "../hooks/use-fetch";
+import Slider from "react-slick";
 
 const PopularCategories = () => {
-  const categories = [
-    { name: "Deportes y Fitness", icon: sportIcon },
-    { name: "Cursos", icon: learnIcon },
-    { name: "Aventura y Viajes", icon: adventureIcon },
-    { name: "Salud y Bienestar", icon: wellbeingIcon },
-    { name: "Recreativas", icon: recreationalIcon },
-    { name: "Mentales", icon: mentalIcon },
-    { name: "Sociales", icon: socialIcon },
-    { name: "Culturales", icon: culturalIcon },
-  ];
+  const { isLoaded, user } = useUser();
+  const navigate = useNavigate();
+  const {fn: fetchCategories, data: categories, error, isLoading} = useFetch(getCategories);
+
+  useEffect(() => {
+    if (isLoaded) fetchCategories();
+  }, [isLoaded]);
 
   const handleCategoryClick = (categoryId) => {
-    axios
-      .get(`/api/events?category=${categoryId}`)
-      .then((response) => {
-        // Muestra los eventos filtrados según la categoría
-        console.log("Eventos por categoría:", response.data);
-      })
-      .catch((error) =>
-        console.error("Error al obtener eventos por categoría:", error)
-      );
+    if (categoryId) {
+      navigate(`/events/category/${categoryId}`);
+    } else {
+      console.error("El ID de la categoría es indefinido");
+    }
   };
 
-  return (
-    <section className="py-8 bg-SectionBg">
-      <div className="container rounded-lg max-w-7xl mx-auto px-4 py-4">
-        <h2 className="text-2xl text-[#2C2C2C] font-bold text-center mb-10">
-          Categorías Populares
-        </h2>
-        <div className="relative">
-          <div
-            className="grid grid-cols-2 md:grid-cols-8 max-w-7xl mx-auto"
-            style={{ scrollBehavior: "smooth" }}
-          >
-            {categories.map((category) => (
-              <div
-                key={category.name}
-                onClick={() => handleCategoryClick(category._id)}
-                className="flex flex-none flex-col items-center text-center cursor-pointer mt-2 mx-auto"
-                style={{ width: "120px" }}
-              >
-                <div className="p-2.5 bg-white rounded-full shadow-md mb-2">
-                  <img
-                    src={category.icon}
-                    alt={category.name}
-                    className="w-9 h-9"
-                  />
-                </div>
-                <h3 className="text-[16px] font-semibold text-H1Color">
-                  {category.name}
-                </h3>
-              </div>
-            ))}
-          </div>
+  if (error) return <div>Error al cargar las categorías: {error.message}</div>;
+  
+  // if (isLoading) {
+    //   return <BarLoader className="mt-[74px]" width={"100%"} color="#2C2C2C" />;
+    // }
+    
+  const trendCategories = categories?.slice(0, 10) || [];
+
+    // Configuración del slider
+    const settings = {
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 4,
+      slidesToScroll: 1,
+      nextArrow: (
+        <div className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer bg-gray-200 rounded-full hover:bg-gray-300">
+          <ChevronRight className="h-5 w-5 text-black" /> {/* Flecha siguiente */}
         </div>
+      ),
+      prevArrow: (
+        <div className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer p-2 bg-gray-200 rounded-full hover:bg-gray-300">
+          <ChevronLeft className="h-5 w-5 text-black" /> {/* Flecha anterior */}
+        </div>
+      ),
+      responsive: [
+        {
+          breakpoint: 1024, // Tablet
+          settings: {
+            slidesToShow: 3,
+          },
+        },
+        {
+          breakpoint: 600, // Mobile
+          settings: {
+            slidesToShow: 2,
+          },
+        },
+        {
+          breakpoint: 480, // Small mobile
+          settings: {
+            slidesToShow: 1,
+          },
+        },
+      ],
+    };
+
+  return (
+    <section className="py-12">
+    <div className="container rounded-lg max-w-7xl mx-auto px-4 py-8">
+      <h2 className="text-lg lg:text-2xl text-[#2C2C2C] font-extrabold mb-12">
+        Categorías Populares
+      </h2>
+      <div className="relative py-12 rounded-lg">
+        <Slider {...settings}>
+          {trendCategories.map((category) => (
+            <div
+              key={category.id}
+              onClick={() => handleCategoryClick(category.id)}
+              className="flex flex-col items-center justify-center text-center cursor-pointer transition-transform transform hover:scale-105"
+            >
+              {/* Contenedor del ícono circular */}
+              <div className="flex items-center justify-center bg-gradient-to-b from-indigo-200 to-indigo-400 rounded-full shadow-lg hover:shadow-xl mb-2 w-16 h-16">
+                <img
+                  loading="lazy"
+                  src={category.icon || "https://placehold.co/600x400@2x.png"}
+                  alt={category.name}
+                  className="w-8 h-8 flex items-center justify-center"
+                />
+              </div>
+              {/* text debajo del ícono */}
+              <h3 className="text-sm font-semibold text-gray-600 hover:text-[#032f62] mt-1 whitespace-nowrap">
+                {category.name}
+              </h3>
+            </div>
+          ))}
+        </Slider>
       </div>
-    </section>
+    </div>
+  </section>
   );
 };
 

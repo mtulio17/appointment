@@ -13,6 +13,7 @@ const EventCard = () => {
             <div className="bg-[#fff] rounded-3xl shadow-md transition">
               <div className="w-full h-72 rounded-t-lg overflow-hidden">
                 <img
+                  loading="lazy"
                   src={event.image_url}
                   alt={event.title}
                   className="w-full h-full object-cover rounded-3xl m-1"
