@@ -105,8 +105,8 @@ const EventDetails = () => {
             {/* cant. de participantes */}
             <div className="flex items-center space-x-2">
               {/* el avatar del host primero */}
-              <img src={user.imageUrl || 'https://img.clerk.com/default-avatar'} className="w-6 h-6 rounded-full border border-gray-300"
-              />
+              {/* <img src={user.imageUrl || 'https://img.clerk.com/default-avatar'} className="w-6 h-6 rounded-full border border-gray-300" */}
+              {/* /> */}
               {/* avatares de los participantes */}
 
               {/* {participants.slice(0, 2).map((p, i) => (

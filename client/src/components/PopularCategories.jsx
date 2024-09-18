@@ -72,20 +72,20 @@ const PopularCategories = () => {
 
   return (
     <section className="py-12">
-    <div className="container rounded-lg max-w-7xl mx-auto px-4 py-8">
+    <div className="container rounded-lg max-w-7xl mx-auto px-4 my-8">
       <h2 className="text-lg lg:text-2xl text-[#2C2C2C] font-extrabold mb-12">
         Categorías Populares
       </h2>
-      <div className="relative py-12 rounded-lg">
+      <div className="relative my-12 p-2 rounded-lg">
         <Slider {...settings}>
           {trendCategories.map((category) => (
             <div
               key={category.id}
               onClick={() => handleCategoryClick(category.id)}
-              className="flex flex-col items-center justify-center text-center cursor-pointer transition-transform transform hover:scale-105"
+              className="flex flex-col items-center justify-center text-center cursor-pointer transition-transform transform hover:scale-105 p-2"
             >
               {/* Contenedor del ícono circular */}
-              <div className="flex items-center justify-center bg-gradient-to-b from-indigo-200 to-indigo-400 rounded-full shadow-lg hover:shadow-xl mb-2 w-16 h-16">
+              <div className="flex items-center justify-center bg-gradient-to-b from-indigo-200 to-indigo-400 rounded-full shadow-lg hover:shadow-xl mb-2 w-16 h-16 mx-auto">
                 <img
                   loading="lazy"
                   src={category.icon || "https://placehold.co/600x400@2x.png"}
