@@ -104,93 +104,149 @@ const PostEvent = () => {
     return null;
   };
 
+  const handleCancel = () => {
+    navigate('/');
+  };
+
   if (loading) return <p>Loading...</p>;
 
   if (categoriesError)
     return <p>Error loading categories: {categoriesError.message}</p>;
 
   return (
-    <div>
-      <h1 className="container py-28 font-extrabold lg:text-2xl text-center pb-8">
+    <div className="max-w-6xl mx-auto mt-24 p-6 bg-white rounded-md shadow-md">
+      <h1 className="text-2xl font-bold mb-6">
         Crear un Evento
       </h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 p-4 pb-0">
-         <ImageUpload onUpload={handleImageUpload} token={user?.token} />
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+         
+            <div className="col-span-1 md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700">Nombre</label>
+              <input
+                {...register("name")}
+                placeholder="Nombre del evento o actividad"
+                className={`input ${errors.name ? "input-error" : ""} mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+              />
+            </div>
 
-          {/* Mostrar errores para el campo de la imagen */}
-        {errors.image && <p className="text-red-500">{errors.image.message}</p>}
-        <input
-          {...register("name")}
-          placeholder="Nombre del evento o actividad"
-          className={`input ${errors.name ? "input-error" : ""}`}
-        />
-        <input
-          {...register("gender")}
-          placeholder="Genero"
-          className={`input ${errors.gender ? "input-error" : ""}`}
-        />
-        <textarea
-          {...register("description")}
-          placeholder="Descripción del evento o actividad"
-          className={`input ${errors.description ? "input-error" : ""}`}
-        />
-        <input
-          {...register("age")}
-          type="number"
-          placeholder="Edad minima"
-          className={`input ${errors.age ? "input-error" : ""}`}
-        />
-        <select
-          {...register("category_id")}
-          className={`input ${errors.category_id ? "input-error" : ""}`}
-        >
-          <option value="">Seleccionar Categoria</option>
-          {categories &&
-            categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-        </select>
-        <input
-          {...register("price")}
-          type="number"
-          placeholder="Precio por persona"
-          className={`input ${errors.price ? "input-error" : ""}`}
-        />
-        <input
-          {...register("address")}
-          placeholder="Dirección"
-          className={`input ${errors.address ? "input-error" : ""}`}
-        />
-        <input
-          {...register("city")}
-          placeholder="Ciudad"
-          className={`input ${errors.city ? "input-error" : ""}`}
-        />
-        <input
-          {...register("country")}
-          placeholder="Pais"
-          className={`input ${errors.country ? "input-error" : ""}`}
-        />
-        <input
-          {...register("start_date")}
-          type="date"
-          placeholder="Dia de inicio"
-          className={`input ${errors.start_date ? "input-error" : ""}`}
-        />
-        <input
-          {...register("start_time")}
-          type="time"
-          placeholder="Hora de inicio"
-          className={`input ${errors.start_time ? "input-error" : ""}`}
-        />
-        {createEventError && (
-          <p className="text-red-500">{createEventError.message}</p>
-        )}
-        <button type="submit" className="btn-primary mt-4" disabled={loading}>
+            <div className="col-span-1">
+            <label className="block text-sm font-medium text-gray-700">Genero</label>
+            <input
+              {...register("gender")}
+              placeholder="Genero"
+              className={`input ${errors.gender ? "input-error" : ""} mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+            />
+          </div>
+
+          <div className="col-span-1">
+            <label className="block text-sm font-medium text-gray-700">Edad</label>
+            <input
+              {...register("age")}
+              type="number"
+              placeholder="Edad minima"
+              className={`input ${errors.age ? "input-error" : ""} mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+            />
+          </div>
+
+            <div className="col-span-1 md:col-span-2">
+              <ImageUpload onUpload={handleImageUpload} token={user?.token} />
+              {/* Mostrar errores para el campo de la imagen */}
+              {errors.image && <p className="text-red-500">{errors.image.message}</p>}
+            </div>
+
+            <div className="col-span-1">
+            <label className="block text-sm font-medium text-gray-700">Price</label>
+            <input
+              {...register("price")}
+              type="number"
+              placeholder="Precio por persona"
+              className={`input ${errors.price ? "input-error" : ""} mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+            />
+          </div>
+
+            <div className="col-span-1 md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700">Descripción</label>
+              <textarea
+                {...register("description")}
+                placeholder="Aquí puedes agregar mas informacion del evento"
+                className={`input ${errors.description ? "input-error" : ""} mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+              />
+            </div>
+
+            <div className="col-span-1 md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700">Dirección</label>
+            <input
+              {...register("address")}
+              placeholder="Dirección"
+              className={`input ${errors.address ? "input-error" : ""} mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+            />
+          </div>
+
+          <div className="col-span-1 md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700">Agrega una categoría</label>
+
+              <select
+                {...register("category_id")}
+                className={` input ${errors.category_id ? "input-error" : ""} mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+              >
+                <option value="">Seleccionar Categoria</option>
+                {categories &&
+                  categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+          
+            <div>
+            <label className="block text-sm font-medium text-gray-700">Ciudad</label>
+            <input
+              {...register("city")}
+              placeholder="Ciudad"
+              className={`input ${errors.city ? "input-error" : ""} mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+            />
+          </div>
+
+          <div className="col-span-1">
+            <label className="block text-sm font-medium text-gray-700">País</label>
+            <input
+              {...register("country")}
+              placeholder="Pais"
+              className={`input ${errors.country ? "input-error" : ""} mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+            />
+          </div>
+    
+          <div className="col-span-1">
+            <label className="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
+            <input
+              {...register("start_date")}
+              type="date"
+              placeholder="Dia de inicio"
+              className={`input ${errors.start_date ? "input-error" : ""} mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+            />
+          </div>
+
+          <div className="col-span-1">
+            <label className="block text-sm font-medium text-gray-700">Hora de Inicio</label>
+            <input
+              {...register("start_time")}
+              type="time"
+              placeholder="Hora de inicio"
+              className={`input ${errors.start_time ? "input-error" : ""} mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+            />
+          </div>
+         
+          {createEventError && (
+            <p className="text-red-500">{createEventError.message}</p>
+          )}
+        
+        <button type="submit" className="w-2/3 md:w-2/3 md:h-2/3 my-auto mx-auto bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" disabled={loading}>
           Crear Evento
         </button>
+        <button type="button" onClick={handleCancel} className="w-2/3 md:w-2/3 my-auto mx-auto bg-red-600 text-white font-medium py-2 px-4 rounded-lg shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        Cancelar
+      </button>
       </form>
     </div>
   );
