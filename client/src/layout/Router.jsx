@@ -11,6 +11,8 @@ import EventsPage from '../pages/events-page';
 import CategoryResult from '../pages/category-result';
 import Help from '../components/Help'
 import PrivacyPolicy from '../components/PrivacyPolicy'
+import TermsOfUse from '../components/TermsOfUse';
+import AboutUs from '../components/AboutUs';
 
 const AppRouter = () => (
   <Router>
@@ -23,7 +25,8 @@ const AppRouter = () => (
         <Route path="/all-events" element={<EventsPage />} />
         <Route path="/ayuda" element={<Help />} />
         <Route path="/politicas-de-privacidad" element={<PrivacyPolicy />} />
-
+        <Route path="/terminos-de-uso" element={<TermsOfUse />} />
+        <Route path="/sobre-nosotros" element={<AboutUs />} />
 
         {/* Rutas protegidas */}
         <Route path="/post-event" element={<PrivateRoute element={<PostEvent />} />} />
