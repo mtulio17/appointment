@@ -4,7 +4,7 @@ import { Disclosure } from "@headlessui/react";
 import { Country } from "country-state-city";
 import Select from "react-select";
 import { SignedIn, SignedOut, SignIn, UserButton} from "@clerk/clerk-react";
-import { BellPlus, BellRing, Calendar, CirclePlus, CirclePlusIcon, HandHelping, Heart, Search} from "lucide-react";
+import { BellPlus, BellRing, Calendar, CirclePlus, CirclePlusIcon, HandHelping, Heart, Search, Info, Bookmark} from "lucide-react";
 import { getEvents } from "../api/apievents";
 import useFetch from "../hooks/use-fetch";
 
@@ -141,18 +141,18 @@ const Navbar = () => {
                           />
                           <UserButton.Link
                             label="Eventos Guardados"
-                            labelIcon={<Heart size={16} />}
+                            labelIcon={<Bookmark size={16} />}
                             href="/saved-events"
                           />
                           <UserButton.Link
                             label="Ayuda"
-                            labelIcon={<HandHelping size={16} />}
-                            href="#"
+                            labelIcon={<Info size={16} />}
+                            href="/ayuda"
                           />
                           <UserButton.Link
                             label="Políticas de Privacidad"
                             labelIcon={<HandHelping size={16} />}
-                            href="#"
+                            href="/politicas-de-privacidad"
                           />
                           <UserButton.Action label="manageAccount" />
                         </UserButton.MenuItems>
