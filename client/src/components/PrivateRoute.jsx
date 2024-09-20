@@ -6,7 +6,7 @@ const PrivateRoute = ({ element }) => {
   const { isSignedIn, isLoaded } = useUser();
 
   if (!isLoaded) {
-    return <div>Autenticando...</div>;
+    return <div className="flex justify-center text-center">Autenticando...</div>;
   }
 
   if (isLoaded && !isSignedIn && isSignedIn !== undefined) {

@@ -4,7 +4,7 @@ const HowItWorks = () => {
   return (
     <section className="py-28 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 lg:px-4">
-        <h2 className="text-2xl font-bold text-center mb-10">Cómo funciona Appointment</h2>
+        <h2 className="text-2xl font-bold text-start mb-10">Cómo funciona Appointment</h2>
         <div className="flex flex-col md:flex-row gap-8 justify-center">
           <div className="bg-slate-100 rounded-lg p-8 shadow-sm flex-1 cursor-pointer hover:bg-slate-200/50 duration-150">
             <div className="flex items-start space-x-4">
@@ -17,7 +17,7 @@ const HowItWorks = () => {
                 <p className="text-gray-700 mb-4 font-medium">
                   Descubre quién está organizando eventos relacionados con tus intereses.
                 </p>
-                <a href="#" className="text-Button hover:underline font-semibold">Buscar eventos</a>
+                <a href="/all-events" className="text-Button hover:underline font-semibold">Buscar eventos</a>
               </div>
             </div>
           </div>

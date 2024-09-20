@@ -2,12 +2,8 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import VerticalCards from "./VerticalCards";
 import useFetch from "../hooks/use-fetch";
-import {
-  getMyEvents,
-  deleteEvent,
-  cancelEvent,
-  editEvent,
-} from "../api/apievents";
+import { getMyEvents, deleteEvent, cancelEvent, editEvent } from "../api/apievents";
+import SkeletonCard from "../ui/skeleton/SkeletonCard";
 // import OptionsModal from '../ui/OptionsModal';
 
 const MyCreatedEvents = () => {
@@ -18,7 +14,7 @@ const MyCreatedEvents = () => {
     fn: fetchMyEvents,
     data: events,
     error,
-    isLoading,
+    isLoading: loadingEvents,
   } = useFetch(getMyEvents);
 
   useEffect(() => {
@@ -46,41 +42,34 @@ const MyCreatedEvents = () => {
     return <div>No estás autenticado.</div>;
   }
 
-  if (isLoading) {
-    return <div>Cargando eventos...</div>;
-  }
-
   if (error) {
     return <div>Error: {error.message}</div>;
   }
 
   return (
-    <section className="container mx-auto max-w-7xl bg-transparent py-28">
+    <section className="container mx-auto max-w-5xl bg-transparent my-32">
         <h2 className="gradient-title lg:text-3xl sm:text-4xl text-start font-semibold mb-4">
           Eventos que has creado recientemente:
         </h2>
         <hr className="border-b border-gray-100 w-full" />
-      <div className="container mx-auto px-4 max-w-7xl">
+        <div className="container mx-auto px-4 max-w-7xl">
         <div className="mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-10">
-            {events && events.length > 0 ? (
-              events.map((event) => (
-                <VerticalCards key={event.id} event={event} />
-              ))
+            {loadingEvents ? (
+              Array(4).fill().map((_, index) => <SkeletonCard key={index} />)
             ) : (
-              <p>No has creado ningún evento aún.</p>
+              // mostrar eventos si están disponibles
+              events && events.length > 0 ? (
+                events.map((event) => (
+                  <VerticalCards key={event.id} event={event} />
+                ))
+              ) : (
+                <p>No has creado ningún evento aún.</p>
+              )
             )}
           </div>
         </div>
       </div>
-      {/* {modalOpen && (
-      <OptionsModal event={selectedEvent} onClose={() => setModalOpen(false)} onSave={(updatedData) => {
-          editEvent(user.token, selectedEvent.id, updatedData);
-          setModalOpen(false);
-          fetchMyEvents({ host_id: user.id });
-        }}
-      />
-    )} */}
     </section>
   );
 };

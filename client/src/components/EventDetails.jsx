@@ -1,6 +1,7 @@
 import { useEffect, useState} from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useUser } from "@clerk/clerk-react";
+import { useSession, useUser } from "@clerk/clerk-react";
+import {BarLoader} from "react-spinners";
 import { getEventParticipants, getSingleEvent, participateInEvent } from "../api/apievents";
 import useFetch from "../hooks/use-fetch";
 
@@ -10,58 +11,67 @@ const EventDetails = () => {
   const [loadingParticipation, setLoadingParticipation] = useState(false);
   const navigate = useNavigate();
   const { isLoaded, user } = useUser();
-  
-  // Usar useFetch para obtener el evento
+  const {session} = useSession();
+  const [isParticipating, setIsParticipating] = useState(false);
+  // usar useFetch para obtener el evento y los participantes
   const { isLoading: loadingEvent, data: event, fn: fetchEvent } = useFetch(getSingleEvent, { event_id: id });
-  
-  // Usar useFetch para obtener los participantes
   const { isLoading: loadingParticipants, data: participants = [], fn: fetchParticipants } = useFetch(getEventParticipants, { event_id: id });
   
-  const [isParticipating, setIsParticipating] = useState(false);
-
+  
   useEffect(() => {
     if (isLoaded && id) {
       fetchEvent();
-      if (user) {
-        fetchParticipants(Number(id));  // Asegúrate de pasar el ID correctamente
-      }
+      fetchParticipants(Number(id));  // Asegúrate de pasar el ID correctamente
     }
-  }, [isLoaded, id, user]);
+  }, [isLoaded, id]);
   
 
   useEffect(() => {
     if (user && participants) {
+      // Verificar si el usuario ya está participando
       setIsParticipating(participants.some(participant => participant.user_id === user.id));
     }
   }, [user, participants]);
 
+ 
   const handleParticipate = async () => {
     if (!user) {
-      navigate('/?sign-in=true');
-      return;
-    } 
-    setLoadingParticipation(true);
-    try {
-      const result = await participateInEvent(user.token, id, user.id);
-      if (result) {
-        setIsParticipating(true);
-        alert('Te has registrado exitosamente en el evento.');
-      }
-    } catch (error) {
-      console.error('Error al participar en el evento:', error);
-    } finally {
-      setLoadingParticipation(false);
+        navigate('/?sign-in=true');
+        return;
     }
-  };
 
+    setLoadingParticipation(true);
+    setIsParticipating(true); // Actualiza el estado localmente antes de hacer la llamada a la API
 
-  if (loadingEvent) return <div>Cargando evento...</div>;
+    try {
+        const supabaseAccessToken = await session.getToken({ template: "supabase" });
+        if (!supabaseAccessToken) {
+            throw new Error('No se pudo obtener el token de acceso');
+        }
+
+        const res = await participateInEvent(supabaseAccessToken, id, user.id);
+        if (res) {
+            // si la participación es exitosa, volvemos a obtener los participantes
+            fetchParticipants(Number(id));
+            alert('Te has registrado exitosamente en el evento.');
+        }
+    } catch (error) {
+        console.error('Error al participar en el evento:', error);
+        setIsParticipating(false); // Revertir el estado si hay un error
+    } finally {
+        setLoadingParticipation(false);
+    }
+};
+  
+
+  if (loadingEvent) return <BarLoader className="mt-[74px]" width={"100%"} color="#2C2C2C" />;
   if (!event) return <div>Evento no encontrado.</div>;
 
   const isHost = user && user.id === event.host_id;
 
   return (
-    <div className="container mx-auto py-36 px-4">
+    <div className="container mx-auto my-32 px-4">
+    {/* Sub-Navbar */} 
     {/* Header */}
     <div className="flex flex-col md:flex-row justify-between items-center mb-8">
       <div className="mb-4 md:mb-0">
@@ -123,14 +133,18 @@ const EventDetails = () => {
           <p className="text-gray-400 mt-4 text-xs">
             Creado en: {new Date(event.created_at).toLocaleDateString()}
           </p>
-        {/* botón para participar */}
-        {!isHost && (
-         <button onClick={handleParticipate} disabled={loadingParticipants || isParticipating || loadingParticipation} className={`mt-4 ${isParticipating ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500'} text-white py-2 px-4 rounded-md`} >
-         {loadingParticipation ? 'Procesando...' : (isParticipating ? 'Ya estás participando en el evento ' : 'Asistir al evento')}
-         {isParticipating && <span className="ml-2">✅</span>}
-       </button>
-        )}
-      </div>
+          {/* botón para participar */}
+          {!isHost && (
+            <button
+              onClick={handleParticipate}
+              disabled={loadingParticipants || isParticipating || loadingParticipation}
+              className={`mt-4 ${isParticipating ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500'} text-white py-2 px-4 rounded-md`}
+            >
+              {loadingParticipation ? 'Procesando...' : (isParticipating ? 'Ya estás participando en el evento' : 'Asistir al evento')}
+              {isParticipating && <span className="ml-2">✅</span>}
+            </button>
+          )}
+        </div>
     </div>
   </div>
   );

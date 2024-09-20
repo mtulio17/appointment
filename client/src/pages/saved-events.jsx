@@ -22,7 +22,7 @@ const SavedEvents = () => {
   }
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto my-28">
       <h1 className="gradient-title text-4xl sm:text-4xl text-start py-20 font-extrabold font-bold mb-4">Mis Eventos Favoritos:</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {savedEvents?.length ? (

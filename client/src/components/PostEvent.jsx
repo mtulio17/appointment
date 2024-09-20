@@ -114,14 +114,14 @@ const PostEvent = () => {
     return <p>Error loading categories: {categoriesError.message}</p>;
 
   return (
-    <div className="max-w-6xl mx-auto mt-24 p-6 bg-white rounded-md shadow-md">
-      <h1 className="text-2xl font-bold mb-6">
+    <div className="max-w-7xl mx-auto my-28 p-16 border border-black-50 rounded-md">
+      <h1 className="lg:text-4xl font-bold mb-10">
         Crear un Evento
       </h1>
       <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-4 gap-4">
          
             <div className="col-span-1 md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">Nombre</label>
+              <label className="block text-sm font-medium text-gray-700">Nombre del Evento</label>
               <input
                 {...register("name")}
                 placeholder="Nombre del evento o actividad"
@@ -240,7 +240,6 @@ const PostEvent = () => {
           {createEventError && (
             <p className="text-red-500">{createEventError.message}</p>
           )}
-        
         <button type="submit" className="w-2/3 md:w-2/3 md:h-2/3 my-auto mx-auto bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" disabled={loading}>
           Crear Evento
         </button>

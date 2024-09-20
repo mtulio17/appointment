@@ -88,7 +88,7 @@ const Navbar = () => {
     <Disclosure as="nav" className="absolute top-0 w-full rounded-xl z-20">
       {({ open }) => (
         <>
-          <div className="bg-[#fbfbfb] container mx-auto max-w-full py-2 px-2 sm:px-6 lg:px-8 border-b border-gray-100 fixed">
+          <div className="bg-transparent container mx-auto max-w-full py-2 px-2 sm:px-6 lg:px-8">
             <div className="relative flex h-16 items-center justify-between">
               <div className="flex items-center space-x-14">
                 <Link to="/">

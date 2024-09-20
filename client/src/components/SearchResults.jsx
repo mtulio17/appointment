@@ -25,7 +25,7 @@ const SearchResults = () => {
   }
 
   return (
-    <div className="container mx-auto py-20 mt-8 p-16">
+    <div className="container lg:max-w-8xl mx-auto py-20 mt-8 p-16">
       <h2 className="text-2xl font-medium mb-4">
         Resultado de tú búsqueda: {" "}
         <span className="font-extrabold">

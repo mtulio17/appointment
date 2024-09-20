@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
-import { MapPinIcon, Heart, CalendarIcon } from "lucide-react";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { MapPinIcon, CalendarIcon, Bookmark } from "lucide-react";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useUser } from "@clerk/clerk-react";
@@ -67,41 +68,31 @@ const VerticalCards = ({event, savedInit = false, onEventAction = () => {}, isMy
   };
   
   return (
-    <div key={event.id} className="relative overflow-hidden cursor-pointer border border-gray-100 pb-8 my-5 rounded-md">
+    <div key={event.id} className="relative overflow-hidden cursor-pointer pb-8 my-5 rounded-md">
     <Link to={`/event/${event.id}`}>
-      <img
-        src={event.image || "https://placehold.co/400"}
-        alt={event.name || "Event image"}
-        loading="lazy"
-        className="mx-auto w-full h-32 lg:h-40 object-cover object-center rounded-md hover:opacity-80 duration-200 mb-2"
-        style={{ aspectRatio: '16 / 9' }} 
-      />
+      <LazyLoadImage src={event.image || "https://placehold.co/400"} alt={event.name || "event image"} className="mx-auto w-full h-32 lg:h-44 object-cover object-center rounded-lg hover:opacity-80 duration-200 mb-2" style={{ aspectRatio: '16 / 9' }} />
       <div className="p-1">
-        <h3 className="text-md text-gray-800 font-semibold hover:underline cursor-pointer mb-1">
+        <h3 className="lg:text-lg lg:leading-0 tracking-wide text-gray-800 font-semibold hover:underline cursor-pointer mb-1">
           {event.name}
         </h3>
-        <p className="text-xs font-medium text-gray-600 mb-4">
+        <p className="text-xs font-medium text-gray-600 mb-3">
           {truncateText(event.description, 11)}
         </p>
-        <div className="flex items-center text-sm text-gray-500 mb-3">
+        <div className="flex items-center text-sm text-gray-800 mb-2">
           <CalendarIcon className="mr-2 h-4 w-4" />
-          <span>{`${formattedDate} | ${formattedTime}`}</span>
+          <span className="uppercase">{`${formattedDate} | ${formattedTime}`}</span>
         </div>
-        <div className="flex items-center text-sm font-medium text-gray-900 mb-1">
+        <div className="flex items-center text-sm font-medium text-gray-800 mb-1">
           <MapPinIcon className="mr-2 h-4 w-4 text-gray-500" />
-          <span className="text-xs text-gray-500">{event.city}, {event.country}</span>
+          <span className="text-xs text-gray-700 uppercase">{event.city}, {event.country}</span>
         </div>
       </div>
     </Link>
-    <button
-      disabled={loadingSavedEvent}
-      className="w-15 absolute top-2 right-2 text-white hover:text-red-500"
-      onClick={handleSaveEvent}
-    >
+    <button disabled={loadingSavedEvent} className="w-15 absolute top-2 right-2 text-white hover:text-gray-100" onClick={handleSaveEvent}>
       {saved ? (
-        <Heart size={22} fill="red" stroke="red" />
+        <Bookmark size={20} fill="red" stroke="red" />
       ) : (
-        <Heart size={22} />
+        <Bookmark size={20} />
       )}
     </button>
   </div>

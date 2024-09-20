@@ -4,19 +4,25 @@ import supabase, {setSupabaseSession} from "../utils/supabase";
 export async function getEvents(token, { country = "", searchQuery = "" } = {}) {
   await setSupabaseSession(token);
 
+  let removeAccents = (str) => {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  };
+  
+  const normalizedSearchQuery = removeAccents(searchQuery).trim();
+
   let query = supabase.from("events").select("*");
 
   if (country) {
     query = query.eq("country", country);
   }
 
-  if (searchQuery) {
-    query = query.ilike("name", `%${searchQuery}%`);
+  if (normalizedSearchQuery) {
+    query = query.ilike("name", `%${normalizedSearchQuery}%`);
   }
 
   const { data, error } = await query;
   if (error) {
-    console.error("Error fetcheando los eventos", error);
+    console.error("Error fetching the events", error);
     return null;
   }
   return data;

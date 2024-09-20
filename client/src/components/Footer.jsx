@@ -3,7 +3,7 @@ import { Facebook, Twitter, Youtube, Instagram } from "lucide-react"; // Para ic
 
 const Footer = () => {
   return (
-    <footer className="bg-black text-gray-400 py-8">
+    <footer className="bg-[#212121] text-gray-400 lg:py-6">
       <div className="container mx-auto flex flex-col lg:flex-row justify-around items-start px-6">
         {/* Left section */}
         <div className="mb-8 lg:mb-0">
@@ -25,14 +25,14 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="text-white font-semibold mb-4">Discover</h4>
+            <h4 className="text-white font-semibold mb-4">Descubrir</h4>
             <ul>
               <li><a href="#" className="hover:text-white">Calendario</a></li>
               <li><a href="#" className="hover:text-white">Topics</a></li>
-              <li><a href="#" className="hover:text-white">Cities</a></li>
-              <li><a href="#" className="hover:text-white">Online Events</a></li>
-              <li><a href="#" className="hover:text-white">Local Guides</a></li>
-              <li><a href="#" className="hover:text-white">Make Friends</a></li>
+              <li><a href="#" className="hover:text-white">Ciudades</a></li>
+              <li><a href="#" className="hover:text-white">Eventos Presenciales</a></li>
+              <li><a href="#" className="hover:text-white">Guias Locales</a></li>
+              <li><a href="#" className="hover:text-white">Hacer amigos</a></li>
             </ul>
           </div>
 
@@ -41,14 +41,14 @@ const Footer = () => {
             <ul>
               <li><a href="/sobre-nosotros" className="hover:text-white">Nosotros</a></li>
               <li><a href="#" className="hover:text-white">Blog</a></li>
-              <li><a href="#" className="hover:text-white">Careers</a></li>
+              <li><a href="#" className="hover:text-white">Carreras</a></li>
               
             </ul>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto flex flex-col lg:flex-row justify-between items-center px-6 mt-8 border-t border-gray-600 pt-6">
+      <div className="container mx-auto flex flex-col lg:flex-row lg:max-w-7xl justify-between items-center px-6 mt-8 border-t border-gray-600 pt-6">
         {/* Social Media Icons */}
         <div className="flex space-x-4 mb-6 lg:mb-0">
           <a href="#" className="hover:text-white"><Facebook size={24} /></a>
@@ -67,12 +67,6 @@ const Footer = () => {
             {/* <li><a href="/politicas-de-privacidad" className="hover:text-white"></a></li> */}
             <li><a href="/ayuda" className="hover:text-white">Ayuda</a></li>
           </ul>
-        </div>
-
-        {/* App Download Links */}
-        <div className="flex space-x-4">
-          <a href="#"><img src="https://via.placeholder.com/120x40" alt="Google Play" /></a>
-          <a href="#"><img src="https://via.placeholder.com/120x40" alt="App Store" /></a>
         </div>
       </div>
     </footer>

@@ -9,7 +9,7 @@ const Layout = () => {
     <>
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <Suspense fallback={<div>Cargando...</div>}>
+      <Suspense fallback={"..."}>
         <div className="flex-grow">
           <Outlet />
         </div>
