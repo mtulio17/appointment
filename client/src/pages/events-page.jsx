@@ -7,6 +7,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import HorizontalCards from "../components/HorizontalCards"
 import SkeletonHorizontaCard from "../ui/skeleton/SkeletonHorizontaCard";
 
+
 const EventsPage = ({ event }) => {
   const { isLoaded } = useSession();
   const { user } = useUser();
@@ -17,8 +18,7 @@ const EventsPage = ({ event }) => {
   const [participantsByEvent, setParticipantsByEvent] = useState({});
   const [sortOption, setSortOption] = useState("relevance");
 
-  console.log(events);
-  
+  console.log(categories);
 
   useEffect(() => {
     if (isLoaded) {
@@ -28,13 +28,14 @@ const EventsPage = ({ event }) => {
     }
   }, [isLoaded, user]);
 
+
   useEffect(() => {
     if (isLoaded && !selectedCategory) {
       fnEvents();
     }
   }, [isLoaded, selectedCategory]);
 
-  // filtrar eventos por categoría cuando el usuario selecciona una
+  //filtrar eventos por categoría cuando el usuario selecciona una
   useEffect(() => {
     if (selectedCategory) {
       getEventsByCategory(user, selectedCategory).then((data) => {
@@ -43,7 +44,9 @@ const EventsPage = ({ event }) => {
     } else {
       setFilteredEvents(events); // Mostrar todos los eventos si no se selecciona categoría
     }
-  }, [selectedCategory, user, events]);
+  }, [selectedCategory, events, user]);
+
+
 
   useEffect(() => {
     let sortedEvents = [...filteredEvents];
@@ -56,16 +59,17 @@ const EventsPage = ({ event }) => {
 
     setFilteredEvents(sortedEvents);;
   }, [sortOption]);
+  // }, [sortOption, filteredEvents]);
 
 
   const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value); // Actualiza la categoría seleccionada
+    setSelectedCategory(e.target.value);  // Actualiza la categoría seleccionada
+    
   };
 
   const handleSortChange = (e) => {
     setSortOption(e.target.value);
   };
-
 
   if (!isLoaded) return <BarLoader className="mt-[78px]" width={"100%"} color="#2C2C2C" />
 
@@ -77,22 +81,24 @@ const EventsPage = ({ event }) => {
   return (
     <section className="py-28">
       <div className="container max-w-5xl mx-auto px-4">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col pb-6">
+          {/* <div> */}
           <h2 className="text-[#2C2C2C] lg:text-3xl font-semibold">Eventos cerca de tú zona</h2>
-          <div className="flex space-x-4">
+          <div className="flex justify-end space-x-4 mt-4">
             {/* filtro de categorías */}
-            <select value={selectedCategory} onChange={handleCategoryChange} className="text-sm cursor-pointer font-medium text-white px-2.5 py-2.5 w-56 bg-Button/80 rounded-full">
-              <option value="">Cualquier categoría</option>
+            <select value={selectedCategory} onChange={handleCategoryChange} className="text-sm cursor-pointer font-medium text-gray-700 mx-4 py-2.5 w-64 transition duration-300 ease-in-out w-50 ">
+              <option value="">Todas las categorías</option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id} className="text-gray-600 bg-white">
                   {category.name}
                 </option>
               ))}
             </select>
+
             {/* filtrar por relevancia o más recientes */}
-            <select value={sortOption} onChange={handleSortChange} className="text-sm font-medium text-white cursor-pointer px-2.5 py-2.5 w-60 bg-Button/80 rounded-full">
-              <option value="relevance" className="text-gray-600 font-medium bg-white">Ordenar por: Relevancia</option>
-              <option value="recent" className="text-gray-600 font-medium bg-white">Ordenar por: Más recientes</option>
+            <select value={sortOption} onChange={handleSortChange} className="text-sm cursor-pointer font-medium text-gray-700 mx-4 py-2.5 w-64 transition duration-300 ease-in-out w-50 ">
+              <option value="relevance" className="text-gray-600 bg-white">Ordenar por: Relevancia</option>
+              <option value="recent" className="text-gray-600 bg-white">Ordenar por: Más recientes</option>
             </select>
           </div>
         </div>
@@ -103,7 +109,7 @@ const EventsPage = ({ event }) => {
             Array(8).fill().map((_, index) => <SkeletonHorizontaCard key={index} />)
           ) : (
             filteredEvents && filteredEvents.map((event) => (
-              <HorizontalCards key={event._id}  event={event} />
+              <HorizontalCards key={event._id} event={event} />
             ))
           )}
         </div>
