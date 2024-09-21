@@ -23,10 +23,10 @@ const AppRouter = () => (
         <Route path="/event/:id" element={<EventDetails />} />
         <Route path="/events/category/:categoryId" element={<CategoryResult />} />
         <Route path="/all-events" element={<EventsPage />} />
-        <Route path="/ayuda" element={<Help />} />
-        <Route path="/politicas-de-privacidad" element={<PrivacyPolicy />} />
-        <Route path="/terminos-de-uso" element={<TermsOfUse />} />
-        <Route path="/sobre-nosotros" element={<AboutUs />} />
+        <Route path="/help" element={<Help />} />
+        <Route path="/privacy-policies" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-use" element={<TermsOfUse />} />
+        <Route path="/about-us" element={<AboutUs />} />
 
         {/* Rutas protegidas */}
         <Route path="/post-event" element={<PrivateRoute element={<PostEvent />} />} />

@@ -1,24 +1,27 @@
 import { useEffect, useState, useRef, useCallback } from "react"
 import { useSession, useUser } from "@clerk/clerk-react"
 import useFetch from "../hooks/use-fetch";
-import { getCategories, getEvents, getEventsByCategory } from "../api/apievents";
+import { getCategories, getEvents, getEventsByCategory, getSavedEvents } from "../api/apievents";
 import { BarLoader, PulseLoader } from "react-spinners";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import HorizontalCards from "../components/HorizontalCards"
 import SkeletonHorizontaCard from "../ui/skeleton/SkeletonHorizontaCard";
 
 
-const EventsPage = ({ event }) => {
-  const { isLoaded } = useSession();
-  const { user } = useUser();
+const EventsPage = () => {
+  const { isLoaded, session } = useSession();
+  const { user, isSignedIn } = useUser();
   const { fn: fnEvents, data: events, error: fetchError, isLoading: loadingEvents } = useFetch(getEvents, {});
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [participantsByEvent, setParticipantsByEvent] = useState({});
   const [sortOption, setSortOption] = useState("relevance");
+  const [savedEvents, setSavedEvents] = useState([]);
+  const [loading, setLoading] = useState(false);
+ 
 
-  console.log(categories);
+
 
   useEffect(() => {
     if (isLoaded) {
@@ -29,11 +32,37 @@ const EventsPage = ({ event }) => {
   }, [isLoaded, user]);
 
 
+  // useEffect(() => {
+  //   if (isLoaded && !selectedCategory) {
+  //     fnEvents();
+  //   }
+  // }, [isLoaded, selectedCategory]);
+
   useEffect(() => {
     if (isLoaded && !selectedCategory) {
-      fnEvents();
+      fnEvents(); // carga los eventos
+
+      if (isSignedIn && user) {
+        fetchSavedEvents(); // carga los eventos guardados 
+      }
     }
-  }, [isLoaded, selectedCategory]);
+  }, [isLoaded, isSignedIn, user]);
+
+  const fetchSavedEvents = async () => {
+    setLoading(true);
+    const token = await session.getToken({ template: "supabase" });
+    const { data, error } = await getSavedEvents(token, user.id); // llamadaa a la API para obtener eventos guardados
+
+    if (error) {
+      console.error("Error al obtener eventos guardados:", error);
+    } else if (data) {
+      const savedEventIds = data.map(event => event.event_id);
+      setSavedEvents(savedEventIds);
+    }else {
+      console.warn("No se encontraron eventos guardados.");
+    }
+    setLoading(false);
+  };
 
   //filtrar eventos por categoría cuando el usuario selecciona una
   useEffect(() => {
@@ -56,11 +85,9 @@ const EventsPage = ({ event }) => {
     } else if (sortOption === "relevance") {
       sortedEvents.sort((a, b) => b.participants - a.participants);
     }
-
     setFilteredEvents(sortedEvents);;
   }, [sortOption]);
-  // }, [sortOption, filteredEvents]);
-
+  
 
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);  // Actualiza la categoría seleccionada
@@ -108,9 +135,13 @@ const EventsPage = ({ event }) => {
             // Mostrar esqueleto mientras los eventos están cargando
             Array(8).fill().map((_, index) => <SkeletonHorizontaCard key={index} />)
           ) : (
-            filteredEvents && filteredEvents.map((event) => (
-              <HorizontalCards key={event._id} event={event} />
-            ))
+            
+            filteredEvents && filteredEvents.map((event) => {
+              const isSaved = savedEvents.includes(event.id); 
+                return (
+              <HorizontalCards key={event._id} event={event} savedInit={isSignedIn ? isSaved : false} />
+            );
+})
           )}
         </div>
       </div>

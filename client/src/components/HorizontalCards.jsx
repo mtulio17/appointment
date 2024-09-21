@@ -1,62 +1,130 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
+import { useUser } from "@clerk/clerk-react";
+import useFetch from "../hooks/use-fetch";
 import { Share, Bookmark } from "lucide-react";
+import ShareModal from './ShareModal'
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { saveEvent } from "../api/apievents";
+
 // import { dataEvents } from "../data/dataEvents";
 
 
 
-const HorizontalCards = ({ event }) => {
-    // console.log(event.id);
+const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent = false , onEdit, onDelete, onCancel}) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [saved, setSaved] = useState(savedInit);
+    const { user, isSignedIn } = useUser();
+    const navigate = useNavigate();
+    const { loading: loadingSavedEvent, data: savedEvent, fn: fnSavedEvent} = useFetch(saveEvent);
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const combinedDateTime = new Date(`${event.start_date}T${event.start_time}`);
+    // Formatea la fecha y la hora
+    const formattedDate = format(combinedDateTime, "d 'de' MMM yyyy", { locale: es });
+    const formattedTime = format(combinedDateTime, "HH:mm'hs'");
+  
+    useEffect(() => {
+      setSaved(savedInit);
+    }, [savedInit]);
+  
+    const handleSaveEvent = async () => {
+      if (!isSignedIn || !user) {
+        navigate("/?sign-in=true");
+        return;
+      }
+  
+      if (event.host_id === user.id) {
+        alert("No se puede guardar en favoritos un evento propio.");
+        return;
+      }
+  
+      if (saved) {
+        // Mostrar un alert si el evento ya está guardado y salir
+        alert("Este evento ya está guardado en favoritos.");
+        return;
+      }
+  
+      const response = await fnSavedEvent({}, {
+        user_id: user.id,
+        event_id: event.id,
+      });
+  
+      if (response?.error) {
+        console.error("Error al guardar/eliminar el evento:", response.error);
+        return;
+      }
+  
+      // Solo actualizar el estado si no estaba previamente guardado
+      setSaved(true);
+      onEventAction(); // Llamar la función para actualizar la lista de eventos guardados si es necesario
+    };
+  
 
     return (
-        <Link to="/event-details" className="block">
-            <div className="flex items-center justify-between border border-gray-200 rounded-lg p-4 mb-2 hover:shadow-lg transition-shadow duration-300">
-                {/* Imagen */}
-                <div className="w-32 h-20 rounded-lg overflow-hidden">
-                    <img
-                        src={event.image}
-                        alt={event.name}
-                        className="w-full h-full object-cover"
-                    />
+        // <Link to="/event-details" className="block">
+        <div className="flex items-center justify-between border border-gray-200 rounded-lg p-4 mb-2 hover:shadow-lg transition-shadow duration-300">
+            {/* Imagen */}
+            <Link to={`/event/${event.id}`} className="w-32 h-20 rounded-lg overflow-hidden">
+                <img
+                    src={event.image}
+                    alt={event.name}
+                    className="w-full h-full object-cover"
+                />
+            </Link>
+
+            {/* Contenido */}
+            <div className="flex-1 ml-4">
+                {/* Fecha y Hora */}
+                <div className="text-xs text-yellow-600 font-semibold mb-1">
+                {formattedDate} - {formattedTime}
                 </div>
 
-                {/* Contenido */}
-                <div className="flex-1 ml-4">
-                    {/* Fecha y Hora */}
-                    <div className="text-xs text-yellow-600 font-semibold mb-1">
-                        {event.start_date} - {event.start_time}
-                    </div>
-
-                    {/* Título del evento */}
+                {/* Título del evento con Link */}
+                <Link to={`/event/${event.id}`} className="block">
                     <div className="text-sm font-bold text-gray-800 mb-1">
                         {event.name}
                     </div>
+                </Link>
 
-                    {/* Ubicación */}
-                    <div className="text-xs text-gray-600">
-                        {event.address}, {event.city}, {event.country}
-                    </div>
-
-                    {/* Número de asistentes */}
-                    <div className="text-xs text-gray-500 mt-2">
-                       {event.host_id}
-                    </div>
+                {/* Ubicación */}
+                <div className="text-xs text-gray-600">
+                    {event.address}, {event.city}, {event.country}
                 </div>
 
-                {/* Botones */}
-                <div className="flex items-center space-x-3">
-                    {/* Icono compartir */}
-                    <button className="text-gray-500 hover:text-gray-700">
-                        <Share />
-                    </button>
-
-                    {/* Icono favorito */}
-                    <button className="text-gray-500 hover:text-gray-700">
-                        <Bookmark />
-                    </button>
+                {/* Número de asistentes */}
+                <div className="text-xs text-gray-500 mt-2">
+                    {event.host_id}
                 </div>
             </div>
-        </Link>
+
+            {/* Botones */}
+            <div className="flex items-center space-x-3">
+                {/* Icono compartir */}
+                <button className="text-gray-500 hover:text-gray-700" onClick={openModal}>
+                    <Share />
+                </button>
+
+                {/* Icono favorito */}
+                <button disabled={loadingSavedEvent} onClick={handleSaveEvent} className="text-gray-500 hover:text-gray-700">
+                {saved ? (
+        <Bookmark size={24} fill="red" stroke="red" />
+      ) : (
+        <Bookmark size={24} />
+      )}
+                </button>
+            </div>
+            <ShareModal showModal={isModalOpen} closeModal={closeModal} eventUrl={event.url} />
+        </div>
+        // </Link>
     )
 }
 

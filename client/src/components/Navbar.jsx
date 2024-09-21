@@ -147,12 +147,12 @@ const Navbar = () => {
                           <UserButton.Link
                             label="Ayuda"
                             labelIcon={<Info size={16} />}
-                            href="/ayuda"
+                            href="/help"
                           />
                           <UserButton.Link
                             label="Políticas de Privacidad"
                             labelIcon={<HandHelping size={16} />}
-                            href="/politicas-de-privacidad"
+                            href="/privacy-policies"
                           />
                           <UserButton.Action label="manageAccount" />
                         </UserButton.MenuItems>

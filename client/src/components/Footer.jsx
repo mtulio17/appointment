@@ -20,7 +20,7 @@ const Footer = () => {
             <ul>
               <li><a href="#" className="hover:text-white">Configuraciones</a></li>
               <li><a href="#" className="hover:text-white">Salir</a></li>
-              <li><a href="/ayuda" className="hover:text-white">Ayuda</a></li>
+              <li><a href="/help" className="hover:text-white">Ayuda</a></li>
             </ul>
           </div>
 
@@ -39,7 +39,7 @@ const Footer = () => {
           <div>
             <h4 className="text-white font-semibold mb-4">Appointment</h4>
             <ul>
-              <li><a href="/sobre-nosotros" className="hover:text-white">Nosotros</a></li>
+              <li><a href="/about-us" className="hover:text-white">Nosotros</a></li>
               <li><a href="#" className="hover:text-white">Blog</a></li>
               <li><a href="#" className="hover:text-white">Carreras</a></li>
               
@@ -62,10 +62,10 @@ const Footer = () => {
         <div className="text-sm text-gray-400">
           <p>© 2024 Appointment</p>
           <ul className="flex space-x-4">
-            <li><a href="/terminos-de-uso" className="hover:text-white">Terminos de Uso</a></li>
-            <li><a href="/politicas-de-privacidad" className="hover:text-white">Politicas de Privacidad</a></li>
+            <li><a href="/terms-of-use" className="hover:text-white">Terminos de Uso</a></li>
+            <li><a href="/privacy-policies" className="hover:text-white">Politicas de Privacidad</a></li>
             {/* <li><a href="/politicas-de-privacidad" className="hover:text-white"></a></li> */}
-            <li><a href="/ayuda" className="hover:text-white">Ayuda</a></li>
+            <li><a href="/help" className="hover:text-white">Ayuda</a></li>
           </ul>
         </div>
       </div>
