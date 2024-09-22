@@ -7,7 +7,7 @@ import ShareModal from './ShareModal'
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { saveEvent } from "../api/apievents";
-
+import { toast } from 'react-hot-toast';
 // import { dataEvents } from "../data/dataEvents";
 
 
@@ -43,7 +43,8 @@ const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent
       }
   
       if (event.host_id === user.id) {
-        alert("No se puede guardar en favoritos un evento propio.");
+        toast.error("Este es TU evento.")
+        // alert("No se puede guardar en favoritos un evento propio.");
         return;
       }
   

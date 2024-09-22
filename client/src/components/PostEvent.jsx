@@ -9,6 +9,7 @@ import { createEvent, getCategories } from "../api/apievents";
 import ImageUpload from "../ui/ImageUpload";
 import useFetch from "../hooks/use-fetch";
 import { useUser } from "@clerk/clerk-react";
+import { toast } from 'react-hot-toast';
 
 const eventSchema = yup.object().shape({
   image: yup.string().required("Image is required"),
@@ -66,8 +67,10 @@ const PostEvent = () => {
         console.log("Resultado de createEventFn:", result);
 
         if (result) {
+          toast.success('Evento Creado');
           navigate("/my-created-events");
         } else {
+          toast.error("Error al crear el evento")
           console.error("No se pudo crear el evento");
         }
       } else {

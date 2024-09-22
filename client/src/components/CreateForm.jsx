@@ -8,6 +8,7 @@ import { useUser } from "@clerk/clerk-react";
 import { createEvent } from "../api/apievents";
 import useFetch from "../hooks/use-fetch";
 import supabaseClient from "../utils/supabase";
+import { toast } from 'react-hot-toast';
 
 //esquema de validación con Yup
 const schema = yup.object().shape({
@@ -118,7 +119,9 @@ const CreateForm = () => {
 
     if (!error) {
       navigate('/my-created-events'); // Navegar a otra página después de la creación
+      toast.success('El evento fue exitoso');
     } else {
+      toast.error('Ocurrió un error al crear el evento');
       console.error('Error al crear el evento:', error);
     }
   };
