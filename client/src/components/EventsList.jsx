@@ -1,15 +1,13 @@
-import { useEffect, useState, useRef, useCallback } from "react"
-import { useSession, useUser } from "@clerk/clerk-react"
+import { useEffect, useState } from "react";
+import { useSession, useUser } from "@clerk/clerk-react";
 import useFetch from "../hooks/use-fetch";
 import { getCategories, getEvents, getEventsByCategory, getSavedEvents } from "../api/apievents";
-import { BarLoader, PulseLoader } from "react-spinners";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import Pagination from '../components/Pagination';
-import HorizontalCards from "../components/HorizontalCards"
+import { BarLoader } from "react-spinners";
+import Pagination from './Pagination';
+import HorizontalCards from "./HorizontalCards";
 import SkeletonHorizontaCard from "../ui/skeleton/SkeletonHorizontaCard";
 
-
-const EventsPage = () => {
+const EventsList = () => {
   const { isLoaded, session } = useSession();
   const { user, isSignedIn } = useUser();
   const { fn: fnEvents, data: events, error: fetchError, isLoading: loadingEvents } = useFetch(getEvents, {});
@@ -22,9 +20,8 @@ const EventsPage = () => {
   const [loading, setLoading] = useState(false);
   const itemsPerPage = 5; // Número de eventos por página
   const [currentPage, setCurrentPage] = useState(0); // Página actual
- 
 
-// Obtener categorías
+  // Obtener categorías
   useEffect(() => {
     if (isLoaded) {
       getCategories(user).then((data) => {
@@ -33,20 +30,12 @@ const EventsPage = () => {
     }
   }, [isLoaded, user]);
 
-
-  // useEffect(() => {
-  //   if (isLoaded && !selectedCategory) {
-  //     fnEvents();
-  //   }
-  // }, [isLoaded, selectedCategory]);
-
   // Obtener eventos y eventos guardados
   useEffect(() => {
     if (isLoaded && !selectedCategory) {
-      fnEvents(); // carga los eventos
-
+      fnEvents(); // Carga los eventos
       if (isSignedIn && user) {
-        fetchSavedEvents(); // carga los eventos guardados 
+        fetchSavedEvents(); // Carga los eventos guardados
       }
     }
   }, [isLoaded, isSignedIn, user]);
@@ -55,20 +44,17 @@ const EventsPage = () => {
   const fetchSavedEvents = async () => {
     setLoading(true);
     const token = await session.getToken({ template: "supabase" });
-    const { data, error } = await getSavedEvents(token, user.id); // llamadaa a la API para obtener eventos guardados
-
+    const { data, error } = await getSavedEvents(token, user.id);
     if (error) {
       console.error("Error al obtener eventos guardados:", error);
     } else if (data) {
       const savedEventIds = data.map(event => event.event_id);
       setSavedEvents(savedEventIds);
-    }else {
-      console.warn("No se encontraron eventos guardados.");
     }
     setLoading(false);
   };
 
-   // Filtrar eventos por categoría
+  // Filtrar eventos por categoría
   useEffect(() => {
     if (selectedCategory) {
       getEventsByCategory(user, selectedCategory).then((data) => {
@@ -79,7 +65,7 @@ const EventsPage = () => {
     }
   }, [selectedCategory, events, user]);
 
-// Ordenar eventos por relevancia o fecha
+  // Ordenar eventos por relevancia o fecha
   useEffect(() => {
     let sortedEvents = [...filteredEvents];
     if (sortOption === "recent") {
@@ -87,8 +73,8 @@ const EventsPage = () => {
     } else if (sortOption === "relevance") {
       sortedEvents.sort((a, b) => b.participants - a.participants);
     }
-    setFilteredEvents(sortedEvents);;
-  }, [sortOption]);
+    setFilteredEvents(sortedEvents);
+  }, [sortOption, filteredEvents]);
 
   // Manejar cambio de página
   const handlePageChange = (selectedPage) => {
@@ -99,18 +85,18 @@ const EventsPage = () => {
   const offset = currentPage * itemsPerPage;
   const currentEvents = filteredEvents.slice(offset, offset + itemsPerPage);
   const pageCount = Math.ceil(filteredEvents.length / itemsPerPage);
-  
-  // Manejar cambio de página
+
+  // Manejar cambio de categoría
   const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value);  // Actualiza la categoría seleccionada
+    setSelectedCategory(e.target.value);
   };
 
+  // Manejar cambio de orden
   const handleSortChange = (e) => {
     setSortOption(e.target.value);
   };
 
-  if (!isLoaded) return <BarLoader className="mt-[78px]" width={"100%"} color="#2C2C2C" />
-
+  if (!isLoaded) return <BarLoader className="mt-[78px]" width={"100%"} color="#2C2C2C" />;
 
   if (fetchError) {
     return <div className="flex justify-center text-center">Error cargando eventos: {fetchError.message}</div>;
@@ -120,11 +106,14 @@ const EventsPage = () => {
     <section className="py-28">
       <div className="container max-w-5xl mx-auto px-4">
         <div className="flex flex-col pb-6">
-          {/* <div> */}
           <h2 className="text-[#2C2C2C] lg:text-3xl font-semibold">Eventos cerca de tú zona</h2>
           <div className="flex justify-end space-x-4 mt-4">
-            {/* filtro de categorías */}
-            <select value={selectedCategory} onChange={handleCategoryChange} className="text-sm cursor-pointer font-medium text-gray-700 mx-4 py-2.5 w-64 transition duration-300 ease-in-out w-50 ">
+            {/* Filtro de categorías */}
+            <select
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+              className="text-sm cursor-pointer font-medium text-gray-700 mx-4 py-2.5 w-64 transition duration-300 ease-in-out"
+            >
               <option value="">Todas las categorías</option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id} className="text-gray-600 bg-white">
@@ -133,8 +122,12 @@ const EventsPage = () => {
               ))}
             </select>
 
-            {/* filtrar por relevancia o más recientes */}
-            <select value={sortOption} onChange={handleSortChange} className="text-sm cursor-pointer font-medium text-gray-700 mx-4 py-2.5 w-64 transition duration-300 ease-in-out w-50 ">
+            {/* Filtro de orden */}
+            <select
+              value={sortOption}
+              onChange={handleSortChange}
+              className="text-sm cursor-pointer font-medium text-gray-700 mx-4 py-2.5 w-64 transition duration-300 ease-in-out"
+            >
               <option value="relevance" className="text-gray-600 bg-white">Ordenar por: Relevancia</option>
               <option value="recent" className="text-gray-600 bg-white">Ordenar por: Más recientes</option>
             </select>
@@ -143,26 +136,24 @@ const EventsPage = () => {
 
         <div className="w-full">
           {loadingEvents ? (
-            // Mostrar esqueleto mientras los eventos están cargando
             Array(5).fill().map((_, index) => <SkeletonHorizontaCard key={index} />)
           ) : (
-            // currentEvents.map((event) => {
-              filteredEvents.map((event) => {
-          //  filteredEvents && filteredEvents.map((event) => {
-              const isSaved = savedEvents.includes(event.id); 
-                return (
-              <HorizontalCards key={event._id} event={event} savedInit={isSignedIn ? isSaved : false} />
-            );
-})
+            currentEvents.map((event) => {
+              const isSaved = savedEvents.includes(event.id);
+              return (
+                <HorizontalCards key={event._id} event={event} savedInit={isSignedIn ? isSaved : false} />
+              );
+            })
           )}
         </div>
+
         {/* Componente de paginación */}
         {filteredEvents.length > itemsPerPage && (
           <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
         )}
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default EventsPage
+export default EventsList;
