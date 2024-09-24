@@ -11,11 +11,15 @@ const useFetch = (cb, options = {}) => {
   const fn = async (...args) => {
     setIsLoading(true);
     setError(null);
-
+    // obtener el token de Supabase si hay sesión
     try {
-      // No intentes obtener un token si no hay sesión
-      const supabaseAccessToken = session ? await session.getToken({ template: "supabase" }) : null;
+      const supabaseAccessToken = session ? await session.getToken({ template: 'supabase' }) : null;
       const res = await cb(supabaseAccessToken, ...args, options);
+
+      if (!res) {
+        throw new Error("No se recibió ningún dato de la función.");
+      }
+
       setData(res);
     } catch (err) {
       setError(err);
@@ -23,6 +27,7 @@ const useFetch = (cb, options = {}) => {
       setIsLoading(false);
     }
   };
+
 
   return { fn, data, error, isLoading };
 };

@@ -13,27 +13,31 @@ const SavedEvents = () => {
     if (isLoaded) fnSavedEvents();
   }, [isLoaded]);
 
-  if (!isLoaded || loadingSavedEvents) {
-    return (
-      <div className="container mx-auto py-8">
-        <BarLoader className="mt-4" width={"100%"} color="#2C2C2C" />
-      </div>
-    );
+  const handleEventAction = () =>{
+    fnSavedEvents();
   }
 
+  // if (!isLoaded || loadingSavedEvents) {
+  //   return (
+  //     <div className="container mx-auto py-8">
+  //       <BarLoader className="mt-4" width={"100%"} color="#2C2C2C" />
+  //     </div>
+  //   );
+  // }
+
   return (
-    <div className="container mx-auto my-28">
-      <h1 className="gradient-title text-4xl sm:text-4xl text-start py-20 font-extrabold font-bold mb-4">Mis Eventos Favoritos:</h1>
+    <div className="container mx-auto my-36 max-w-7xl">
+      <h1 className="gradient-title lg:text-4xl text-start font-extrabold font-bold mb-10">Tus eventos favoritos:</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {savedEvents?.length ? (
         savedEvents.map((saved) => (
           saved.event ? (
             <VerticalCards
-              key={saved.id}
-              event={saved.event} 
-              onEventAction={fnSavedEvents}
-              savedInit={true}
-            />
+                key={saved.id}
+                event={saved.event}
+                onEventAction={handleEventAction} // Pasa esta función al componente
+                savedInit={true}
+              />
           ) : (
             console.warn('Evento no encontrado para saved_event id:', saved.id)
           )

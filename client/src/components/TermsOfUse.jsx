@@ -2,7 +2,7 @@ import React from 'react'
 
 const TermsOfUse = () => {
     return (
-        <div className="privacy-policy p-8 max-w-4xl mx-auto bg-white shadow-lg rounded-lg mt-24 my-5">
+        <div className="privacy-policy p-8 max-w-4xl mx-auto bg-white shadow-lg rounded-lg mt-24">
             <h1 className="text-3xl font-bold mb-6 text-indigo-700"><strong>Condiciones de uso</strong></h1>
             <p className="text-sm text-gray-500 mb-4"><strong>Resumen de las Condiciones de uso</strong></p>
             <p className="mb-6 text-gray-700">

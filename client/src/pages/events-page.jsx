@@ -81,11 +81,11 @@ const EventsPage = () => {
     let sortedEvents = [...filteredEvents];
 
     if (sortOption === "recent") {
-      sortedEvents.sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
+      sortedEvents.sort((a, b) => new Date(b.start_time) - new Date(a.start_time));
     } else if (sortOption === "relevance") {
       sortedEvents.sort((a, b) => b.participants - a.participants);
     }
-    setFilteredEvents(sortedEvents);;
+    setFilteredEvents(sortedEvents);
   }, [sortOption]);
   
 
@@ -113,7 +113,7 @@ const EventsPage = () => {
           <h2 className="text-[#2C2C2C] lg:text-3xl font-semibold">Eventos cerca de tú zona</h2>
           <div className="flex justify-end space-x-4 mt-4">
             {/* filtro de categorías */}
-            <select value={selectedCategory} onChange={handleCategoryChange} className="text-sm cursor-pointer font-medium text-gray-700 mx-4 py-2.5 w-64 transition duration-300 ease-in-out w-50 ">
+            <select value={selectedCategory} onChange={handleCategoryChange} className="text-sm cursor-pointer rounded-full font-medium text-gray-700 mx-4 py-2.5 w-64 transition duration-300 ease-in-out w-50 ">
               <option value="">Todas las categorías</option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id} className="text-gray-600 bg-white">
@@ -123,7 +123,7 @@ const EventsPage = () => {
             </select>
 
             {/* filtrar por relevancia o más recientes */}
-            <select value={sortOption} onChange={handleSortChange} className="text-sm cursor-pointer font-medium text-gray-700 mx-4 py-2.5 w-64 transition duration-300 ease-in-out w-50 ">
+            <select value={sortOption} onChange={handleSortChange} className="text-sm cursor-pointer font-medium bg-Button/80 rounded-full text-white text-gray-700 mx-4 py-2.5 px-4 w-64 transition duration-300 ease-in-out w-50">
               <option value="relevance" className="text-gray-600 bg-white">Ordenar por: Relevancia</option>
               <option value="recent" className="text-gray-600 bg-white">Ordenar por: Más recientes</option>
             </select>
@@ -135,7 +135,7 @@ const EventsPage = () => {
             // Mostrar esqueleto mientras los eventos están cargando
             Array(8).fill().map((_, index) => <SkeletonHorizontaCard key={index} />)
           ) : (
-            
+            // Mostrar eventos
             filteredEvents && filteredEvents.map((event) => {
               const isSaved = savedEvents.includes(event.id); 
                 return (

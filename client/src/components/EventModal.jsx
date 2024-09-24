@@ -1,43 +1,42 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useModal } from '../context/ModalContext';
-import { useNavigate } from 'react-router-dom';
-import { LuX } from "react-icons/lu";
+import { useForm } from 'react-hook-form';
 
-const EventModal = () => {
-  const { modalData, closeModal } = useModal();
-  const navigate = useNavigate();
+const EventModal = ({event, onClose}) => {
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+  const {openModal} = useModal();
 
-  if (!modalData) return null;
+  useEffect(() => {
+    // Prellenar los campos del formulario con los datos del evento
+    setValue("name", event.name);
+    setValue("gender", event.gender);
+    setValue("age", event.age);
+    setValue("price", event.price);
+    setValue("description", event.description);
+    setValue("address", event.address);
+    setValue("category_id", event.category_id);
+    setValue("city", event.city);
+    setValue("country", event.country);
+    setValue("start_date", event.start_date);
+    setValue("start_time", event.start_time);
+  }, [event, setValue]);
 
-  const handleClose = () => {
-    closeModal();
-    navigate(-1); // Regresa a la página anterior
+  const onSubmit = (data) => {
+    // Aquí iría la lógica para enviar los datos actualizados al backend
+    console.log(data);
+    // Luego cierra el modal
+    onClose();
   };
 
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-      <div className="bg-white rounded-lg shadow-lg max-w-lg w-full h-5/6 p-6">
-        <button onClick={handleClose} className="absolute top-4 right-4 text-background hover:text-gray-900">
-          <LuX/>
-        </button>
-        <h2 className="text-2xl font-bold mb-4">{modalData.activityName}</h2>
-        <img src={modalData.file} alt={modalData.activityName} className="w-full h-64 object-cover mb-4" />
-        <p className="text-lg mb-4">{modalData.description}</p>
-        <div className="flex items-center mb-4">
-          <p className="text-gray-500">{modalData.city}, {modalData.state}</p>
-        </div>
-        <div className="flex items-center mb-4">
-          <p className="text-gray-500">{modalData.startDate} - {modalData.endDate}</p>
-        </div>
-        <div>
-            <div>
 
-            </div>
-        <button className="bg-Button text-white px-4 py-2 rounded shadow-md hover:bg-ButtonHover">
-            Participar
-        </button>
-        </div>
-        
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
+      <div className='bg-white rounded-lg p-6 max-w-lg w-full shadow-lg'>
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {/* ... (Tu formulario aquí, igual al que compartiste antes) ... */}
+        <button type="submit" className="btn">Actualizar Evento</button>
+        <button type="button" onClick={onClose} className="btn">Cancelar</button>
+      </form>
       </div>
     </div>
   );
