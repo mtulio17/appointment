@@ -1,23 +1,25 @@
-import React, { Suspense } from "react";
-import { ModalProvider } from "../context/ModalContext";
+import { Suspense, lazy } from "react";
+import BarLoader from "react-spinners/BarLoader";
 // Carga diferida del componente
-const HeroSection = React.lazy(() => import("../components/HeroSection"));
-const LastestEvents = React.lazy(() => import("../components/LastestEvents"));
-const PopularCategories = React.lazy(() => import("../components/PopularCategories"));
-const HowItWorks = React.lazy(() => import("../components/HowItWorks"));
+const HeroSection = lazy(() => import("../components/HeroSection"));
+const LastestEvents = lazy(() => import("../components/LastestEvents"));
+const PopularCategories = lazy(() => import("../components/PopularCategories"));
+const HowItWorks = lazy(() => import("../components/HowItWorks"));
 // const EventModal = React.lazy(() => import("../components/EventModal"));
 
+const LoadingSkeleton = () => (
+  <div className="loading-container">
+    <BarLoader color="#2C2C2C" width={"100%"} />
+  </div>
+);
 const Home = () => {
   return (
     <>
-      <Suspense fallback={"null"}>
-        <ModalProvider>
-          <HeroSection />
-          <LastestEvents />
-          <PopularCategories />
-          <HowItWorks />
-          {/* <EventModal /> */}
-        </ModalProvider>
+      <Suspense fallback={<LoadingSkeleton />}>
+        <HeroSection />
+        <LastestEvents />
+        <PopularCategories />
+        <HowItWorks />
       </Suspense>
     </>
   );

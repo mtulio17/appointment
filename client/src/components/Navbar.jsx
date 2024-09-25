@@ -97,7 +97,7 @@ const Navbar = () => {
                   </div>
                 </Link>
                 <form onSubmit={handleSearch} className="relative flex items-center border border-gray-300 rounded-lg overflow-hidden bg-gray-50 focus-within:ring-2 focus-within:ring-indigo-600">
-                  <input type="text" placeholder="Buscar. . ." value={searchQuery} onChange={handleInputChange} className="w-full rounded-md border-0 py-1.5 pl-7 pr-16 text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm sm:leading-6"/>
+                  <input type="text" placeholder="Buscar por nombre de evento.." value={searchQuery} onChange={handleInputChange} className="w-96 rounded-md border-0 py-1.5 px-4 pr-16 text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm sm:leading-6"/>
                       {/* <Select
                       options={countries}
                       value={country}

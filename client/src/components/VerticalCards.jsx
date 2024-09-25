@@ -1,21 +1,24 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { MapPinIcon, CalendarIcon, Bookmark } from "lucide-react";
+import { MapPinIcon, CalendarIcon, Bookmark, Ellipsis, EllipsisIcon } from "lucide-react";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useUser } from "@clerk/clerk-react";
 import useFetch from "../hooks/use-fetch";
 import { saveEvent } from "../api/apievents";
 import { Link, useNavigate } from "react-router-dom";
-// import OptionsModal from "../ui/OptionsModal";
+import { useModal } from "../context/ModalContext";
 
 // eslint-disable-next-line react/prop-types
-const VerticalCards = ({event, savedInit = false, onEventAction = () => {}, isMyEvent = false , onEdit, onDelete, onCancel}) => {
+const VerticalCards = ({event, savedInit = false, onEventAction = () => {}, isMyEvent = false , isHost, onEdit }) => {
   const [saved, setSaved] = useState(savedInit)
   const { user, isSignedIn } = useUser();
   const navigate = useNavigate();
   const { loading: loadingSavedEvent, data: savedEvent, fn: fnSavedEvent} = useFetch(saveEvent);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const {openModal} = useModal();
 
   const combinedDateTime = new Date(`${event.start_date}T${event.start_time}`);
   // Formatea la fecha y la hora
@@ -37,27 +40,49 @@ const VerticalCards = ({event, savedInit = false, onEventAction = () => {}, isMy
       return;
     }
 
+    // Si el evento ya está guardado, eliminarlo de favoritos
     if (saved) {
-      // Mostrar un alert si el evento ya está guardado y salir
-      alert("Este evento ya está guardado en favoritos.");
+      const response = await fnSavedEvent({}, {
+        user_id: user.id,
+        event_id: event.id,
+        alreadySaved: true, // Este flag indica que el evento ya está guardado
+      });
+
+      if (response?.error) {
+        console.error("Error al eliminar el evento de favoritos:", response.error);
+        return;
+      }
+      setSaved(false); // Actualizamos el estado para reflejar que ya no está guardado
+      onEventAction(); // Actualizamos la lista de eventos guardados
       return;
     }
 
+    // Si el evento no está guardado, agregarlo a favoritos
     const response = await fnSavedEvent({}, {
       user_id: user.id,
       event_id: event.id,
+      alreadySaved: false, // Este flag indica que el evento NO está guardado
     });
 
     if (response?.error) {
-      console.error("Error al guardar/eliminar el evento:", response.error);
+      console.error("Error al guardar el evento:", response.error);
       return;
     }
 
-    // Solo actualizar el estado si no estaba previamente guardado
-    setSaved(true);
-    onEventAction(); // Llamar la función para actualizar la lista de eventos guardados si es necesario
+    setSaved(true); // Actualizamos el estado para reflejar que está guardado
+    onEventAction(); // Actualizamos la lista de eventos guardados si es necesario
   };
 
+  // Función para editar el evento
+  const handleEditEvent = () => {
+    openModal({ type: 'edit', event });  // Abrir el modal de edición
+  };
+
+  // Función para cancelar el evento
+  const handleCancelEvent = () => {
+    console.log("Abrir modal de cancelar evento");
+    openModal({ type: 'cancel', event });  // Abrir el modal de confirmación
+  };
 
   const truncateText = (text, wordLimit) => {
     const words = text.split(" ");
@@ -95,7 +120,29 @@ const VerticalCards = ({event, savedInit = false, onEventAction = () => {}, isMy
         <Bookmark size={20} />
       )}
     </button>
-  </div>
+     {/* Solo mostrar el botón de opciones si es el creador */}
+     {isHost && (
+        <button className="btn btn-edit absolute left-0 py-0.5 px-1.5 text-Button rounded-lg" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+          <EllipsisIcon size={16}/>
+        </button>
+      )}
+      {isDropdownOpen && isHost && (
+        <div className="absolute right-0 mt-2 lg:w-56 bg-white shadow-lg rounded-lg">
+          <ul>
+            <li>
+              <button className="block text-sm justify-start text-start px-4 py-2 text-gray-800 hover:bg-gray-200 w-full" onClick={handleEditEvent}>
+                Editar Evento
+              </button>
+            </li>
+            <li>
+              <button className="block text-sm justify-start text-start px-4 py-2 text-red-600 hover:bg-gray-200 w-full" onClick={handleCancelEvent}>
+                Cancelar Evento
+              </button>
+            </li>
+          </ul>
+        </div>
+      )}
+    </div>
   );
 };
 

@@ -72,9 +72,9 @@ const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent
 
     return (
         // <Link to="/event-details" className="block">
-        <div className="flex items-center justify-between border border-gray-200 rounded-lg p-4 mb-2 hover:shadow-lg transition-shadow duration-300">
+        <div className="flex items-center justify-between border-b border-gray-200 rounded-lg p-4 mb-2 py-8 transition-shadow duration-300">
             {/* Imagen */}
-            <Link to={`/event/${event.id}`} className="w-32 h-20 rounded-lg overflow-hidden">
+            <Link to={`/event/${event.id}`} className="h-32 lg:h-24 lg:w-48 rounded-lg overflow-hidden hover:opacity-80 duration-200" style={{ aspectRatio: '16 / 9' }}>
                 <img
                     src={event.image}
                     alt={event.name}
@@ -85,13 +85,13 @@ const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent
             {/* Contenido */}
             <div className="flex-1 ml-4">
                 {/* Fecha y Hora */}
-                <div className="text-xs text-yellow-600 font-semibold mb-1">
+                <div className="text-xs text-yellow-800 font-semibold mb-1 uppercase">
                 {formattedDate} - {formattedTime}
                 </div>
 
                 {/* Título del evento con Link */}
                 <Link to={`/event/${event.id}`} className="block">
-                    <div className="text-sm font-bold text-gray-800 mb-1">
+                    <div className="lg:text-md font-semibold text-gray-800 mb-1">
                         {event.name}
                     </div>
                 </Link>
@@ -117,10 +117,10 @@ const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent
                 {/* Icono favorito */}
                 <button disabled={loadingSavedEvent} onClick={handleSaveEvent} className="text-gray-500 hover:text-gray-700">
                 {saved ? (
-        <Bookmark size={24} fill="red" stroke="red" />
-      ) : (
-        <Bookmark size={24} />
-      )}
+                  <Bookmark size={24} fill="red" stroke="red" />
+                ) : (
+                  <Bookmark size={24} />
+                )}
                 </button>
             </div>
             <ShareModal showModal={isModalOpen} closeModal={closeModal} eventUrl={event.url} />

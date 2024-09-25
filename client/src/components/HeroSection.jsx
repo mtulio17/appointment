@@ -15,7 +15,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative w-full py-32">
+    <section className="relative w-full my-32">
      {/* Efecto de fondo degradado en el lado derecho */}
      <div className="absolute right-0 top-0 w-2/4 h-full blur-xl z-0" style={{ background: "linear-gradient(190.6deg, rgba(192, 132, 252, 0) 20.79%, rgba(232, 121, 249, 0.15) 40.92%, rgba(204, 171, 238, 0.09) 70.35%)"}}></div>
  
@@ -39,26 +39,20 @@ const HeroSection = () => {
     <div className="relative w-full lg:w-1/2 flex items-center justify-center lg:justify-end mt-12 lg:mt-0 z-10">
       <div className="relative w-full h-[500px] flex items-center justify-center">
         {/* Imagen 1 (izquierda, columna principal) */}
-        <motion.img
+        <LazyLoadImage
             src="https://plus.unsplash.com/premium_photo-1685366454253-cb705836c5a8?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt="Image 1"
-            className="absolute top-0 left-16 w-44 h-64 object-cover rounded-xl shadow-xl"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            whileHover={{ y: -10, scale: 1.05 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.5, type: "spring" }}
+            className="absolute top-3 left-16 w-44 h-64 object-cover rounded-xl shadow-xl"
+            style={{
+              zIndex: 1,
+            }}
           />
         {/* Imagen 2 (derecha, superior) */}
-        <motion.img
+        <LazyLoadImage
           src="https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Image 2"
-          className="absolute top-5 right-[-5%] w-40 h-60 object-cover rounded-xl shadow-xl transform translate-y-[10%]"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          whileHover={{ y: -10, scale: 1.05 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          transition={{ duration: 0.5, type: "spring" }}
+          className="absolute top-2 right-[-10%] w-40 h-60 object-cover rounded-xl shadow-xl transform translate-y-[10%]"
+            
         />
         {/* Imagen 3 (izquierda, inferior, ligeramente superpuesta) */}
         <LazyLoadImage

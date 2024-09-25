@@ -6,23 +6,23 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import supabase from "../utils/supabase";
 import { createEvent, getCategories } from "../api/apievents";
-import ImageUpload from "../ui/ImageUpload";
+// import ImageUpload from "../ui/ImageUpload";
 import useFetch from "../hooks/use-fetch";
 import { useUser } from "@clerk/clerk-react";
 import { toast } from 'react-hot-toast';
 
 const eventSchema = yup.object().shape({
-  image: yup.string().required("Image is required"),
+  image: yup.mixed().required("Image is required"),
   name: yup.string().required("Event name is required"),
   gender: yup.string().required("Gender is required"),
   description: yup.string().required("Description is required"),
   age: yup.number().integer().positive().required("Age is required"),
-  category_id: yup
-    .number()
-    .integer()
-    .positive()
-    .required("Category is required"),
-  price: yup.number().positive().required("Price is required"),
+  category_id: yup.number().required("Category is required"),
+  price: yup
+  .number()
+  .typeError("Precio debe ser un número.") 
+  .min(0, "El precio debe ser al menos 0.") 
+  .required("Price is required"),
   address: yup.string().required("Address is required"),
   country: yup.string().required("Country is required"),
   city: yup.string().required("City is required"),
@@ -33,11 +33,10 @@ const eventSchema = yup.object().shape({
 const PostEvent = () => {
   const { user } = useUser();
   const navigate = useNavigate();
-  const [imageURL, setImageURL] = useState("");
+
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm({ resolver: yupResolver(eventSchema) });
 
@@ -46,22 +45,54 @@ const PostEvent = () => {
 
   useEffect(() => {
     fetchCategories();
-  }, [fetchCategories]);
+  }, []);
+
+
+  const handleImageUpload = async (file) => {
+    if (file && file instanceof File) {  // Asegúrate de que sea un archivo
+      const fileName = `${Date.now()}_${file.name}`;
+      // cargar la imagen al bucket de Supabase
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("event-images")
+        .upload(fileName, file);
+  
+      if (uploadError) {
+        console.error("Error al subir el archivo:", uploadError);
+        return null;
+      }
+      // obtener la URL de la imagen
+      const { data: publicURLData, error: urlError } = supabase.storage
+        .from("event-images")
+        .getPublicUrl(fileName);
+  
+      if (urlError) {
+        console.error("Error al obtener la URL pública:", urlError);
+        return null;
+      }
+      // retorna la URL de la imagen
+      return publicURLData.publicUrl;
+    } else {
+      console.error("Archivo inválido o no seleccionado");
+      return null;
+    }
+  };
+  
 
   const onSubmit = async (data) => {
     if (user) {
-      // Primero sube la imagen y obtiene la URL
+      // Subir imagen
       const imageFile = data.image[0];
       const imageURL = await handleImageUpload(imageFile);
-
+  
       if (imageURL) {
-        // Luego crea el evento con la URL de la imagen
         const eventData = {
           ...data,
           host_id: user.id,
-          image: imageURL,  // Asegúrate de que el campo para la imagen sea correcto
+          image: imageURL,
+          start_date: data.start_date.toISOString(), // asegura el formato ISO para fechas
         };
         console.log("Datos del evento antes de enviar:", eventData);
+<<<<<<< HEAD
 
         const result = await createEventFn(null, eventData);
         console.log("Resultado de createEventFn:", result);
@@ -72,40 +103,26 @@ const PostEvent = () => {
         } else {
           toast.error("Error al crear el evento")
           console.error("No se pudo crear el evento");
+=======
+  
+        const result = await createEventFn(eventData);
+        // maneja la respuesta de la función createEventFn
+        if (result?.success) {
+          console.log("Evento creado con éxito", result.data);
+          navigate("/my-created-events");
+        } else {
+          console.error("Error al crear el evento:", result?.error || 'Error desconocido');
+>>>>>>> d1c4518d7e9739baa3549aa88c0a5ae99a0aaddf
         }
       } else {
         console.error("No se pudo obtener la URL de la imagen");
       }
     } else {
-      console.error("User not authenticated");
+      console.error("Usuario no autenticado.");
     }
   };
-
-  const handleImageUpload = async (file) => {
-    if (file) {
-      const fileName = `${Date.now()}_${file.name}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("event-images")
-        .upload(fileName, file);
-
-      if (uploadError) {
-        console.error("Error uploading file:", uploadError);
-        return null;
-      }
-
-      const { publicURL, error: urlError } = supabase.storage
-        .from("event-images")
-        .getPublicUrl(fileName);
-
-      if (urlError) {
-        console.error("Error getting public URL:", urlError);
-        return null;
-      }
-
-      return publicURL;
-    }
-    return null;
-  };
+  
+  
 
   const handleCancel = () => {
     navigate('/');
@@ -117,13 +134,12 @@ const PostEvent = () => {
     return <p>Error loading categories: {categoriesError.message}</p>;
 
   return (
-    <div className="max-w-7xl mx-auto my-28 p-16 border border-black-50 rounded-md">
+    <div className="max-w-7xl mx-auto my-36 p-16 border border-black-50 rounded-md">
       <h1 className="lg:text-4xl font-bold mb-10">
         Crear un Evento
       </h1>
       <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-4 gap-4">
-         
-            <div className="col-span-1 md:col-span-2">
+          <div className="col-span-1 md:col-span-2">
               <label className="block text-sm font-medium text-gray-700">Nombre del Evento</label>
               <input
                 {...register("name")}
@@ -152,20 +168,25 @@ const PostEvent = () => {
           </div>
 
             <div className="col-span-1 md:col-span-2">
-              <ImageUpload onUpload={handleImageUpload} token={user?.token} />
-              {/* Mostrar errores para el campo de la imagen */}
-              {errors.image && <p className="text-red-500">{errors.image.message}</p>}
-            </div>
+              <label htmlFor="image" className="block text-sm font-medium text-gray-700"></label>
+              <input
+                {...register("image")}
+                type="file"
+                accept="image/*"
+                id="image"
+                className={`input ${errors.image ? "input-error" : ""} mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+               />
+                </div>
 
             <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700">Price</label>
+            <label className="block text-sm font-medium text-gray-700">Precio por persona</label>
             <input
               {...register("price")}
               type="number"
               placeholder="Precio por persona"
               className={`input ${errors.price ? "input-error" : ""} mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-            />
-          </div>
+              />
+            </div>
 
             <div className="col-span-1 md:col-span-2">
               <label className="block text-sm font-medium text-gray-700">Descripción</label>

@@ -37,7 +37,7 @@ const CategoryResult = () => {
   const selectedCategory = categories?.find(category => category.id.toString() === categoryId)?.name || "Categoría";
 
   return (
-    <div className="container mx-auto my-28 mt-8 p-16">
+    <div className="container mx-auto max-w-7xl my-32 mt-8 p-16">
       <h2 className="text-xl font-normal mb-4">
         Resultados relacionados con la categoría:{" "}
         <span className="font-bold">{selectedCategory}.</span>

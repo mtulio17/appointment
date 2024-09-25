@@ -2,7 +2,7 @@ import React from 'react';
 import {CalendarSearch, Plus} from 'lucide-react'
 const HowItWorks = () => {
   return (
-    <section className="py-28 bg-transparent">
+    <section className="my-28 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 lg:px-4">
         <h2 className="text-2xl font-bold text-start mb-10">Cómo funciona Appointment</h2>
         <div className="flex flex-col md:flex-row gap-8 justify-center">

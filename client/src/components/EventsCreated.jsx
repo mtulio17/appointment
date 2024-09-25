@@ -2,20 +2,17 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import VerticalCards from "./VerticalCards";
 import useFetch from "../hooks/use-fetch";
-import { getMyEvents, deleteEvent, cancelEvent, editEvent } from "../api/apievents";
+import { getMyEvents } from "../api/apievents";
 import SkeletonCard from "../ui/skeleton/SkeletonCard";
+import ConfirmCancelModal from "./ConfirmCancelModal";
+import { Link } from "react-router-dom";
 // import OptionsModal from '../ui/OptionsModal';
 
 const MyCreatedEvents = () => {
   const { user, isSignedIn } = useUser();
-  // const [selectedEvent, setSelectedEvent] = useState(null);
-  // const [modalOpen, setModalOpen] = useState(false);
-  const {
-    fn: fetchMyEvents,
-    data: events,
-    error,
-    isLoading: loadingEvents,
-  } = useFetch(getMyEvents);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const { fn: fetchMyEvents, data: events, error,  isLoading: loadingEvents } = useFetch(getMyEvents);
 
   useEffect(() => {
     if (isSignedIn && user) {
@@ -23,20 +20,27 @@ const MyCreatedEvents = () => {
     }
   }, [isSignedIn, user]);
 
-  // const handleEditEvent = (event) => {
-  //   setSelectedEvent(event);
-  //   setModalOpen(true);
-  // };
 
-  // const handleDeleteEvent = async (event) => {
-  //   await deleteEvent(user.token, event.id);
-  //   fetchMyEvents({ host_id: user.id });
-  // };
+  const handleCancelEvent = (event) => {
+    setSelectedEvent(event);
+    setIsModalOpen(true);
+  };
 
-  // const handleCancelEvent = async (event) => {
-  //   await cancelEvent(user.token, event.id);
-  //   fetchMyEvents({ host_id: user.id });
-  // };
+  // Función para cerrar el modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedEvent(null);
+  };
+
+    // Función para confirmar la cancelación
+  const handleConfirmCancel = async () => {
+    console.log("Cancelar evento:", selectedEvent.id);
+    // Aquí deberías implementar la lógica para cancelar/eliminar el evento en el backend
+    // await deleteEvent(selectedEvent.id);
+    handleCloseModal();
+    fetchMyEvents({ host_id: user.id }); 
+  };
+
 
   if (!isSignedIn) {
     return <div>No estás autenticado.</div>;
@@ -47,7 +51,7 @@ const MyCreatedEvents = () => {
   }
 
   return (
-    <section className="container mx-auto max-w-5xl bg-transparent my-32">
+    <section className="container mx-auto max-w-6xl bg-transparent my-32">
         <h2 className="gradient-title lg:text-3xl sm:text-4xl text-start font-semibold mb-4">
           Eventos que has creado recientemente:
         </h2>
@@ -61,15 +65,30 @@ const MyCreatedEvents = () => {
               // mostrar eventos si están disponibles
               events && events.length > 0 ? (
                 events.map((event) => (
-                  <VerticalCards key={event.id} event={event} />
+                  <VerticalCards 
+                    key={event.id} 
+                    event={event} 
+                    isHost={event.host_id === user.id}
+                    onEdit={() => handleCancelEvent(event)}
+                    />
                 ))
               ) : (
-                <p>No has creado ningún evento aún.</p>
+                <div className="flex justify-center items-center">
+                  <p>No has creado ningún evento aún.</p>
+                  <Link to="/post-event">¿Te gustaría crear tu primer evento?</Link>
+                </div>
               )
             )}
           </div>
         </div>
       </div>
+      {isModalOpen && selectedEvent && (
+        <ConfirmCancelModal
+        event={selectedEvent}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmCancel}  // Confirmar la cancelación del evento
+      />
+      )}
     </section>
   );
 };

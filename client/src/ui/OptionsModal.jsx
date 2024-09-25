@@ -1,42 +1,65 @@
 import { Menu} from '@headlessui/react';
 import { Pencil, Trash, X, XCircle } from 'lucide-react';
+import { useState } from 'react';
 
-const OptionsModal = ({ onEdit, onDelete, onCancel }) => {
+const OptionsModal = ({ event, isOpen, onClose, onSave }) => {
+
+  const [formData, setFormData] = useState({
+    name: event?.name || "",
+    description: event?.description || "",
+    date: event?.date || "",
+    // otros campos
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = () => {
+    onSave(formData); // Llama a la función de guardado en MyCreatedEvents
+    onClose(); // Cierra el modal después de guardar
+  };
+
+  if (!isOpen) return null;
+
   return (
-    <Menu as="div" className="relative">
-      <Menu.Button className="inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-3 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:outline-none">
-        Opciones
-      </Menu.Button>
-      <Menu.Items className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-        <Menu.Item>
-          <button
-            onClick={onEdit}
-            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            <Pencil className="w-5 h-5 mr-2 text-gray-500" />
-            Editar
-          </button>
-        </Menu.Item>
-        <Menu.Item>
-          <button
-            onClick={onDelete}
-            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            <Trash className="w-5 h-5 mr-2 text-gray-500" />
-            Eliminar
-          </button>
-        </Menu.Item>
-        <Menu.Item>
-          <button
-            onClick={onCancel}
-            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            <XCircle className="w-5 h-5 mr-2 text-gray-500" />
-            Cancelar
-          </button>
-        </Menu.Item>
-      </Menu.Items>
-    </Menu>
+    <div className="modal">
+      <div className="modal-content">
+        <h2>Editar Evento</h2>
+        <form>
+          <label>
+            Nombre:
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </label>
+          <label>
+            Descripción:
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+            />
+          </label>
+          <label>
+            Fecha:
+            <input
+              type="date"
+              name="date"
+              value={formData.date}
+              onChange={handleChange}
+            />
+          </label>
+          {/* Agregar más campos según sea necesario */}
+        </form>
+        <button onClick={handleSubmit}>Guardar Cambios</button>
+        <button onClick={onClose}>Cancelar</button>
+      </div>
+    </div>
   );
 };
 

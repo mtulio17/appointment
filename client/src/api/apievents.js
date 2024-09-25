@@ -60,7 +60,6 @@ export async function getCategories(token) {
 
 
 export async function getEventsByCategory(token, categoryId) {
-  console.log("Category ID:", categoryId); // Añade esta línea para verificar el valor de categoryId
   await setSupabaseSession(token);
 
   const { data, error } = await supabase
@@ -76,25 +75,29 @@ export async function getEventsByCategory(token, categoryId) {
   return data;
 }
 
-
 // función para crear nuevo evento en la db
-export async function createEvent(token, _, eventData) {
-  console.log("Datos enviados a Supabase:", eventData); // Agrega esto
+export async function createEvent(token, eventData) {
+  console.log("Datos enviados a Supabase:", eventData);
 
   await setSupabaseSession(token);
 
   const { data, error } = await supabase
-    .from("events")
+    .from('events')
     .insert([eventData])
     .single();
 
   if (error) {
-    console.error("Error creando el evento:", error);
-    return null;
+    console.error("Error al crear el evento:", error);
+    return { success: false, error };
   }
 
-  console.log("Evento creado con éxito:", data); // Agrega esto
-  return data;
+  if (!data) {
+    console.error("No se recibió ningún dato de Supabase.");
+    return { success: false, error: "No se recibió ningún dato" };
+  }
+
+  console.log("Evento creado con éxito:", data);
+  return { success: true, data };  // devuelve el objeto con éxito verdadero y los datos.
 }
 
 
@@ -222,7 +225,7 @@ export async function getSingleEvent(token, { event_id }) {
 }
 
 // - Add / Remove saveEvent
-export async function saveEvent(token, { alreadySaved }, saveData) {
+export async function saveEvent(token, saveData) {
   await setSupabaseSession(token);
 
   // verificar si el evento ya está guardado
@@ -237,8 +240,8 @@ export async function saveEvent(token, { alreadySaved }, saveData) {
     return { error: selectError };
   }
 
-  if (alreadySaved) {
-    // si ya está guardado y se desea desmarcar (eliminar)
+  if (saveData.alreadySaved) {
+    // Si ya está guardado y se desea desmarcar (eliminar)
     const { data, error: deleteError } = await supabase
       .from("saved_events")
       .delete()
@@ -252,7 +255,7 @@ export async function saveEvent(token, { alreadySaved }, saveData) {
 
     return { data };
   } else if (existingEvents.length === 0) {
-    // si no está guardado, se agrega a favoritos
+    // Si no está guardado, se agrega a favoritos
     const { data, error: insertError } = await supabase
       .from("saved_events")
       .insert([saveData])
@@ -265,7 +268,7 @@ export async function saveEvent(token, { alreadySaved }, saveData) {
 
     return { data };
   } else {
-    // si ya está guardado, no se inserta dos veces
+    // Si ya está guardado, no se inserta dos veces
     console.warn("El evento ya está guardado en favoritos.");
     return { data: existingEvents };
   }
