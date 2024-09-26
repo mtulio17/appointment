@@ -1,0 +1,157 @@
+import { useEffect, useState } from "react"
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { useSession, useUser } from "@clerk/clerk-react"
+// import useFetch from "../hooks/use-fetch";
+import { getCategories, getEvents, getEventsByCategory, getSavedEvents } from "../api/apievents";
+import { BarLoader } from "react-spinners";
+import ReactPaginate from 'react-paginate';
+import HorizontalCards from "../components/HorizontalCards"
+import SkeletonHorizontaCard from "../ui/skeleton/SkeletonHorizontaCard";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+const EventsPage = () => {
+  const { isLoaded, session } = useSession();
+  const { user, isSignedIn } = useUser();
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [sortOption, setSortOption] = useState("relevance");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const currentPage = parseInt(searchParams.get('page')) || 1; 
+  const eventsPerPage = 10; 
+
+  // Consulta para obtener eventos
+  const { data: events, error: fetchError, isLoading: loadingEvents } = useQuery({
+    queryKey: ['events', selectedCategory],
+    queryFn: async () => {
+      const response = selectedCategory ? await getEventsByCategory(user, selectedCategory) : await getEvents();
+      return response;
+    },
+    cacheTime: 1000 * 60 * 10,
+    enabled: isLoaded,
+  });
+
+  // Consulta para obtener categorías
+  useEffect(() => {
+    if (isLoaded) {
+      getCategories(user).then((data) => {
+        if (data) setCategories(data);
+      });
+    }
+  }, [isLoaded, user]);
+
+  // Consulta para obtener eventos guardados
+  const { data: savedEventsData, isLoading: loadingSavedEvents } = useQuery({
+    queryKey: ['savedEvents', user?.id],
+    queryFn: async () => {
+      const token = await session.getToken({ template: "supabase" });
+      return getSavedEvents(token, user.id);
+    },
+    enabled: isSignedIn && !!user,
+  });
+
+  // Extraer IDs de eventos guardados
+  const savedEventIds = savedEventsData ? savedEventsData.map(event => event.event_id) : [];
+
+  // Filtrar y ordenar eventos
+  const handleSort = (eventsToSort) => {
+    let sortedEvents = [...eventsToSort];
+
+    if (sortOption === "recent") {
+      sortedEvents.sort((a, b) => new Date(b.start_time) - new Date(a.start_time));
+    } else if (sortOption === "relevance") {
+      sortedEvents.sort((a, b) => b.participants - a.participants);
+    }
+    return sortedEvents;
+  };
+
+  // Aplicar la ordenación
+  const filteredEvents = events ? handleSort(events) : [];
+  
+  // Paginación
+  const pageCount = Math.ceil(filteredEvents.length / eventsPerPage);
+  const startIndex = (currentPage - 1) * eventsPerPage;
+  const endIndex = startIndex + eventsPerPage;
+  const displayedEvents = filteredEvents.slice(startIndex, endIndex);
+
+  if (!isLoaded) return <BarLoader className="mt-[78px]" width={"100%"} color="#2C2C2C" />;
+
+  if (fetchError) {
+    return <div className="flex justify-center text-center">Error cargando eventos: {fetchError.message}</div>;
+  }
+
+  return (
+    <section className="my-32">
+      <div className="container max-w-5xl mx-auto px-4">
+        <div className="flex flex-col pb-6">
+          <h2 className="text-[#2C2C2C] lg:text-3xl font-semibold">Eventos cerca de tú zona</h2>
+          <div className="flex justify-end space-x-4 mt-4">
+            {/* Filtro de categorías */}
+            <select 
+              value={selectedCategory} 
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="text-sm cursor-pointer font-medium bg-Button/80 rounded-full text-white text-gray-700 mx-4 py-2.5 px-4 w-64 transition duration-300 ease-in-out"
+            >
+              <option value="">Todas las categorías</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id} className="text-gray-600 bg-white">
+                  {category.name}
+                </option>
+              ))}
+            </select>
+
+            {/* Filtro de orden */}
+            <select 
+              value={sortOption} 
+              onChange={(e) => setSortOption(e.target.value)} 
+              className="text-sm cursor-pointer font-medium bg-Button/80 rounded-full text-white text-gray-700 mx-4 py-2.5 px-4 w-64 transition duration-300 ease-in-out"
+            >
+              <option value="relevance" className="text-gray-600 bg-white">Ordenar por: Relevancia</option>
+              <option value="recent" className="text-gray-600 bg-white">Ordenar por: Más recientes</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Listado de eventos */}
+        <div className="w-full">
+          {loadingEvents || loadingSavedEvents ? (
+            Array(8).fill().map((_, index) => <SkeletonHorizontaCard key={index} />)
+          ) : (
+            displayedEvents.map((event) => {
+              const isSaved = savedEventIds.includes(event.id);
+              return (
+                <HorizontalCards key={event._id} event={event} savedInit={isSignedIn ? isSaved : false} />
+              );
+            })
+          )}
+        </div>
+        {/* paginación */}
+        <ReactPaginate
+          nextLabel={<ChevronRight className="h-6 w-6 text-black" />}
+          previousLabel={<ChevronLeft className="h-6 w-6 text-black" />}
+          breakLabel={"..."}
+          pageCount={pageCount}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={(data) => {
+            const selectedPage = data.selected + 1;
+            setSearchParams({ page: selectedPage });
+            navigate(`/all-events?page=${selectedPage}`);
+          }}
+          containerClassName={"flex justify-center items-center mt-10 space-x-6 py-10 bg-gray-50 rounded-md"}
+          activeClassName={"bg-primary text-white"}
+          previousClassName={"lg:w-full flex justify-start text-sm px-4"} // "anterior" alineado a la izquierda
+          nextClassName={"lg:w-full flex justify-end text-sm px-4"} // "siguiente" alineado a la derecha
+          pageClassName={"w-4 h-4 py-2.5 px-3 text-xs flex justify-center items-center rounded-md text-white bg-slate-700 mx-6"}
+          pageLinkClassName={"w-full h-full flex justify-center items-center"}
+          breakClassName={"w-8 h-8 flex justify-center items-center"}
+          activeLinkClassName={"font-bold"}
+        />
+      </div>
+    </section>
+  );
+}
+
+export default EventsPage
