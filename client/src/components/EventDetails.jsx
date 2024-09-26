@@ -11,6 +11,7 @@ import { getEventParticipants, getSingleEvent, participateInEvent } from "../api
 import useFetch from "../hooks/use-fetch";
 import { MapPin, Calendar } from "lucide-react";
 import EventParticipantsSection from "./EventParticipantsSection";
+import MapComponent from "./MapComponent";
 
 
 
@@ -148,6 +149,10 @@ const EventDetails = () => {
                   </span>
                 </div>
               </div>
+              {/* Mapa */}
+              {/* <div className="relative border rounded-lg p-4 mb-4">
+                <MapComponent address={event.address} city={event.city} count={event.country}/>
+              </div> */}
             </div>
 
             {/* Left Section */}

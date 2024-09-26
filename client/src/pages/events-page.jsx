@@ -113,6 +113,7 @@ const EventsPage = () => {
         <div className="flex flex-col pb-6">
           {/* <div> */}
           <h2 className="text-[#2C2C2C] lg:text-3xl font-semibold">Eventos cerca de tú zona</h2>
+          <hr className="border-b border-gray-200 w-full" />
           <div className="flex justify-end space-x-4 mt-4">
             {/* filtro de categorías */}
             <select value={selectedCategory} onChange={handleCategoryChange} className="text-sm cursor-pointer rounded-full font-medium text-gray-700 mx-4 py-2.5 w-64 transition duration-300 ease-in-out w-50 ">

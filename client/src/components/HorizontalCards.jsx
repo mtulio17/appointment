@@ -12,7 +12,7 @@ import { toast } from 'react-hot-toast';
 
 
 
-const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent = false , onEdit, onDelete, onCancel}) => {
+const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent = false , isHost, onEdit, onDelete, onCancel}) => {
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [saved, setSaved] = useState(savedInit);
     const { user, isSignedIn } = useUser();
