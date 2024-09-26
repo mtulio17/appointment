@@ -4,6 +4,7 @@ import {BarLoader} from "react-spinners/BarLoader";
 import VerticalCards from "../components/VerticalCards";
 import useFetch from "../hooks/use-fetch";
 import { getSavedEvents } from "../api/apievents";
+import HorizontalCards from "../components/HorizontalCards";
 
 const SavedEvents = () => {
   const { isLoaded } = useUser();
@@ -26,13 +27,14 @@ const SavedEvents = () => {
   // }
 
   return (
-    <div className="container mx-auto my-36 max-w-7xl">
-      <h1 className="gradient-title lg:text-4xl text-start font-extrabold font-bold mb-10">Tus eventos favoritos:</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="container max-w-7xl mx-auto my-28">
+      <h2 className="text-[#2C2C2C] lg:text-3xl font-semibold">Tus eventos favoritos:</h2>
+      <hr className="border-b border-gray-200 w-full" />
+      <div className="w-full">
       {savedEvents?.length ? (
         savedEvents.map((saved) => (
           saved.event ? (
-            <VerticalCards
+            <HorizontalCards
                 key={saved.id}
                 event={saved.event}
                 onEventAction={handleEventAction} // Pasa esta función al componente

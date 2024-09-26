@@ -7,25 +7,35 @@ import ShareModal from './ShareModal'
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { saveEvent } from "../api/apievents";
-
+import { toast } from 'react-hot-toast';
 // import { dataEvents } from "../data/dataEvents";
 
 
 
-const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent = false , onEdit, onDelete, onCancel}) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent = false , isHost, onEdit, onDelete, onCancel}) => {
+    const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [saved, setSaved] = useState(savedInit);
     const { user, isSignedIn } = useUser();
     const navigate = useNavigate();
     const { loading: loadingSavedEvent, data: savedEvent, fn: fnSavedEvent} = useFetch(saveEvent);
 
-    const openModal = () => {
-        setIsModalOpen(true);
+    const shareModalOpen = () => {
+        setIsShareModalOpen(true);
     };
 
-    const closeModal = () => {
-        setIsModalOpen(false);
+    const closeShareModal = () => {
+        setIsShareModalOpen(false);
     };
+    useEffect(() => {
+      if (isShareModalOpen) {
+        document.body.style.overflow = 'hidden'; // Desactiva el scroll
+      } else {
+        document.body.style.overflow = 'unset'; // Restablece el scroll
+      }
+      return () => {
+        document.body.style.overflow = 'unset';
+      };
+    }, [isShareModalOpen]);
 
     const combinedDateTime = new Date(`${event.start_date}T${event.start_time}`);
     // Formatea la fecha y la hora
@@ -43,7 +53,8 @@ const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent
       }
   
       if (event.host_id === user.id) {
-        alert("No se puede guardar en favoritos un evento propio.");
+        toast.error("Este es TU evento.")
+        // alert("No se puede guardar en favoritos un evento propio.");
         return;
       }
   
@@ -109,7 +120,7 @@ const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent
             {/* Botones */}
             <div className="flex items-center space-x-3">
                 {/* Icono compartir */}
-                <button className="text-gray-500 hover:text-gray-700" onClick={openModal}>
+                <button className="text-gray-500 hover:text-gray-700" onClick={shareModalOpen}>
                     <Share />
                 </button>
 
@@ -122,7 +133,7 @@ const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent
                 )}
                 </button>
             </div>
-            <ShareModal showModal={isModalOpen} closeModal={closeModal} eventUrl={event.url} />
+            <ShareModal showModal={isShareModalOpen} closeShareModal={closeShareModal} eventUrl={event.url} />
         </div>
         // </Link>
     )

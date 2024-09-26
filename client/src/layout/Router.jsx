@@ -13,6 +13,7 @@ import Help from '../components/Help'
 import PrivacyPolicy from '../components/PrivacyPolicy'
 import TermsOfUse from '../components/TermsOfUse';
 import AboutUs from '../components/AboutUs';
+import EventsList from '../components/EventsList';
 
 const AppRouter = () => (
   <Router>
@@ -23,6 +24,8 @@ const AppRouter = () => (
         <Route path="/event/:id" element={<EventDetails />} />
         <Route path="/events/category/:categoryId" element={<CategoryResult />} />
         <Route path="/all-events" element={<EventsPage />} />
+        {/* <Route path="/all-events" element={<EventsList />} /> */}
+
         <Route path="/help" element={<Help />} />
         <Route path="/privacy-policies" element={<PrivacyPolicy />} />
         <Route path="/terms-of-use" element={<TermsOfUse />} />

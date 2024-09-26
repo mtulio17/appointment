@@ -6,6 +6,7 @@ import { getMyEvents } from "../api/apievents";
 import SkeletonCard from "../ui/skeleton/SkeletonCard";
 import ConfirmCancelModal from "./ConfirmCancelModal";
 import { Link } from "react-router-dom";
+import HorizontalCards from "./HorizontalCards";
 // import OptionsModal from '../ui/OptionsModal';
 
 const MyCreatedEvents = () => {
@@ -51,21 +52,20 @@ const MyCreatedEvents = () => {
   }
 
   return (
-    <section className="container mx-auto max-w-6xl bg-transparent my-32">
-        <h2 className="gradient-title lg:text-3xl sm:text-4xl text-start font-semibold mb-4">
+    <section className="container mx-auto max-w-7xl my-28">
+        <h2 className="text-[#2C2C2C] lg:text-3xl font-semibold">
           Eventos que has creado recientemente:
         </h2>
-        <hr className="border-b border-gray-100 w-full" />
-        <div className="container mx-auto px-4 max-w-7xl">
-        <div className="mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <hr className="border-b border-gray-200 w-full" />
+        {/* <div className="mx-auto"> */}
+          <div className="w-full">
             {loadingEvents ? (
               Array(4).fill().map((_, index) => <SkeletonCard key={index} />)
             ) : (
               // mostrar eventos si están disponibles
               events && events.length > 0 ? (
                 events.map((event) => (
-                  <VerticalCards 
+                  <HorizontalCards 
                     key={event.id} 
                     event={event} 
                     isHost={event.host_id === user.id}
@@ -73,15 +73,16 @@ const MyCreatedEvents = () => {
                     />
                 ))
               ) : (
-                <div className="flex justify-center items-center">
-                  <p>No has creado ningún evento aún.</p>
-                  <Link to="/post-event">¿Te gustaría crear tu primer evento?</Link>
+                <div className="my-12">
+                  <p><strong>UPS!</strong> Parece que aún no creaste ningún evento.</p>
+
+                  <Link to="/post-event"><button className="bg-red-500 text-white text-sm my-2 px-2 py-2 rounded-lg flex items-center hover:bg-red-700 focus:outline-none">click aquí para crear un evento</button></Link>
                 </div>
               )
             )}
           </div>
-        </div>
-      </div>
+        {/* </div> */}
+      
       {isModalOpen && selectedEvent && (
         <ConfirmCancelModal
         event={selectedEvent}

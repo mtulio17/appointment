@@ -49,5 +49,7 @@ FooterBg: '#4F52DC',
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwindcss-animated')
+  ],
 };
