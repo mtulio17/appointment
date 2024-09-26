@@ -1,5 +1,5 @@
-import React from 'react';
 import {CalendarSearch, Plus} from 'lucide-react'
+
 const HowItWorks = () => {
   return (
     <section className="my-28 bg-transparent">

@@ -38,7 +38,7 @@ export async function getMyEvents(token, { host_id }) {
     .eq("host_id", host_id);
 
   if (error) {
-    console.error("Error fetching Jobs:", error);
+    console.error("Error fetching events :", error);
     return null;
   }
 
@@ -77,26 +77,20 @@ export async function getEventsByCategory(token, categoryId) {
 
 // función para crear nuevo evento en la db
 export async function createEvent(token, eventData) {
-  console.log("Datos enviados a Supabase:", eventData);
-
   await setSupabaseSession(token);
 
   const { data, error } = await supabase
     .from('events')
     .insert([eventData])
-    .single();
+    .select();
 
   if (error) {
-    console.error("Error al crear el evento:", error);
     return { success: false, error };
   }
 
   if (!data) {
-    console.error("No se recibió ningún dato de Supabase.");
     return { success: false, error: "No se recibió ningún dato" };
   }
-
-  console.log("Evento creado con éxito:", data);
   return { success: true, data };  // devuelve el objeto con éxito verdadero y los datos.
 }
 

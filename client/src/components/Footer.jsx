@@ -3,7 +3,7 @@ import { Facebook, Twitter, Youtube, Instagram } from "lucide-react"; // Para ic
 
 const Footer = () => {
   return (
-    <footer className="bg-[#212121] text-gray-400 lg:py-6">
+    <footer className="bg-[#212121] text-gray-400 lg:py-6 mt-auto">
       <div className="container mx-auto flex flex-col lg:flex-row justify-around items-start px-6">
         {/* Left section */}
         <div className="mb-8 lg:mb-0">

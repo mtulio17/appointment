@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Disclosure } from "@headlessui/react";
 import { Country } from "country-state-city";
-import Select from "react-select";
+//
 import { SignedIn, SignedOut, SignIn, UserButton} from "@clerk/clerk-react";
-import { BellPlus, BellRing, Calendar, CirclePlus, CirclePlusIcon, HandHelping, Heart, Search, Info, Bookmark} from "lucide-react";
+import { BellPlus, Calendar, CirclePlus, HandHelping, Search, Info, Bookmark} from "lucide-react";
 import { getEvents } from "../api/apievents";
 import useFetch from "../hooks/use-fetch";
 
@@ -19,10 +19,10 @@ const Navbar = () => {
   const { fn: fnEvents, data: events, isLoading: loadingEvents } = useFetch(getEvents, { country, searchQuery });
 
   // Obtén la lista de países
-  const countries = Country.getAllCountries().map(country => ({
-    value: country.isoCode,
-    label: country.name
-  }));
+  // const countries = Country.getAllCountries().map(country => ({
+  //   value: country.isoCode,
+  //   label: country.name
+  // }));
 
   const debounce = (fn, delay) => {
     let timeout;
@@ -96,8 +96,8 @@ const Navbar = () => {
                     <span className="font-bold text-[#f65858] text-lg">Appointment</span>
                   </div>
                 </Link>
-                <form onSubmit={handleSearch} className="relative flex items-center border border-gray-300 rounded-lg overflow-hidden bg-gray-50 focus-within:ring-2 focus-within:ring-indigo-600">
-                  <input type="text" placeholder="Buscar por nombre de evento.." value={searchQuery} onChange={handleInputChange} className="w-96 rounded-md border-0 py-1.5 px-4 pr-16 text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm sm:leading-6"/>
+                <form onSubmit={handleSearch} className="relative flex items-center border border-gray-300 rounded-lg overflow-hidden bg-gray-50 focus-within:ring-1 focus-within:ring-Button">
+                  <input type="text" placeholder="Buscar por nombre de evento.." value={searchQuery} onChange={handleInputChange} className="w-96 rounded-md border-0 py-1.5 px-4 pr-16 text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"/>
                       {/* <Select
                       options={countries}
                       value={country}
@@ -125,9 +125,9 @@ const Navbar = () => {
                 </SignedOut>
                 <SignedIn>
                   <div className="flex items-center space-x-10 mr-2">
-                    <Link to="/notifications" className="text-gray-600 hover:text-[#335da5] flex flex-col items-center">
+                    {/* <Link to="/notifications" className="text-gray-600 hover:text-[#335da5] flex flex-col items-center">
                       <BellPlus className="w-5 h-5" />
-                    </Link>
+                    </Link> */}
                     <Link to="/post-event" className="text-gray-600 hover:text-[#335da5] flex flex-col items-center">
                       <CirclePlus className="w-5 h-5" />
                     </Link>

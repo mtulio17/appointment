@@ -1,42 +1,34 @@
-import { useEffect, useState } from "react";
 import { getEvents, getSavedEvents } from "../api/apievents";
-import useFetch from "../hooks/use-fetch";
 import { useSession, useUser } from "@clerk/clerk-react";
 import VerticalCards from './VerticalCards';
 import SkeletonCard from "../ui/skeleton/SkeletonCard";
+import { useQuery } from "@tanstack/react-query";
 // import { BarLoader } from "react-spinners";
 
 const LastestEvents = () => {
-  const { isLoaded, session} = useSession();
-  const { user, isSignedIn} = useUser()
-  const { fn: fnEvents, data: events, error: fetchError, isLoading: loadingEvents} = useFetch(getEvents, {});
-  const [savedEvents, setSavedEvents] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { isLoaded, session } = useSession();
+  const { user, isSignedIn } = useUser();
 
-  useEffect(() => {
-    if (isLoaded) {
-      fnEvents(); // carga los eventos
+  // react-query para obtener los eventos
+  const { data: events, error: fetchError, isLoading: loadingEvents } = useQuery({
+      queryKey: ['events'], // clav única para esta consulta
+      queryFn: getEvents,    // función para obtener los eventos
+      cacheTime: 1000 * 60 * 10,
+      enabled: isLoaded, 
+  });
 
-      if (isSignedIn && user) {
-        fetchSavedEvents(); // carga los eventos guardados 
-      }
-    }
-  }, [isLoaded, isSignedIn, user]);
-  
-  // funcion para obtener los eventos guardados por el usuario
-  const fetchSavedEvents = async () => {
-    setLoading(true);
-    const token = await session.getToken({ template: "supabase" });
-    const { data, error } = await getSavedEvents(token, user.id); // llamadaa a la API para obtener eventos guardados
+  // react-query para obtener los eventos guardados por el usuario
+  const { data: savedEventsData, isLoading: loadingSavedEvents } = useQuery({
+      queryKey: ['savedEvents', user?.id],
+      queryFn: async () => {
+      const token = await session.getToken({ template: "supabase" });
+      return getSavedEvents(token, user.id);
+    },
+     enabled: isSignedIn && !!user, // solo ejecuta la consulta si el usuario está autenticado
+  });
 
-    if (error) {
-      console.error("Error al obtener eventos guardados:", error);
-    } else {
-      const savedEventIds = data.map(event => event.event_id);
-      setSavedEvents(savedEventIds);
-    }
-    setLoading(false);
-  };
+  // si hay eventos guardados, extraemos sus ID's
+  const savedEventIds = savedEventsData ? savedEventsData.map(event => event.event_id) : [];
 
   if (fetchError) {
     return <div className="flex justify-center text-center">Error cargando eventos: {fetchError.message}</div>;
@@ -51,14 +43,14 @@ const LastestEvents = () => {
         </div>
         <div className="mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-10">
-            {loadingEvents ? (
+            {loadingEvents || loadingSavedEvents ? (
               // Mostrar esqueleto mientras los eventos están cargando
               Array(8).fill().map((_, index) => <SkeletonCard key={index} />)
             ) : (
-              // mostrar eventos una vez cargados
+              // Mostrar eventos una vez cargados
               events && events.slice(0, 8).map((event) => {
-                // verificar si el evento ya está guardado (solo si el usuario está autenticado)
-                const isSaved = savedEvents.includes(event.id); 
+                // Verificar si el evento ya está guardado (solo si el usuario está autenticado)
+                const isSaved = savedEventIds.includes(event.id);
                 return (
                   <VerticalCards 
                     key={event._id} 
