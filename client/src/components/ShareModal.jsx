@@ -2,7 +2,7 @@ import React from 'react';
 import { Facebook, Linkedin, Twitter, Mail, Link, X   } from "lucide-react";
 
 
-const ShareModal = ({ eventUrl, showModal, closeModal }) => {
+const ShareModal = ({ eventUrl, showModal, closeShareModal }) => {
   if (!showModal) return null;
 
   const shareOptions = [
@@ -24,7 +24,7 @@ const ShareModal = ({ eventUrl, showModal, closeModal }) => {
       <div className="bg-white rounded-lg shadow-lg p-6 z-10 max-w-md w-full">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Compartir</h2>
-          <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">
+          <button onClick={closeShareModal} className="text-gray-500 hover:text-gray-700">
           <X />
           </button>
         </div>

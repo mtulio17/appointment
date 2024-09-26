@@ -9,7 +9,6 @@ import { createEvent, getCategories } from "../api/apievents";
 // import ImageUpload from "../ui/ImageUpload";
 import useFetch from "../hooks/use-fetch";
 import { useUser } from "@clerk/clerk-react";
-import { toast } from 'react-hot-toast';
 
 const eventSchema = yup.object().shape({
   image: yup.mixed().required("Image is required"),
@@ -92,18 +91,6 @@ const PostEvent = () => {
           start_date: data.start_date.toISOString(), // asegura el formato ISO para fechas
         };
         console.log("Datos del evento antes de enviar:", eventData);
-<<<<<<< HEAD
-
-        const result = await createEventFn(null, eventData);
-        console.log("Resultado de createEventFn:", result);
-
-        if (result) {
-          toast.success('Evento Creado');
-          navigate("/my-created-events");
-        } else {
-          toast.error("Error al crear el evento")
-          console.error("No se pudo crear el evento");
-=======
   
         const result = await createEventFn(eventData);
         // maneja la respuesta de la función createEventFn
@@ -112,7 +99,6 @@ const PostEvent = () => {
           navigate("/my-created-events");
         } else {
           console.error("Error al crear el evento:", result?.error || 'Error desconocido');
->>>>>>> d1c4518d7e9739baa3549aa88c0a5ae99a0aaddf
         }
       } else {
         console.error("No se pudo obtener la URL de la imagen");

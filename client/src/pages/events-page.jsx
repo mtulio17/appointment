@@ -90,16 +90,7 @@ const EventsPage = () => {
     setFilteredEvents(sortedEvents);
   }, [sortOption]);
 
-  // Manejar cambio de página
-  const handlePageChange = (selectedPage) => {
-    setCurrentPage(selectedPage.selected);
-  };
-
-  // Calcular eventos en la página actual
-  const offset = currentPage * itemsPerPage;
-  const currentEvents = filteredEvents.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(filteredEvents.length / itemsPerPage);
-  
+ 
   // Manejar cambio de página
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);  // Actualiza la categoría seleccionada
@@ -118,7 +109,7 @@ const EventsPage = () => {
 
   return (
     <section className="py-28">
-      <div className="container max-w-5xl mx-auto px-4">
+      <div className="container max-w-7xl mx-auto px-4">
         <div className="flex flex-col pb-6">
           {/* <div> */}
           <h2 className="text-[#2C2C2C] lg:text-3xl font-semibold">Eventos cerca de tú zona</h2>
@@ -146,14 +137,8 @@ const EventsPage = () => {
             // Mostrar esqueleto mientras los eventos están cargando
             Array(5).fill().map((_, index) => <SkeletonHorizontaCard key={index} />)
           ) : (
-<<<<<<< HEAD
-            // currentEvents.map((event) => {
-              filteredEvents.map((event) => {
-          //  filteredEvents && filteredEvents.map((event) => {
-=======
             // Mostrar eventos
             filteredEvents && filteredEvents.map((event) => {
->>>>>>> d1c4518d7e9739baa3549aa88c0a5ae99a0aaddf
               const isSaved = savedEvents.includes(event.id); 
                 return (
               <HorizontalCards key={event._id} event={event} savedInit={isSignedIn ? isSaved : false} />
@@ -161,10 +146,7 @@ const EventsPage = () => {
 })
           )}
         </div>
-        {/* Componente de paginación */}
-        {filteredEvents.length > itemsPerPage && (
-          <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
-        )}
+       
       </div>
     </section>
   )
