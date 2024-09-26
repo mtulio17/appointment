@@ -26,6 +26,16 @@ const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent
     const closeShareModal = () => {
         setIsShareModalOpen(false);
     };
+    useEffect(() => {
+      if (isShareModalOpen) {
+        document.body.style.overflow = 'hidden'; // Desactiva el scroll
+      } else {
+        document.body.style.overflow = 'unset'; // Restablece el scroll
+      }
+      return () => {
+        document.body.style.overflow = 'unset';
+      };
+    }, [isShareModalOpen]);
 
     const combinedDateTime = new Date(`${event.start_date}T${event.start_time}`);
     // Formatea la fecha y la hora

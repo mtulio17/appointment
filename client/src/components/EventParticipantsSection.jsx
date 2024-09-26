@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import EventParticipantsModal from './EventParticipantsModal'
 
 const EventParticipantsSection = ({ participants, hostId, isHost, userId }) => {
@@ -13,6 +13,17 @@ const EventParticipantsSection = ({ participants, hostId, isHost, userId }) => {
       const closeModal = () => {
         setIsModalOpen(false);
       };
+
+      useEffect(() => {
+        if (isModalOpen) {
+          document.body.style.overflow = 'hidden'; // Desactiva el scroll
+        } else {
+          document.body.style.overflow = 'unset'; // Restablece el scroll
+        }
+        return () => {
+          document.body.style.overflow = 'unset';
+        };
+      }, [isModalOpen]);
     
   return (
     <div className="w-full">

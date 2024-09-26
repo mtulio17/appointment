@@ -33,13 +33,6 @@ const EventsPage = () => {
     }
   }, [isLoaded, user]);
 
-
-  // useEffect(() => {
-  //   if (isLoaded && !selectedCategory) {
-  //     fnEvents();
-  //   }
-  // }, [isLoaded, selectedCategory]);
-
   // Obtener eventos y eventos guardados
   useEffect(() => {
     if (isLoaded && !selectedCategory) {
@@ -106,7 +99,7 @@ const EventsPage = () => {
   if (fetchError) {
     return <div className="flex justify-center text-center">Error cargando eventos: {fetchError.message}</div>;
   }
-
+ 
   return (
     <section className="py-28">
       <div className="container max-w-7xl mx-auto px-4">

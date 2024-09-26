@@ -60,7 +60,17 @@ const EventDetails = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-
+  
+  useEffect(() => {
+    if (isShareModalOpen) {
+      document.body.style.overflow = 'hidden'; // Desactiva el scroll
+    } else {
+      document.body.style.overflow = 'unset'; // Restablece el scroll
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isShareModalOpen]);
 
   const handleParticipate = async () => {
     if (!user) {
@@ -109,6 +119,7 @@ const EventDetails = () => {
   const closeShareModal = () => {
     setIsShareModalOpen(false);
   };
+  
   return (
     <div>
       <div className="mt-16 bg-white">
