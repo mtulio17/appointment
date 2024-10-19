@@ -22,6 +22,7 @@ const useFetch = (cb, options = {}) => {
 
       setData(res);
     } catch (err) {
+      console.error("Error fetching data: ", err);
       setError(err);
     } finally {
       setIsLoading(false);

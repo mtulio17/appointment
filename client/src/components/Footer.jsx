@@ -1,5 +1,6 @@
 import React from 'react';
 import { Facebook, Twitter, Youtube, Instagram } from "lucide-react"; // Para iconos de redes sociales
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -8,9 +9,9 @@ const Footer = () => {
         {/* Left section */}
         <div className="mb-8 lg:mb-0">
           <h3 className="text-white font-bold mb-4">Crea un evento en Appointment</h3>
-          <button className="bg-transparent border border-white text-white py-2 px-4 rounded hover:bg-white hover:text-black">
+          <Link className="bg-transparent border border-white text-white py-2 px-4 rounded hover:bg-white hover:text-black" to={"/help"} >
             Comenzar
-          </button>
+          </Link>
         </div>
 
         {/* Middle section - Links */}

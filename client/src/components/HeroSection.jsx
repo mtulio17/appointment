@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {motion} from "framer-motion";
 import {LazyLoadImage} from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
+import { ArrowRightCircle } from "lucide-react";
 
 const HeroSection = () => {
   const [imageOrder, setImageOrder] = useState([1, 2, 3, 4, 5]);
@@ -17,21 +18,33 @@ const HeroSection = () => {
   return (
     <section className="relative w-full my-32">
      {/* Efecto de fondo degradado en el lado derecho */}
-     <div className="absolute right-0 top-0 w-2/4 h-full blur-xl z-0" style={{ background: "linear-gradient(190.6deg, rgba(192, 132, 252, 0) 20.79%, rgba(232, 121, 249, 0.15) 40.92%, rgba(204, 171, 238, 0.09) 70.35%)"}}></div>
- 
+     <div 
+     className="absolute right-0 top-0 w-2/4 h-full blur-xl z-0" 
+     style={{ background: "linear-gradient(190.6deg, rgba(192, 132, 252, 0) 20.79%, rgba(232, 121, 249, 0.15) 40.92%, rgba(204, 171, 238, 0.09) 72.35%)"}}
+     />
+
     <div className="relative flex flex-col lg:flex-row items-center justify-between w-full max-w-7xl mx-auto px-4">
       {/* Texto del Hero */}
       <div className="w-full lg:w-1/2 text-center lg:text-left z-10">
         <h1 className="lg:text-6xl md:text-5xl font-bold mb-4">
           ¡Conéctate, participa y disfruta!
         </h1>
-        <p className="text-lg text-gray-600 mb-8">
+        <p className="text-lg text-gray-600 mb-10">
           Únete a nuestra comunidad y descubre eventos emocionantes cerca de ti. Haz nuevas conexiones, vive momentos memorables y lleva tu vida social al siguiente nivel.
         </p>
         <div className="flex space-x-4 justify-center lg:justify-start">
-          <Link to="/?sign-in=true" className="bg-Button/90 text-white lg:text-md font-medium px-4 py-3 rounded-lg shadow-md">
+        <motion.div
+          whileHover={{ y: -5 }}
+          transition={{ type: "spring", stiffness: 200 }}
+        >
+          <Link
+            to="/?sign-in=true"
+            className="border border-[#00798a] text-white bg-[#00798a] font-medium lg:text-[15px] px-5 py-3 rounded-lg flex items-center text-center focus:outline-none"
+          >
             Quiero ser parte de la comunidad
+            {/* <ArrowRightCircle className="ml-2" size={16} /> */}
           </Link>
+        </motion.div>
         </div>
       </div>
 

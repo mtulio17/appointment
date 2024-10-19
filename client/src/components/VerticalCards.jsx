@@ -1,14 +1,16 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { MapPinIcon, CalendarIcon, Bookmark, EllipsisIcon } from "lucide-react";
+import { MapPinIcon, CalendarIcon, Bookmark, EllipsisIcon, PencilIcon } from "lucide-react";
+import { useFavorites } from "../context/SaveEventContext";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useUser } from "@clerk/clerk-react";
 import { saveEvent } from "../api/apievents";
 import { Link, useNavigate } from "react-router-dom";
 import { useModal } from "../context/ModalContext";
-import { useMutation } from "@tanstack/react-query";
+import useFetch from "../hooks/use-fetch";
+import { toast } from 'react-toastify';
 
 // eslint-disable-next-line react/prop-types
 const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isMyEvent = false, isHost, onEdit, onDelete }) => {
@@ -18,6 +20,8 @@ const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isM
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const { openModal } = useModal();
+  const {fn: saveFn, error: saveError, loading: saveLoading} = useFetch(saveEvent)
+  const {toggleFavorite, isFavorite} = useFavorites();
 
   const combinedDateTime = new Date(`${event.start_date}T${event.start_time}`);
   const formattedDate = format(combinedDateTime, "d 'de' MMM yyyy", { locale: es });
@@ -28,44 +32,47 @@ const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isM
   }, [savedInit]);
 
   // useMutation para manejar el guardado y eliminación de eventos
-  const saveEventMutation = useMutation({
-    mutationFn: (params) => saveEvent(params),
-    onSuccess: (data, variables) => {
-      setSaved(variables.alreadySaved ? false : true); // actualiza el estado basado en la respuesta
-      onEventAction(); // si es necesario, actualizamos la lista de eventos
-    },
-    onError: (error) => {
-      console.error("Error al guardar/eliminar evento:", error);
-    },
-  });
 
-  const handleSaveEvent = () => {
+  // Función para manejar el guardado o eliminación del evento en favoritos
+  const handleSaveEvent = async () => {
     if (!isSignedIn || !user) {
       navigate("/?sign-in=true");
       return;
     }
-
+  
     if (event.host_id === user.id) {
-      alert("No se puede guardar en favoritos un evento propio.");
+      toast.warning("No se puede añadir a favoritos un evento propio.");
       return;
     }
+  
+    try {
+      const action = isFavorite(event.id) ? 'delete' : 'save';
+      const response = await saveFn({
+        user_id: user.id,
+        event_id: event.id,
+        action,
+      });
 
-    // invoca mutación para guardar o eliminar evento
-    saveEventMutation.mutate({
-      user_id: user.id,
-      event_id: event.id,
-      alreadySaved: saved, // si ya está guardado, lo eliminamos; si no, lo guardamos
-    });
+      // Ejecuta toggleFavorite en el contexto
+      toggleFavorite(event);
+
+      if (action === 'delete') {
+        toast.info("¡Evento eliminado de favoritos!");
+      } else {
+        toast.info("¡Evento añadido a favoritos!");
+      }
+
+      // Refresca la lista de eventos si es necesario
+      onEventAction();
+    } catch (err) {
+      toast.error("Error al intentar añadir un evento en favoritos:", err);
+    }
   };
 
+  
   // Función para editar el evento
   const handleEditEvent = () => {
     openModal({ type: "edit", event }); // Abrir el modal de edición
-  };
-
-  // Función para cancelar el evento
-  const handleCancelEvent = () => {
-    openModal({ type: "cancel", event }); // Abrir el modal de confirmación
   };
 
   const truncateText = (text, wordLimit) => {
@@ -83,7 +90,7 @@ const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isM
       <LazyLoadImage
         src={event.image || "https://placehold.co/400"}
         alt={event.name || "event image"}
-        className="mx-auto w-full h-32 lg:h-44 object-cover object-center rounded-lg hover:opacity-80 duration-200 mb-2"
+        className="mx-auto w-full h-32 lg:h-44 object-cover object-center rounded-lg hover:opacity-90 duration-200 mb-2"
         style={{ aspectRatio: "16 / 9" }}
       />
       <div className="p-1">
@@ -107,25 +114,24 @@ const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isM
     </Link>
 
     <button
-      disabled={saveEventMutation.isLoading}
-      className="w-15 absolute top-2 right-2 text-white hover:text-gray-100"
+      disabled={saveLoading}
+      className="w-6 h-6 flex items-center justify-center absolute top-2 right-2 rounded-full text-white hover:bg-gray-800 transition-colors duration-300"
       onClick={handleSaveEvent}
     >
-      {saved ? (
-        <Bookmark size={20} fill="red" stroke="red" />
+      {isFavorite(event.id) ? (
+        <Bookmark size={20} fill="red" stroke="red" strokeWidth={1.5} />
       ) : (
-        <Bookmark size={20} />
+        <Bookmark size={20} strokeWidth={1.5} stroke="white" />
       )}
     </button>
 
+
     {isHost && (
-      <>
-        <button
-          className="btn btn-edit absolute left-0 py-0.5 px-1.5 text-Button rounded-lg"
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        >
-          <EllipsisIcon size={16} />
-        </button>
+     <>
+      <button className="w-full bg-transparent text-black text-xs font-medium py-2 rounded-md mt-2 flex items-center justify-center border border-gray-200 hover:border-gray-300 duration-200" onClick={handleEditEvent}>
+        <PencilIcon className="mr-2" size={14} strokeWidth={2} />
+        Editar evento
+      </button>
         {isDropdownOpen && (
           <div className="absolute right-0 mt-2 lg:w-56 bg-white shadow-lg rounded-lg">
             <ul>
@@ -135,14 +141,6 @@ const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isM
                   onClick={handleEditEvent}
                 >
                   Editar Evento
-                </button>
-              </li>
-              <li>
-                <button
-                  className="block text-sm justify-start text-start px-4 py-2 text-red-600 hover:bg-gray-200 w-full"
-                  onClick={handleCancelEvent}
-                >
-                  Cancelar Evento
                 </button>
               </li>
             </ul>

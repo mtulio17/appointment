@@ -1,22 +1,23 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, memo } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Disclosure } from "@headlessui/react";
-import { Country } from "country-state-city";
+// import { Country } from "country-state-city";
 //
 import { SignedIn, SignedOut, SignIn, UserButton} from "@clerk/clerk-react";
-import { BellPlus, Calendar, CirclePlus, HandHelping, Search, Info, Bookmark} from "lucide-react";
+import { Calendar, CirclePlus, HandHelping, Search, Info, Bookmark} from "lucide-react";
 import { getEvents } from "../api/apievents";
 import useFetch from "../hooks/use-fetch";
 
 
 const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [country, setCountry] = useState(null);
+  // const [country, setCountry] = useState(null);
   const [showSignIn, setShowSignIn] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
   const [search, setSearch] = useSearchParams();
-  const { fn: fnEvents, data: events, isLoading: loadingEvents } = useFetch(getEvents, { country, searchQuery });
+  const { fn: fnEvents, data: events, isLoading: loadingEvents } = useFetch(getEvents, { searchQuery });
+
 
   // Obtén la lista de países
   // const countries = Country.getAllCountries().map(country => ({
@@ -52,11 +53,11 @@ const Navbar = () => {
 
   // Manejo de cambios en el input de búsqueda
   useEffect(() => {
-    if (searchQuery || country) {
+    if (searchQuery) {
       // Asegúrate de que `country` tenga el formato correcto (valor del país)
-      fnEvents({ country: country?.value || "", searchQuery: searchQuery || "" });
+      fnEvents({ searchQuery: searchQuery || "" });
     }
-  }, [searchQuery, country]);
+  }, [searchQuery]);
   
 
 
@@ -75,11 +76,9 @@ const Navbar = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     const query = searchQuery.trim();
-    const countryValue = country?.value || ""; // Obtén solo el valor del país
-
     // Navega a la página de resultados con los parámetros de búsqueda
-    if (query || countryValue) {
-      navigate(`/search?query=${query}&country=${countryValue}`);
+    if (query) {
+      navigate(`/search?query=${query}`);
     }
   };
   
@@ -98,16 +97,6 @@ const Navbar = () => {
                 </Link>
                 <form onSubmit={handleSearch} className="relative flex items-center border border-gray-300 rounded-lg overflow-hidden bg-gray-50 focus-within:ring-1 focus-within:ring-Button">
                   <input type="text" placeholder="Buscar por nombre de evento.." value={searchQuery} onChange={handleInputChange} className="w-96 rounded-md border-0 py-1.5 px-4 pr-16 text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"/>
-                      {/* <Select
-                      options={countries}
-                      value={country}
-                      onChange={setCountry} // Asigna directamente el objeto país seleccionado
-                      placeholder="Filtrar por país"
-                      className="w-48 ml-2 hover:bg-Button"
-                      isSearchable
-                      menuPlacement="auto"
-                      menuPosition="fixed"
-                  /> */}
                   <button type="submit" className="absolute right-2 bg-transparent flex items-center justify-center h-full">
                     <Search className="w-5 h-5" stroke="#032f62" />
                   </button>
@@ -116,8 +105,9 @@ const Navbar = () => {
 
               <div className="relative ml-2 space-x-4">
                 <SignedOut>
-                  <button onClick={() => setShowSignIn(true)} className="text-white font-medium rounded-lg border border-transparent bg-Button px-2 py-2 md:px-4 md:py-3 lg:px-2.5 lg:py-2 lg:text-sm duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 shadow">
+                  <button onClick={() => setShowSignIn(true)} className="text-white font-medium rounded-lg border border-transparent bg-[#00798a] px-2 py-2 md:px-4 md:py-3 lg:px-2.5 lg:py-2 lg:text-sm duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 shadow">
                     Crear Nuevo Evento
+                    {/* <LucidePlusCircle size={16} className="ml-2" strokeWidth={1.5} /> */}
                   </button>
                   <button onClick={() => setShowSignIn(true)} className="text-[#212121] hover:text-[#335da5] font-medium px-2 py-2 md:px-4 md:py-3 lg:px-4 lg:py-2.5 text-sm duration-200">
                     Ingresar
@@ -125,16 +115,28 @@ const Navbar = () => {
                 </SignedOut>
                 <SignedIn>
                   <div className="flex items-center space-x-10 mr-2">
-                    {/* <Link to="/notifications" className="text-gray-600 hover:text-[#335da5] flex flex-col items-center">
-                      <BellPlus className="w-5 h-5" />
-                    </Link> */}
-                    <Link to="/post-event" className="text-gray-600 hover:text-[#335da5] flex flex-col items-center">
-                      <CirclePlus className="w-5 h-5" />
+                    <Link to="/my-created-events" className="flex flex-col items-center group">
+                      <Calendar className="w-5 h-5 mb-1.5 text-gray-800 group-hover:text-[#00798a] duration-200" strokeWidth={1.5} />
+                      <span className="text-xs text-gray-600 font-medium group-hover:text-[#00798a]">Eventos</span>
                     </Link>
-                    <div className="flex items-center">
-                      <UserButton appearance={{ elements: { avatarBox: "w-8 h-8 " } }}>
+
+                    <Link to="/saved-events" className="flex flex-col items-center group">
+                      <Bookmark className="w-5 h-5 mb-1.5 text-gray-800 group-hover:text-[#00798a] duration-200" strokeWidth={1.5} />
+                      <span className="text-xs text-gray-600 font-medium group-hover:text-[#00798a]">Favoritos</span>
+                    </Link>
+
+                    <div className="flex items-center space-x-6">
+                      <div className="border-l border-gray-300 h-8" /> {/* línea vertical */}
+                      <Link to="/help" className="flex flex-col items-center group">
+                        <Info className="w-5 h-5 mb-1.5 text-gray-800 group-hover:text-[#00798a] duration-200" strokeWidth={1.5} />
+                        <span className="text-xs text-gray-600 font-medium group-hover:text-[#00798a]">Ayuda</span>
+                      </Link>
+                    </div>
+
+                  <div className="flex items-center mb-1">
+                      <UserButton appearance={{ elements: { avatarBox: "w-9 h-9 " } }}>
                         <UserButton.MenuItems>
-                          <UserButton.Link
+                          {/* <UserButton.Link
                             label="Mis Eventos"
                             labelIcon={<Calendar size={16} />}
                             href="/my-created-events"
@@ -153,7 +155,7 @@ const Navbar = () => {
                             label="Políticas de Privacidad"
                             labelIcon={<HandHelping size={16} />}
                             href="/privacy-policies"
-                          />
+                          /> */}
                           <UserButton.Action label="manageAccount" />
                         </UserButton.MenuItems>
                       </UserButton>
@@ -168,8 +170,8 @@ const Navbar = () => {
                 onClick={handleOverlayClick}
               >
                 <SignIn
-                  signUpForceRedirectUrl="/my-created-events"
-                  fallbackRedirectUrl="/my-created-events"
+                  signUpForceRedirectUrl="/"
+                  fallbackRedirectUrl="/"
                 />
               </div>
             )}

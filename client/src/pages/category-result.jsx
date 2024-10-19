@@ -1,24 +1,23 @@
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import useFetch from "../hooks/use-fetch";
 import { getCategories, getEventsByCategory } from "../api/apievents";
+// import useLocation from "../hooks/useLocation";
 import { BarLoader } from "react-spinners";
 import VerticalCards from "../components/VerticalCards";
-import { useQuery } from "@tanstack/react-query";
 
 const CategoryResult = () => {
   const { categoryId } = useParams();
-  // const { fn: fetchEventsByCategory, data: events, isLoading: loadingEvents, error: eventsError} = useFetch(getEventsByCategory);
 
-  // obtener eventos por categoría c. react-query
-  const {data: events, isLoading: loadingEvents, error: eventsError} = useQuery({
-    queryKey: ['events', categoryId], //clave unica basada en la categoría
-    queryFn: () => getEventsByCategory(categoryId),
-    enabled: !!categoryId  //solo ejecuta la consulta si categoryId está definido
-  })
+  const { fn: fetchEventsByCategory, data: events, isLoading: loadingEvents, error: eventsError} = useFetch(getEventsByCategory);
+  const { fn: fetchCategories, data: categories, isLoading: loadingCategories } = useFetch(getCategories);
 
-  const {data: categories, isLoading: loadingCategories} = useQuery({
-    queryKey: ['categories'],
-    queryFn: getCategories,
-  })
+  useEffect(() => {
+    if (categoryId) {
+      fetchEventsByCategory(categoryId);
+      fetchCategories();
+    }
+  }, [categoryId]);
 
   if (loadingEvents || loadingCategories) {
     return <BarLoader className="mt-[78px]" width={"100%"} color="#2C2C2C" />;

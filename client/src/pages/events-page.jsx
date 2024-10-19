@@ -71,7 +71,6 @@ const EventsPage = () => {
   const filteredEvents = events ? handleSort(events) : [];
   
   // Paginación
-  const pageCount = Math.ceil(filteredEvents.length / eventsPerPage);
   const startIndex = (currentPage - 1) * eventsPerPage;
   const endIndex = startIndex + eventsPerPage;
   const displayedEvents = filteredEvents.slice(startIndex, endIndex);
@@ -128,27 +127,6 @@ const EventsPage = () => {
           )}
         </div>
         {/* paginación */}
-        <ReactPaginate
-          nextLabel={<ChevronRight className="h-6 w-6 text-black" />}
-          previousLabel={<ChevronLeft className="h-6 w-6 text-black" />}
-          breakLabel={"..."}
-          pageCount={pageCount}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={(data) => {
-            const selectedPage = data.selected + 1;
-            setSearchParams({ page: selectedPage });
-            navigate(`/all-events?page=${selectedPage}`);
-          }}
-          containerClassName={"flex justify-center items-center mt-10 space-x-6 py-10 bg-gray-50 rounded-md"}
-          activeClassName={"bg-primary text-white"}
-          previousClassName={"lg:w-full flex justify-start text-sm px-4"} // "anterior" alineado a la izquierda
-          nextClassName={"lg:w-full flex justify-end text-sm px-4"} // "siguiente" alineado a la derecha
-          pageClassName={"w-4 h-4 py-2.5 px-3 text-xs flex justify-center items-center rounded-md text-white bg-slate-700 mx-6"}
-          pageLinkClassName={"w-full h-full flex justify-center items-center"}
-          breakClassName={"w-8 h-8 flex justify-center items-center"}
-          activeLinkClassName={"font-bold"}
-        />
       </div>
     </section>
   );

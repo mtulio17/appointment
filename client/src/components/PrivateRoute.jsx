@@ -1,6 +1,6 @@
 import { useUser } from "@clerk/clerk-react";
 import { Navigate } from "react-router-dom";
-import {ClipLoader, FadeLoader} from "react-spinners";
+import {ClipLoader } from "react-spinners";
 
 // eslint-disable-next-line react/prop-types
 const PrivateRoute = ({ element }) => {
@@ -15,7 +15,7 @@ const PrivateRoute = ({ element }) => {
   }
 
   if (isLoaded && !isSignedIn && isSignedIn !== undefined) {
-    return <Navigate to="/?sign-in=true" />;
+    return <Navigate to="/?sign-in=true" className="animate-jump" />;
   }
 
   return element;

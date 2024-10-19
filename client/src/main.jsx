@@ -14,7 +14,7 @@ if (!PUBLISHABLE_KEY) {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ClerkProvider localization={esES} publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+    <ClerkProvider localization={esES} publishableKey={PUBLISHABLE_KEY} fallbackRedirectUrl={"/"} afterSignOutUrl="/">
       <App />
     </ClerkProvider>
   </React.StrictMode>

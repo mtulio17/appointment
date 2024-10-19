@@ -1,6 +1,6 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 import EventModal from '../components/EventModal';
-import ConfirmCancelModal from '../components/ConfirmCancelModal';
+// import ConfirmCancelModal from '../components/ConfirmCancelModal';
 
 const ModalContext = createContext();
 
@@ -31,9 +31,9 @@ export const ModalProvider = ({ children }) => {
         <EventModal event={modalData.event} onClose={closeModal} />
       )}
 
-      {modalData?.type === 'cancel' && (
+      {/* {modalData?.type === 'cancel' && (
         <ConfirmCancelModal event={modalData.event} onClose={closeModal} />
-      )}
+      )} */}
     </ModalContext.Provider>
   );
 };

@@ -6,7 +6,7 @@ const MapComponent = ({ address, city, country }) => {
   const [coordinates, setCoordinates] = useState([51.505, -0.09]); // Coordenadas iniciales (Londres)
   const [loading, setLoading] = useState(true); // Estado de carga
   const [error, setError] = useState(null); // Estado para errores
-  const location = `${address}, ${city}, ${country}`;
+  const location = "juan Domingo Perón 2085, yerba buena, Argentina"
 
 
   useEffect(() => {
@@ -36,11 +36,11 @@ const MapComponent = ({ address, city, country }) => {
   }, [location]);
 
   return (
-    <div>
-      {loading && <p>Cargando el mapa...</p>}
+    <div className='rounded-xl'>
+      {loading && <p className='flex justify-center text-center'>Cargando mapa...</p>}
       {error && <p>{error}</p>}
       {!loading && !error && (
-        <MapContainer center={coordinates} zoom={13} style={{ height: "400px", width: "100%" }}>
+        <MapContainer center={coordinates} zoom={13} style={{ height: "280px", width: "100%" }} className='animate-fade'>
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
