@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import EventModal from '../components/EventModal';
-// import ConfirmCancelModal from '../components/ConfirmCancelModal';
+import EventModal from '../components/modal/EventModal';
+import { EmailConfirmationModal } from '../components/modal/EmailConfirmationModal ';
 
 const ModalContext = createContext();
 
@@ -8,9 +8,11 @@ export const ModalProvider = ({ children }) => {
   const [modalData, setModalData] = useState(null);
 
   const openModal = (event) => {
+    console.log('Abriendo modal con evento:', event); // Verifica cuándo se llama a openModal
     setModalData(event);
     document.body.classList.add('overflow-hidden'); // bloquea scroll
   };
+  
 
   const closeModal = () => {
     setModalData(null);
@@ -31,9 +33,9 @@ export const ModalProvider = ({ children }) => {
         <EventModal event={modalData.event} onClose={closeModal} />
       )}
 
-      {/* {modalData?.type === 'cancel' && (
-        <ConfirmCancelModal event={modalData.event} onClose={closeModal} />
-      )} */}
+      {modalData?.type === 'emailConfirmation' && (
+        <EmailConfirmationModal event={modalData.event} onClose={closeModal} onConfirm={modalData.onConfirm} />
+      )}
     </ModalContext.Provider>
   );
 };

@@ -1,17 +1,15 @@
 /* eslint-disable react/prop-types */
-import { useUser } from '@clerk/clerk-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import AutocompleteAddressInput from '../ui/AutocompleteAdressInput';
-import { editEvent, getCategories } from '../api/apievents';
-import useFetch from '../hooks/use-fetch';
+import AutocompleteAddressInput from '../../ui/AutocompleteAdressInput';
+import { editEvent, getCategories } from '../../api/apievents';
+import useFetch from '../../hooks/use-fetch';
 import { toast } from 'react-toastify';
 import { yupResolver} from '@hookform/resolvers/yup';
-import { eventSchema } from '../schemas/EventSchema';
+import { eventSchema } from '../../schemas/EventSchema';
 import { X } from 'lucide-react';
 
 const EventModal = ({ event, onClose }) => {
-  const {user} = useUser();
   const { register, handleSubmit, setValue, formState: { errors }, watch } = useForm({
     mode: 'onSubmit',
     resolver: yupResolver(eventSchema),
@@ -56,7 +54,7 @@ const EventModal = ({ event, onClose }) => {
         onClose();
       } catch (error) {
         toast.error("Hubo un error al intentar actualizar el evento.");
-        console.error("Error actualizando el evento:", error);
+        // console.error("Error actualizando el evento:", error);
       }
     }
   };
@@ -64,7 +62,7 @@ const EventModal = ({ event, onClose }) => {
    useEffect(() => {
     if (eventData?.success) {
       toast.success("Evento actualizado con éxito.");
-      console.log("Evento actualizado con éxito", eventData.data);
+      // console.log("Evento actualizado con éxito", eventData.data);
       setTimeout(() => {
         window.location.reload();
       }, 3000);

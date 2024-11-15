@@ -19,7 +19,7 @@ export const EventProvider = ({ children }) => {
   const createEvent = async (eventData) => {
     try {
       const token = await getToken();
-      console.log("token del evento", token);
+      // console.log("token del evento", token);
       const response = await axios.post(
         "http://localhost:5000/api/events", eventData, {
           headers: {
@@ -63,9 +63,9 @@ export const EventProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      console.log('Fetching details for event', eventId);
+      // console.log('Fetching details for event', eventId);
       const response = await axios.get(`http://localhost:5000/api/events/${eventId}`);
-      console.log('Event data', response.data);
+      // console.log('Event data', response.data);
       setEvent(response.data);
       setParticipants(response.data.participants || []);
       setIsParticipating(response.data.participants?.includes(userId) || false);
