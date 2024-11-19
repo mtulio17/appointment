@@ -1,29 +1,22 @@
-import { useCallback, useEffect, useState, memo } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Disclosure } from "@headlessui/react";
 // import { Country } from "country-state-city";
-//
 import { SignedIn, SignedOut, SignIn, UserButton} from "@clerk/clerk-react";
-import { Calendar, CirclePlus, HandHelping, Search, Info, Bookmark} from "lucide-react";
+import { Calendar, Search, Info, Bookmark} from "lucide-react";
 import { getEvents } from "../api/apievents";
 import useFetch from "../hooks/use-fetch";
 
 
 const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  // const [country, setCountry] = useState(null);
   const [showSignIn, setShowSignIn] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
   const navigate = useNavigate();
   const [search, setSearch] = useSearchParams();
-  const { fn: fnEvents, data: events, isLoading: loadingEvents } = useFetch(getEvents, { searchQuery });
-
-
-  // Obtén la lista de países
-  // const countries = Country.getAllCountries().map(country => ({
-  //   value: country.isoCode,
-  //   label: country.name
-  // }));
+  const { fn: fnEvents} = useFetch(getEvents, { searchQuery });
 
   const debounce = (fn, delay) => {
     let timeout;
@@ -33,16 +26,25 @@ const Navbar = () => {
     };
   };
 
-  const fetchSuggestions = useCallback(debounce(async () => {
-    if (searchQuery.length > 2) {
-      const result = await getEvents({ searchQuery }); // Solo busca por el nombre aquí
-      if (result) {
-        setSuggestions(result.slice(0, 5)); // Mostrar las primeras 5 sugerencias
+  const fetchSuggestions = useCallback(
+    debounce(async () => {
+      if (searchQuery.length > 2) {
+        const result = await getEvents({ searchQuery });
+        if (result) {
+          const sortedSuggestions = result
+            .slice(0, 5)
+            .sort((a, b) => a.name.localeCompare(b.name, 'es', { sensitivity: 'base' }));
+          setSuggestions(sortedSuggestions);
+        }
+        setLoading(false);
+        setIsSuggestionsOpen(true); // Muestra las sugerencias
+      } else {
+        setSuggestions([]);
+        setIsSuggestionsOpen(false);
       }
-    } else {
-      setSuggestions([]);
-    }
-  }, 300), [searchQuery]);
+    }, 300),
+    [searchQuery]
+  );
 
   // Manejo de cambios en el input de búsqueda
   useEffect(() => {

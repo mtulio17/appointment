@@ -38,8 +38,8 @@ export const EmailConfirmationModal = ({ event, onClose, onConfirm }) => {
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       );
     
-      await onConfirm(email); // Puede lanzar errores
-      setSuccessMessage("¡Email enviado con éxito!");
+      await onConfirm(email);
+      setSuccessMessage("¡Email enviado con éxito! Por favor revisa tu casilla de correo para ver la información del evento al que te registraste.");
     } catch (error) {
       console.error("Error:", error);
       setErrorMessage(error.message || "Error inesperado al enviar el email.");
@@ -59,9 +59,9 @@ export const EmailConfirmationModal = ({ event, onClose, onConfirm }) => {
   
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-20">
+    <div className="fixed inset-0 flex items-center justify-center z-20 animate-fade-up">
       <div className="absolute inset-0 bg-black opacity-50"></div>
-      <div className="bg-white rounded-lg shadow-lg p-6 z-10 max-w-lg w-full animate-fade-up">
+      <div className="bg-white rounded-lg shadow-lg p-6 z-10 max-w-lg w-full">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-medium">Confirmar Email</h2>
           <button
@@ -73,9 +73,8 @@ export const EmailConfirmationModal = ({ event, onClose, onConfirm }) => {
           </button>
         </div>
         <p className="text-gray-700 mb-10">
-          !Estás a un solo paso de inscribirte al evento {" "}<strong>{event?.name || "Evento"}</strong>!
-          Por favor confirma tu
-          correo electrónico para enviarte los detalles.
+          !Estás a un solo paso de inscribirte al evento {" "}<strong>{event?.name || "Evento"}</strong>! <br/>
+          Por favor, ingresa tu email para confirmar tu inscripción y obtener acceso al evento.
         </p>
         <input
           type="email"
@@ -83,22 +82,19 @@ export const EmailConfirmationModal = ({ event, onClose, onConfirm }) => {
           onChange={(e) => {setEmail(e.target.value);
            if (errorMessage) setErrorMessage("");
           }}
-          placeholder="Ingresa tu email"
-          className="w-full p-2 border rounded-lg mb-6"
+          placeholder="Ingresar tu email válido"
+          className="w-full p-2 py-2 px-2 border rounded-lg mb-10"
         />
         {errorMessage && (
           <p className="text-red-500 text-sm mb-2">{errorMessage}</p>
         )}
-        <button onClick={handleSubmit} className={`bg-blue-500 text-white px-4 py-2 rounded-lg w-full hover:bg-blue-600 ${
+        <button onClick={handleSubmit} className={`bg-red-500 text-white px-4 py-2 rounded-lg w-full hover:bg-red-600 duration-200 ${
           (!email || isSending) && "opacity-50 cursor-not-allowed"
           }`}
           disabled={!email || isSending}
         >
           {isSending ? "Enviando..." : "Confirmar Email"}
         </button>
-        {successMessage && (
-          <p className="text-green-500 mt-4">{successMessage}</p>
-        )}
       </div>
     </div>
   );

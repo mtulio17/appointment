@@ -24,7 +24,7 @@ const PopularCategories = () => {
     }
   };
 
-  if (error) return <div>Error al cargar las categorías: {error.message}</div>;
+  if (error) return <div className="text-center">Error al cargar las categorías: {error.message}</div>;
   
   
   const trendCategories = categories?.slice(0, 9) || [];

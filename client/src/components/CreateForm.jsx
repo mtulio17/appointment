@@ -41,7 +41,7 @@ const CreateForm = () => {
     resolver: yupResolver(schema),
   });
 
-  console.log(user.id)
+  // console.log(user.id)
 
   useEffect(() => {
     // Obtener categorías desde Supabase

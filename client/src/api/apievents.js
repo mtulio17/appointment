@@ -45,6 +45,7 @@ export async function getMyEvents(token, { host_id }) {
   return data;
 }
 
+
 export async function getEventsByLocation(token, { city, country, searchQuery = "" } = {}) {
   await setSupabaseSession(token);
 
@@ -238,8 +239,12 @@ export async function participateInEvent(token, eventId, userId) {
   }
 
   if (existingParticipation.length > 0) {
-    console.warn("El usuario ya está participando en el evento");
-    return existingParticipation[0]; // Devuelve la participación existente
+    if(existingParticipation[0].status === 'confirmed'){
+      console.warn("El usuario ya está confirmado en el evento");
+      return existingParticipation[0];
+    }
+    console.warn("El usuario ya está registrado pero no confirmado.")
+    return existingParticipation[0];
   }
 
   // Insertar nueva participación
@@ -251,10 +256,11 @@ export async function participateInEvent(token, eventId, userId) {
 
   if (error) {
     console.error("Error al participar en el evento", error);
-    return null;
+    throw new Error("Error al registrar la participación. Intenta nuevamente.");
   }
   return data;
 }
+
 
 // Función para obtener los participantes de un evento y asignar avatares aleatorios
 export async function getEventParticipants(token, eventId) {

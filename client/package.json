@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@algolia/client-search": "^5.14.0",
     "@auth0/auth0-react": "^2.2.4",
     "@clerk/clerk-react": "^5.5.0",
     "@clerk/localizations": "^2.8.0",
+    "@emailjs/browser": "^4.4.1",
     "@headlessui/react": "^1.7.19",
     "@hookform/resolvers": "^3.9.0",
     "@supabase/supabase-js": "^2.45.1",
@@ -21,11 +23,13 @@
     "country-state-city": "^3.2.1",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
+    "emailjs-com": "^3.2.0",
     "framer-motion": "^11.5.4",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.418.0",
+    "nodemailer": "^6.9.16",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
@@ -40,6 +44,7 @@
     "react-slick": "^0.30.2",
     "react-spinners": "^0.14.1",
     "react-toastify": "^10.0.5",
+    "resend": "^4.0.1-alpha.0",
     "slick-carousel": "^1.8.1",
     "tailwindcss-animated": "^1.1.2",
     "yup": "^1.4.0"

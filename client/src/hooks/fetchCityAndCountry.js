@@ -7,7 +7,7 @@ export const fetchCityAndCountry = async (latitude, longitude) => {
     const data = await response.json();
 
     // Agregar log para ver la estructura de la respuesta
-    console.log("Respuesta de OpenCage:", data);
+    // console.log("Respuesta de OpenCage:", data);
 
     if (data.results && data.results.length > 0) {
       const locationData = data.results[0].components;

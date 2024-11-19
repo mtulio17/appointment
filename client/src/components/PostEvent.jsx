@@ -111,7 +111,7 @@ const PostEvent = ({onClose}) => {
   useEffect(() => {
     if (eventData?.success) {
       toast.success("Evento creado con éxito.");
-      console.log("Evento creado con éxito", eventData.data);
+      // console.log("Evento creado con éxito", eventData.data);
       setTimeout(() => {
         window.location.reload();
       }, 3000);

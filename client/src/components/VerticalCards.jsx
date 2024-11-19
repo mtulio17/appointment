@@ -41,7 +41,7 @@ const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isM
     }
   
     if (event.host_id === user.id) {
-      toast.warning("No se puede añadir a favoritos un evento propio.");
+      toast.error("No se puede añadir a favoritos un evento propio.");
       return;
     }
   
@@ -89,16 +89,16 @@ const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isM
     <Link to={`/event/${event.id}`}>
       <LazyLoadImage
         src={event.image || "https://placehold.co/400"}
-        alt={event.name || "event image"}
+        alt={event?.name}
         className="mx-auto w-full h-32 lg:h-44 object-cover object-center rounded-lg hover:opacity-90 duration-200 mb-2"
         style={{ aspectRatio: "16 / 9" }}
       />
       <div className="p-1">
-        <h3 className="lg:text-lg lg:leading-0 tracking-wide text-gray-800 font-semibold hover:underline cursor-pointer mb-1">
+        <h3 className="lg:text-lg lg:leading-6 tracking-wide text-gray-800 font-semibold hover:underline cursor-pointer mb-1">
           {event.name}
         </h3>
         <p className="text-xs font-medium text-gray-600 mb-3">
-          {truncateText(event.description, 11)}
+          {truncateText(event?.description, 11)}
         </p>
         <div className="flex items-center text-sm text-gray-800 mb-2">
           <CalendarIcon className="mr-2 h-4 w-4" />

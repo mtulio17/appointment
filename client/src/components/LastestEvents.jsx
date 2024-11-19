@@ -11,7 +11,7 @@ const LastestEvents = () => {
   const { user, isSignedIn } = useUser();
 
   const { city, country, loading: locationLoading, error: locationError } = useLocation();
-  console.log("Ubicación detectada:", city, country);
+  // console.log("Ubicación detectada:", city, country);
 
   // react-query para obtener los eventos
   const { data: events, error: fetchError, isLoading: loadingEvents } = useQuery({

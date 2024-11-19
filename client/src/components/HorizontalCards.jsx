@@ -5,7 +5,7 @@ import { useUser } from "@clerk/clerk-react";
 import useFetch from "../hooks/use-fetch";
 import { Share, Bookmark } from "lucide-react";
 import {toast} from 'react-toastify';
-import ShareModal from './ShareModal'
+import ShareModal from './modal/ShareModal'
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { saveEvent } from "../api/apievents";
@@ -54,7 +54,7 @@ const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent
       }
 
       if (event.host_id === user.id) {
-          toast.warning("No se puede añadir a favoritos un evento propio.");
+          toast.error("No se puede añadir a favoritos un evento propio.");
           return;
       }
 

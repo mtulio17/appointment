@@ -1,19 +1,8 @@
-import { useEffect, useState } from "react";
 import {motion} from "framer-motion";
 import {LazyLoadImage} from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
-import { ArrowRightCircle } from "lucide-react";
 
 const HeroSection = () => {
-  const [imageOrder, setImageOrder] = useState([1, 2, 3, 4, 5]);
-
-  // Función que rota el orden de las imágenes
-  const rotateImages = () => {
-    setImageOrder((prevOrder) => {
-      const [first, ...rest] = prevOrder;
-      return [...rest, first];
-    });
-  };
 
   return (
     <section className="relative w-full my-32">
@@ -26,10 +15,10 @@ const HeroSection = () => {
     <div className="relative flex flex-col lg:flex-row items-center justify-between w-full max-w-7xl mx-auto px-4">
       {/* Texto del Hero */}
       <div className="w-full lg:w-1/2 text-center lg:text-left z-10">
-        <h1 className="lg:text-6xl md:text-5xl font-bold mb-4">
+        <h1 className="lg:text-6xl md:text-5xl font-bold mb-10">
           ¡Conéctate, participa y disfruta!
         </h1>
-        <p className="text-lg text-gray-600 mb-10">
+        <p className="text-lg text-gray-600 mb-6">
           Únete a nuestra comunidad y descubre eventos emocionantes cerca de ti. Haz nuevas conexiones, vive momentos memorables y lleva tu vida social al siguiente nivel.
         </p>
         <div className="flex space-x-4 justify-center lg:justify-start">
