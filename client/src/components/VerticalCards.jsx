@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { MapPinIcon, CalendarIcon, Bookmark, EllipsisIcon, PencilIcon } from "lucide-react";
+import { MapPinIcon, CalendarIcon, Bookmark, PencilIcon } from "lucide-react";
 import { useFavorites } from "../context/SaveEventContext";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';

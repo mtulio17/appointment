@@ -14,12 +14,12 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <FavoritesProvider>
         <ModalProvider>
-          <AppRouter />
+          <FavoritesProvider>
+            <AppRouter />
+            <ToastContainer position="top-center" autoClose={2000} hideProgressBar={true} />
+          </FavoritesProvider>
         </ModalProvider>
-        <ToastContainer position="top-center" autoClose={2000} hideProgressBar={true} />
-      </FavoritesProvider>
     </QueryClientProvider>
   );
 }

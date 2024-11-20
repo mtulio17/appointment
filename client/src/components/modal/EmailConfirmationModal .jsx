@@ -12,7 +12,7 @@ export const EmailConfirmationModal = ({ event, onClose, onConfirm }) => {
   const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) return "El email no puede estar vacío.";
-    if (!regex.test(email)) return "Por favor, ingresa un email válido.";
+    if (!regex.test(email)) return "Por favor, ingresar un email válido.";
     return "";
   };
 
@@ -59,35 +59,30 @@ export const EmailConfirmationModal = ({ event, onClose, onConfirm }) => {
   
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-20 animate-fade-up">
+    <div className="fixed inset-0 flex items-center justify-center z-20">
+
       <div className="absolute inset-0 bg-black opacity-50"></div>
-      <div className="bg-white rounded-lg shadow-lg p-6 z-10 max-w-lg w-full">
+      <div className="bg-white rounded-lg shadow-lg p-6 z-10 max-w-xl w-full">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-medium">Confirmar Email</h2>
-          <button
-            onClick={handleClose}
-            className="text-gray-500 hover:text-gray-700"
-            disabled={isSending}
-          >
+          <button onClick={handleClose} className="text-gray-500 hover:text-gray-700" disabled={isSending}>
             <X />
           </button>
         </div>
+
         <p className="text-gray-700 mb-10">
           !Estás a un solo paso de inscribirte al evento {" "}<strong>{event?.name || "Evento"}</strong>! <br/>
           Por favor, ingresa tu email para confirmar tu inscripción y obtener acceso al evento.
         </p>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => {setEmail(e.target.value);
-           if (errorMessage) setErrorMessage("");
+        {errorMessage && (
+          <p className="text-red-500 text-sm mb-2">{errorMessage}</p>
+        )}
+        <input type="email" value={email} onChange={(e) => {setEmail(e.target.value);
+          if (errorMessage) setErrorMessage("");
           }}
           placeholder="Ingresar tu email válido"
           className="w-full p-2 py-2 px-2 border rounded-lg mb-10"
         />
-        {errorMessage && (
-          <p className="text-red-500 text-sm mb-2">{errorMessage}</p>
-        )}
         <button onClick={handleSubmit} className={`bg-red-500 text-white px-4 py-2 rounded-lg w-full hover:bg-red-600 duration-200 ${
           (!email || isSending) && "opacity-50 cursor-not-allowed"
           }`}
