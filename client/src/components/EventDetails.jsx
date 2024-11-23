@@ -4,15 +4,15 @@ import { useSession, useUser } from "@clerk/clerk-react";
 import { BarLoader } from "react-spinners";
 import { Share, Bookmark } from "lucide-react";
 import { MapPin, Calendar } from "lucide-react";
-import ShareModal from "./modal/ShareModal";
-import { format } from "date-fns";
+import { getEventParticipants, getSingleEventAndHost, participateInEvent} from "../api/apievents";
+import { EmailConfirmationModal } from "./modal/EmailConfirmationModal ";
 import { es } from "date-fns/locale";
-import EventParticipantsSection from "./EventParticipantsSection";
-import { getEventParticipants, getSingleEvent, participateInEvent} from "../api/apievents";
+import { toast } from "react-toastify";
+import { format } from "date-fns";
+import ShareModal from "./modal/ShareModal";
+import EventParticipants from "./EventParticipants";
 import useFetch from "../hooks/use-fetch";
 import MapComponent from "./MapComponent";
-import { EmailConfirmationModal } from "./modal/EmailConfirmationModal ";
-import { toast } from "react-toastify";
 // import { getUserDetailsFromClerk } from "../utils/clerkService";
 
 const EventDetails = () => {
@@ -25,16 +25,19 @@ const EventDetails = () => {
   const { isLoaded, user } = useUser();
   const { session } = useSession();
   // fetch evento y participantes
-  const { isLoading: loadingEvent, data: event, fn: fetchEvent } = useFetch(getSingleEvent, { event_id: id });
+  const { isLoading: loadingEvent, data: event, fn: fetchEvent } = useFetch(getSingleEventAndHost, { event_id: id });
   const { isLoading: loadingParticipants, data: participants = [], fn: fetchParticipants } = useFetch(getEventParticipants, { event_id: id });
+
+
+  console.log(user)
 
   useEffect(() => {
     if (isLoaded && id) {
-      fetchEvent();
-      fetchParticipants(Number(id));
+      fetchEvent().then(() => {
+        fetchParticipants(Number(id));
+      });
     }
   }, [isLoaded, id]);
-
   
   useEffect(() => {
     if (user && participants?.length > 0) {
@@ -91,9 +94,15 @@ const EventDetails = () => {
   };
   
 
-
-  const shareModalOpen = () => setIsShareModalOpen(true);
-  const closeShareModal = () => setIsShareModalOpen(false);
+  const shareModalOpen = () => {
+    setIsShareModalOpen(true);
+    document.body.style.overflow = "hidden";
+  };
+  
+  const closeShareModal = () => {
+    setIsShareModalOpen(false);
+    document.body.style.overflow = "auto";
+  };
   
   if (loadingEvent || loadingParticipants) return <BarLoader className="mt-[72px]" width={"100%"} color="#2C2C2C" />;
 
@@ -110,10 +119,18 @@ const EventDetails = () => {
       <div className="my-32 bg-transparent">
         {/* subNav */}
         <div className="max-w-7xl mx-auto p-4">
-          <h2 className="lg:text-5xl font-semibold mb-4">{event.name}</h2>
-          <div className="flex items-center">
-            <p className="text-sm">
-              Organizado por: <span className="font-semibold">{event.host_name || "Anfitrión desconocido"}.</span>
+          <h2 className="lg:text-5xl font-semibold mb-8">{event.name}</h2>
+          {/* avatar y host del evento */}
+          <div className="flex items-center mt-2">
+            {event.host?.avatar_url && (
+              <img
+                src={event.host.avatar_url}
+                alt={event.host.full_name || "Host"}
+                className="w-9 h-9 rounded-full border-2 border-gray-300 mr-2"
+              />
+            )}
+            <p className="text-base">
+              Organizado por: <span className="font-semibold">{event.host?.full_name || "Host anónimo"}.</span>
             </p>
           </div>
         </div>
@@ -180,13 +197,13 @@ const EventDetails = () => {
               <h3 className="text-lg font-semibold mb-2">
                 Detalles del Evento:
               </h3>
-              <p className="mb-2 lg:text-[14px] text-justify font-normal text-gray-700 lg:leading-6">
+              <p className="mb-2 lg:text-[14px] text-pretty font-normal text-gray-700 lg:leading-7">
                 {event.description}
               </p>
             </div>
             <div>
-              {/* Participant y modal*/}
-              <EventParticipantsSection
+              {/* Participante y modal*/}
+              <EventParticipants
                 participants={participants}
                 hostId={event.host_id}
                 isHost={isHost}
@@ -207,12 +224,12 @@ const EventDetails = () => {
             <button className="p-2 rounded-lg hover:text-slate-800 hover:scale-95 duration-300 focus:outline-none">
               <Bookmark className="text-slate-600" size={22} strokeWidth={1.5} />
             </button>
-            <button onClick={shareModalOpen} className="border border-gray-300 bg-white text-[#00798a] px-5 py-3 rounded-lg flex items-center">
+            <button onClick={shareModalOpen} className="border border-gray-300 bg-white text-[#00798a] hover:scale-95 duration-300 px-5 py-3 rounded-lg flex items-center">
               <Share className="mr-3" size={20} /> Compartir
             </button>
             {!isHost && (
-              <button onClick={openEmailModal} disabled={loadingParticipation || isParticipating} className={`px-5 py-3 hover:scale-95 duration-300 rounded-lg text-white ${
-                loadingParticipation ? "bg-gray-500" : isParticipating ? "bg-green-600" : "bg-red-500 hover:scale-95"
+              <button onClick={openEmailModal} disabled={loadingParticipation || isParticipating} className={`px-5 py-3 duration-300 rounded-lg text-white ${
+                loadingParticipation ? "bg-gray-500" : isParticipating ? "bg-green-600" : "bg-red-500"
               }`}>
                 {loadingParticipation ? "Procesando..." : isParticipating ? "Ya formas parte ✅" : "Solicitar unirme"}
               </button>

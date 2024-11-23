@@ -1,9 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import EventParticipantsModal from "./modal/EventParticipantsModal";
-// import { useUser } from '@clerk/clerk-react';
 
-const EventParticipantsSection = ({ participants = [], hostId, userId }) => {
+const EventParticipants = ({ participants = [], hostId, userId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
@@ -19,14 +18,15 @@ const EventParticipantsSection = ({ participants = [], hostId, userId }) => {
       document.body.style.overflow = "unset";
     };
   }, [isModalOpen]);
-  
-  const uniqueParticipants = Array.isArray(participants)
-  ? participants.filter(
-      (participant, index, self) =>
-        index === self.findIndex((p) => p.user_id === participant.user_id)
-    )
-  : [];
 
+  // posiciona al host al inicio y elimina duplicados
+  const uniqueParticipants = [
+    ...participants.filter((p) => p.user_id === hostId), // Host primero
+    ...participants.filter((p) => p.user_id !== hostId), // Otros participantes
+  ].filter(
+    (participant, index, self) =>
+      index === self.findIndex((p) => p.user_id === participant.user_id)
+  );
 
   return (
     <div className="max-w-3xl">
@@ -45,24 +45,31 @@ const EventParticipantsSection = ({ participants = [], hostId, userId }) => {
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 gap-4">
           {/* Mostrar hasta 3 primeros participantes */}
           {uniqueParticipants.slice(0, 3).map((participant) => (
-              <div key={participant.user_id} className="bg-white rounded-lg shadow-md p-4 text-center">
-                <img src={participant.image} alt={participant.name} className="w-12 h-12 rounded-full mx-auto mb-2"/>
-                <p className="font-semibold">{participant.name}</p>
-                <p className="text-xs text-gray-500">
-                  {participant.user_id === hostId ? "Host" : "Participante"}
-                </p>
-                {participant.user_id === hostId && (
-                  <span className="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded-full">
-                    Organizador
-                  </span>
-                )}
-                {participant.user_id === userId && (
-                  <span className="bg-blue-200 text-blue-700 text-xs font-medium px-2 py-1 rounded-full">
-                    Tú
-                  </span>
-                )}
-              </div>
-            ))}
+            <div
+              key={participant.user_id}
+              className="bg-white rounded-lg shadow-md p-4 text-center"
+            >
+              <img
+                src={participant.image}
+                alt={participant.name}
+                className="w-10 h-10 rounded-full mx-auto mb-2"
+              />
+              <p className="font-medium">{participant.name}</p>
+              <p className="text-xs text-gray-500">
+                {participant.user_id === hostId ? "Host" : "Participante"}
+              </p>
+              {participant.user_id === hostId && (
+                <span className="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded-full">
+                  Organizador
+                </span>
+              )}
+              {participant.user_id === userId && (
+                <span className="bg-blue-200 text-blue-700 text-xs font-medium px-2 py-1 rounded-full">
+                  Tú
+                </span>
+              )}
+            </div>
+          ))}
           {/* Mostrar imágenes de participantes adicionales si hay más de 3 */}
           {uniqueParticipants.length > 3 && (
             <div
@@ -72,11 +79,17 @@ const EventParticipantsSection = ({ participants = [], hostId, userId }) => {
               <div>
                 <div className="flex items-start justify-center">
                   {uniqueParticipants.slice(3, 7).map((participant, index) => (
-                  <img key={participant.user_id} src={participant?.image} alt={participant?.name} className="w-16 h-16 rounded-full mb-2" style={{ marginLeft: index === 0 ? 0 : "-48px" }}/>
+                    <img
+                      key={participant.user_id}
+                      src={participant?.image}
+                      alt={participant?.name}
+                      className="w-16 h-16 rounded-full mb-2"
+                      style={{ marginLeft: index === 0 ? 0 : "-48px" }}
+                    />
                   ))}
                 </div>
                 <span className="text-gray-500 mt-2">
-                  +{participants && participants.length - 3} más
+                  +{uniqueParticipants.length - 3} más
                 </span>
               </div>
             </div>
@@ -92,4 +105,4 @@ const EventParticipantsSection = ({ participants = [], hostId, userId }) => {
   );
 };
 
-export default EventParticipantsSection;
+export default EventParticipants;

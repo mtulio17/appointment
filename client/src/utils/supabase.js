@@ -7,8 +7,13 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 export const setSupabaseSession = async (supabaseAccessToken) => {
   if (supabaseAccessToken) {
-    await supabase.auth.setSession({ supabaseAccessToken });
+    // console.log("Configurando la sesión de Supabase con el token:", supabaseAccessToken);
+    await supabase.auth.setSession({ access_token: supabaseAccessToken });
+    // console.log("Sesión de Supabase configurada con éxito.");
+  } else {
+    console.error("No se proporcionó un token de acceso válido.");
   }
 };
+
 
 export default supabase;

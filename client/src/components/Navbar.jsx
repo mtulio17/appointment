@@ -86,7 +86,7 @@ const Navbar = () => {
   
   
   return (
-    <Disclosure as="nav" className="absolute top-0 w-full rounded-xl z-20">
+    <Disclosure as="nav" className="z-20 absolute top-0 w-full rounded-xl">
       {({ open }) => (
         <>
           <div className="bg-transparent container mx-auto max-w-full py-2 px-2 sm:px-6 lg:px-8">
@@ -138,26 +138,6 @@ const Navbar = () => {
                   <div className="flex items-center mb-1">
                       <UserButton appearance={{ elements: { avatarBox: "w-9 h-9 " } }}>
                         <UserButton.MenuItems>
-                          {/* <UserButton.Link
-                            label="Mis Eventos"
-                            labelIcon={<Calendar size={16} />}
-                            href="/my-created-events"
-                          />
-                          <UserButton.Link
-                            label="Eventos Guardados"
-                            labelIcon={<Bookmark size={16} />}
-                            href="/saved-events"
-                          />
-                          <UserButton.Link
-                            label="Ayuda"
-                            labelIcon={<Info size={16} />}
-                            href="/help"
-                          />
-                          <UserButton.Link
-                            label="Políticas de Privacidad"
-                            labelIcon={<HandHelping size={16} />}
-                            href="/privacy-policies"
-                          /> */}
                           <UserButton.Action label="manageAccount" />
                         </UserButton.MenuItems>
                       </UserButton>

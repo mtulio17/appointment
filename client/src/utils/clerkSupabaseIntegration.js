@@ -8,11 +8,11 @@ export const setSupabaseSessionFromClerk = async (session) => {
 
     if (supabaseAccessToken) {
       await setSupabaseSession(supabaseAccessToken);
-      console.log('Supabase session set successfully.');
+      // console.log('Sesión de Supabase configurada con éxito.');
     } else {
-      console.error('No Supabase access token available.');
+      console.error('No se pudo obtener el token de Supabase.');
     }
   } catch (error) {
-    console.error('Error syncing session with Supabase:', error.message);
+    // console.error('Error al sincronizar la sesión con Supabase:', error.message);
   }
 };
