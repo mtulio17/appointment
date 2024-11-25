@@ -41,35 +41,32 @@ const EventParticipants = ({ participants = [], hostId, userId }) => {
           Ver todo
         </button>
       </div>
-      <div className="bg-white px-4 py-4 rounded">
+      <div className="bg-white px-2 py-4 rounded">
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 gap-4">
           {/* Mostrar hasta 3 primeros participantes */}
-          {uniqueParticipants.slice(0, 3).map((participant) => (
-            <div
-              key={participant.user_id}
-              className="bg-white rounded-lg shadow-md p-4 text-center"
-            >
-              <img
-                src={participant.image}
-                alt={participant.name}
-                className="w-10 h-10 rounded-full mx-auto mb-2"
-              />
-              <p className="font-medium">{participant.name}</p>
-              <p className="text-xs text-gray-500">
-                {participant.user_id === hostId ? "Host" : "Participante"}
-              </p>
-              {participant.user_id === hostId && (
-                <span className="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded-full">
-                  Organizador
-                </span>
-              )}
-              {participant.user_id === userId && (
-                <span className="bg-blue-200 text-blue-700 text-xs font-medium px-2 py-1 rounded-full">
-                  Tú
-                </span>
-              )}
-            </div>
-          ))}
+          {uniqueParticipants.slice(0, 3).map((p) => (
+                <div key={p.user_id} className="bg-white rounded-lg shadow p-4 text-center">
+                  <img
+                    src={p.users?.avatar_url}
+                    alt={p.users?.first_name}
+                    className="w-10 h-10 rounded-full mx-auto mb-2"
+                  />
+                  <p className="font-medium">{p.users?.first_name}</p>
+                  <p className="text-xs text-gray-500">
+                    {p.user_id === hostId ? "Host" : "Participante"}
+                  </p>
+                  {p.user_id === hostId && (
+                    <span className="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded-full">
+                      Organizador
+                    </span>
+                  )}
+                  {p.user_id === userId && (
+                    <span className="bg-blue-200 text-blue-700 text-xs font-medium px-2 py-1 rounded-full">
+                      Tú
+                    </span>
+                  )}
+                </div>
+              ))}
           {/* Mostrar imágenes de participantes adicionales si hay más de 3 */}
           {uniqueParticipants.length > 3 && (
             <div
@@ -78,13 +75,8 @@ const EventParticipants = ({ participants = [], hostId, userId }) => {
             >
               <div>
                 <div className="flex items-start justify-center">
-                  {uniqueParticipants.slice(3, 7).map((participant, index) => (
-                    <img
-                      key={participant.user_id}
-                      src={participant?.image}
-                      alt={participant?.name}
-                      className="w-16 h-16 rounded-full mb-2"
-                      style={{ marginLeft: index === 0 ? 0 : "-48px" }}
+                  {uniqueParticipants.slice(3, 7).map((p, index) => (
+                    <img key={p.user_id} src={p?.avatar_url} alt={p?.name} className="w-12 h-12 rounded-full mb-2" style={{ marginLeft: index === 0 ? 0 : "-48px" }}
                     />
                   ))}
                 </div>

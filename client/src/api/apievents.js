@@ -264,11 +264,11 @@ export async function getEventParticipants(token, eventId) {
   await setSupabaseSession(token);
 
   // consultar participantes del evento, incluyendo información del usuario
-  const { data, error } = await supabase
-    .from("event_attendees")
-    .select("user_id, users(first_name, avatar_url)") // cambiar clerk_id por user_id
-    .eq("event_id", Number(eventId))
-    .order("created_at", { ascending: true });
+  const {data, error} = await supabase
+  .from("event_attendees")
+  .select("user_id, users(first_name, avatar_url, full_name), status") 
+  .eq("event_id", Number(eventId))
+  .order("created_at", {ascending: true})
 
   if (error) {
     console.error("Error al obtener los participantes del evento", error);
@@ -277,7 +277,6 @@ export async function getEventParticipants(token, eventId) {
 
   return data;
 }
-
 
 
 export async function getSingleEventAndHost(token, { event_id }) {
