@@ -8,15 +8,14 @@ export const ModalProvider = ({ children }) => {
   const [modalData, setModalData] = useState(null);
 
   const openModal = (event) => {
-    console.log('Abriendo modal con evento:', event); // Verifica cuándo se llama a openModal
+    console.log('Abriendo modal con evento:', event);
     setModalData(event);
-    document.body.classList.add('overflow-hidden'); // bloquea scroll
+    document.body.classList.add('overflow-hidden');
   };
   
-
   const closeModal = () => {
     setModalData(null);
-    document.body.classList.remove('overflow-hidden'); // permite scrollear
+    document.body.classList.remove('overflow-hidden');
   };
 
   useEffect(() => {
