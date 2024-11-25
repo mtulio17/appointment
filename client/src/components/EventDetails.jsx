@@ -24,12 +24,10 @@ const EventDetails = () => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const { isLoaded, user } = useUser();
   const { session } = useSession();
-  // fetch evento y participantes
+  // fetch events and participants
   const { isLoading: loadingEvent, data: event, fn: fetchEvent } = useFetch(getSingleEventAndHost, { event_id: id });
   const { isLoading: loadingParticipants, data: participants = [], fn: fetchParticipants } = useFetch(getEventParticipants, { event_id: id });
 
-
-  console.log(user)
 
   useEffect(() => {
     if (isLoaded && id) {
@@ -71,9 +69,7 @@ const EventDetails = () => {
       if (!success) {
         toast.success("¡Participación confirmada! Por favor revisa tu casilla de correo para ver la información del evento.");
         setTimeout(() => {
-        navigate(0);
-        }, 2000); 
-
+        }, 3000); 
         navigate(0);
         return;
       }
@@ -83,7 +79,7 @@ const EventDetails = () => {
   
       toast.success("¡Participación confirmada! Por favor revisa tu casilla de correo para ver la información del evento.");
       setTimeout(() => {
-        navigate(0);
+        // navigate(0);
       }, 2000); 
   
     } catch (error) {
@@ -119,7 +115,7 @@ const EventDetails = () => {
       <div className="my-32 bg-transparent">
         {/* subNav */}
         <div className="max-w-7xl mx-auto p-4">
-          <h2 className="lg:text-5xl font-semibold mb-8">{event.name}</h2>
+          <h2 className="lg:text-4xl font-semibold mb-8 max-w-5xl">{event.name}</h2>
           {/* avatar y host del evento */}
           <div className="flex items-center mt-2">
             {event.host?.avatar_url && (
@@ -228,10 +224,10 @@ const EventDetails = () => {
               <Share className="mr-3" size={20} /> Compartir
             </button>
             {!isHost && (
-              <button onClick={openEmailModal} disabled={loadingParticipation || isParticipating} className={`px-5 py-3 duration-300 rounded-lg text-white ${
+              <button onClick={openEmailModal} disabled={loadingParticipation || isParticipating} className={`px-5 py-2 duration-300 rounded-lg text-white ${
                 loadingParticipation ? "bg-gray-500" : isParticipating ? "bg-green-600" : "bg-red-500"
               }`}>
-                {loadingParticipation ? "Procesando..." : isParticipating ? "Ya formas parte ✅" : "Solicitar unirme"}
+                {loadingParticipation ? "Procesando..." : isParticipating ? "Tu asistencia está confirmada." : "Solicitar unirme"}
               </button>
             )}
           </div>

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import EventParticipantsModal from "./modal/EventParticipantsModal";
 
-const EventParticipants = ({ participants = [], hostId, userId }) => {
+const EventParticipants = ({ participants = [], hostId, isHost, userId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
@@ -21,8 +21,8 @@ const EventParticipants = ({ participants = [], hostId, userId }) => {
 
   // posiciona al host al inicio y elimina duplicados
   const uniqueParticipants = [
-    ...participants.filter((p) => p.user_id === hostId), // Host primero
-    ...participants.filter((p) => p.user_id !== hostId), // Otros participantes
+    ...(isHost ? [{ user_id: hostId, full_name: "Host", avatar_url: null }] : []),
+    ...participants.filter((p) => p.user_id !== hostId),
   ].filter(
     (participant, index, self) =>
       index === self.findIndex((p) => p.user_id === participant.user_id)
@@ -38,7 +38,7 @@ const EventParticipants = ({ participants = [], hostId, userId }) => {
           className="lg:text-sm text-Button font-normal hover:underline px-6 py-2"
           onClick={openModal}
         >
-          Ver todo
+          Ver todos
         </button>
       </div>
       <div className="bg-white px-2 py-4 rounded">
@@ -69,14 +69,11 @@ const EventParticipants = ({ participants = [], hostId, userId }) => {
               ))}
           {/* Mostrar imágenes de participantes adicionales si hay más de 3 */}
           {uniqueParticipants.length > 3 && (
-            <div
-              key="extra-participants"
-              className="bg-white rounded-lg shadow-md p-4 text-center flex items-center justify-center"
-            >
+            <div key="extra-participants" className="bg-white rounded-lg shadow-md p-4 text-center flex items-center justify-center">
               <div>
                 <div className="flex items-start justify-center">
                   {uniqueParticipants.slice(3, 7).map((p, index) => (
-                    <img key={p.user_id} src={p?.avatar_url} alt={p?.name} className="w-12 h-12 rounded-full mb-2" style={{ marginLeft: index === 0 ? 0 : "-48px" }}
+                    <img key={p.user_id} src={p?.avatar_url} alt={p.users?.first_name} className="w-12 h-12 rounded-full mb-2" style={{ marginLeft: index === 0 ? 0 : "-48px" }}
                     />
                   ))}
                 </div>
