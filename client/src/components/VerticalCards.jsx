@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { MapPinIcon, CalendarIcon, Bookmark, PencilIcon } from "lucide-react";
+import { MapPinIcon, CalendarIcon, Bookmark, PencilIcon, UsersIcon } from "lucide-react";
 import { useFavorites } from "../context/SaveEventContext";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -69,11 +69,16 @@ const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isM
     }
   };
 
-  
   // Función para editar el evento
   const handleEditEvent = () => {
-    openModal({ type: "edit", event }); // Abrir el modal de edición
+    openModal({ type: "edit", event });
   };
+
+  // Función para manejar la gestión de participantes
+  const handleManageParticipants = () => {
+    openModal({ type: "manageParticipants", event });
+  };
+
 
   const truncateText = (text, wordLimit) => {
     const words = text.split(" ");
@@ -82,7 +87,6 @@ const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isM
     }
     return text;
   };
-
   
   return (
     <div key={event.id} className="relative overflow-hidden cursor-pointer pb-8 my-5 rounded-md">
@@ -115,22 +119,29 @@ const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isM
 
     <button
       disabled={saveLoading}
-      className="w-6 h-6 flex items-center justify-center absolute top-2 right-2 rounded-full text-white hover:bg-gray-800 transition-colors duration-300"
+      className="w-6 h-6 flex items-center justify-center absolute top-2 right-2 rounded-full bg-gray-700 hover:bg-gray-900 transition-colors duration-300"
       onClick={handleSaveEvent}
     >
       {isFavorite(event.id) ? (
-        <Bookmark size={20} fill="red" stroke="red" strokeWidth={1.5} />
+        <Bookmark size={18} fill="red" stroke="red" strokeWidth={1.5} />
       ) : (
-        <Bookmark size={20} strokeWidth={1.5} stroke="white" />
+        <Bookmark size={18} strokeWidth={1.5} className="text-white" />
       )}
     </button>
 
-
     {isHost && (
      <>
+     {/* Botones para editar evento y gestionar participantes */}
       <button className="w-full bg-transparent text-black text-xs font-medium py-2 rounded-md mt-2 flex items-center justify-center border border-gray-200 hover:border-gray-300 duration-200" onClick={handleEditEvent}>
         <PencilIcon className="mr-2" size={14} strokeWidth={2} />
         Editar evento
+      </button>
+      <button
+        className="w-full bg-transparent text-black text-xs font-medium py-2 rounded-md mt-2 flex items-center justify-center border border-gray-200 hover:border-gray-300 duration-200"
+        onClick={handleManageParticipants}
+      >
+        <UsersIcon className="mr-2" size={14} strokeWidth={2} />
+        Gestionar Participantes
       </button>
         {isDropdownOpen && (
           <div className="absolute right-0 mt-2 lg:w-56 bg-white shadow-lg rounded-lg">
