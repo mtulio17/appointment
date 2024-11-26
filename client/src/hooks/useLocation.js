@@ -11,24 +11,27 @@ const useLocation = () => {
     const firstVisit = localStorage.getItem('firstVisit') === null;
     const deniedLocation = localStorage.getItem('deniedLocation') === 'true';
 
+   
     const getLocation = async () => {
       if (navigator.geolocation) {
-        // Pregunta si es la primera visita o si se ha denegado previamente
+        // pregunta si es la primera visita o si se ha denegado previamente
         if (firstVisit || deniedLocation) {
-          const allowLocation = window.confirm(
-            "Para mejorar la experiencia, debe permitir la ubicación para mostrar eventos cercanos a usted."
-          );
+          setTimeout(() => {
+            const allowLocation = window.confirm(
+              "Para mejorar la experiencia, debe permitir la ubicación para mostrar eventos cercanos a usted."
+            );
 
-          if (!allowLocation) {
-            setCity(null); // Si no permite, asegurarse de que city y country sean null
-            setCountry(null);
-            setLoading(false);
-            localStorage.setItem('firstVisit', 'false'); // Guardar en localStorage para no preguntar nuevamente
-            localStorage.setItem('deniedLocation', 'true'); // Guardar que el usuario ha denegado el acceso
-            return;
-          }
-          localStorage.setItem('firstVisit', 'false'); // Guardar en localStorage si se permite
-          localStorage.removeItem('deniedLocation'); // Limpiar el estado de denegación si se permite el acceso
+            if (!allowLocation) {
+              setCity(null); // Si no permite, asegura de que city y country sean null
+              setCountry(null);
+              setLoading(false);
+              localStorage.setItem('firstVisit', 'false'); 
+              localStorage.setItem('deniedLocation', 'true'); 
+              return;
+            }
+            localStorage.setItem('firstVisit', 'false'); // almacenar en localStorage si se permite
+            localStorage.removeItem('deniedLocation');
+          }, 2000); 
         }
 
         navigator.geolocation.getCurrentPosition(
