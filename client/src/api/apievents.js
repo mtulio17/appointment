@@ -230,7 +230,7 @@ export async function participateInEvent(token, eventId, userId) {
   }
 
   if (existingParticipation.length > 0) {
-    if (existingParticipation[0].status === "confirmed") {
+    if (existingParticipation[0].status === "confirmado") {
       console.warn("El usuario ya está confirmado en el evento");
       return existingParticipation[0];
     }
@@ -246,7 +246,7 @@ export async function participateInEvent(token, eventId, userId) {
         event_id: eventId,
         user_id: userId,
         joined_at: new Date().toISOString(),
-        status: "confirmed",
+        status: "confirmado",
         role: "participant",
       },
     ])
