@@ -7,7 +7,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 export const setSupabaseSession = async (supabaseAccessToken) => {
     await supabase.auth.setSession({ access_token: supabaseAccessToken });
-    console.log("Sesión de Supabase configurada con éxito.");
+    // console.log("Sesión de Supabase configurada con éxito.");
 };
 
 

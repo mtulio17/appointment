@@ -5,6 +5,27 @@ import supabase from "../../utils/supabase";
 const SyncSession = () => {
   const { session, isSignedIn } = useSession();
 
+  useEffect(() => {
+    if (session && isSignedIn) {
+      // Obtener datos del usuario desde la sesión de Clerk
+      const user = session.user;
+
+      if (user) {
+        // Insertar o actualizar el usuario en Supabase
+        upsertUserInSupabase({
+          firstName: user.firstName,
+          fullName: user.fullName,
+          avatarUrl: user.imageUrl || null,
+        });
+        // console.log("Sesión sincronizada con Supabase");
+      } else {
+        // console.log("Usuario no disponible");
+      }
+    } else {
+      console.log("Esperando sesión...");
+    }
+  }, [session, isSignedIn]);
+
   // método para insertar o actualizar el usuario en Supabase
   const upsertUserInSupabase = async (userData) => {
     try {
@@ -36,7 +57,7 @@ const SyncSession = () => {
             if (error) {
               console.error("Error updating user in Supabase:", error);
             } else {
-              console.log("User updated successfully:", data);
+              // console.log("User updated successfully:", data);
                 }
           } else {
             // Si el usuario no existe, lo insertamos
@@ -54,36 +75,15 @@ const SyncSession = () => {
               ]);
 
             if (error) {
-              console.error("Error inserting user in Supabase:", error);
+              // console.error("Error inserting user in Supabase:", error);
             } else {
-              console.log("User inserted successfully:", data);
+              // console.log("User inserted successfully:", data);
             }
           }
         } catch (err) {
           console.error("Error during user upsert:", err);
         }
       };
-
-    useEffect(() => {
-      if (session && isSignedIn) {
-        // Obtener datos del usuario desde la sesión de Clerk
-        const user = session.user;
-
-        if (user) {
-          // Insertar o actualizar el usuario en Supabase
-          upsertUserInSupabase({
-            firstName: user.firstName,
-            fullName: user.fullName,
-            avatarUrl: user.imageUrl || null,
-          });
-          console.log("Sesión sincronizada con Supabase");
-        } else {
-          console.log("Usuario no disponible");
-        }
-      } else {
-        console.log("Esperando sesión...");
-      }
-    }, [session, isSignedIn]);
 
     return null;
   };
