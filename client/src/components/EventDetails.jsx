@@ -44,10 +44,21 @@ const EventDetails = () => {
   }, [user, participants]);
 
 
+  useEffect(() => {
+    const showToast = sessionStorage.getItem("showToast");
+    if (showToast) {
+      setTimeout(() => {
+        toast.success("¡Participación confirmada! Por favor revisa tu casilla de correo para ver la información del evento.");
+      }, 2000); // Mostrar toast después de 1 segundo
+      sessionStorage.removeItem("showToast"); // Limpiar el indicador
+    }
+  }, []);
+
   const openEmailModal = () => {
     if (!user) {
       navigate("/?sign-in=true");
     } else {
+      console.log("evento al abir el modal", event);
       setIsEmailModalOpen(true);
     }
   };
@@ -67,10 +78,8 @@ const EventDetails = () => {
   
       const success = await participateInEvent(supabaseAccessToken, id, user.id, email);
       if (!success) {
-        toast.success("¡Participación confirmada! Por favor revisa tu casilla de correo para ver la información del evento.");
-        setTimeout(() => {
-        }, 3000); 
-        navigate(0);
+        sessionStorage.setItem("showToast", "true");
+        navigate(0); // Recargar la página
         return;
       }
   
@@ -225,7 +234,7 @@ const EventDetails = () => {
             </button>
             {!isHost && (
               <button onClick={openEmailModal} disabled={loadingParticipation || isParticipating} className={`px-5 py-2 duration-300 rounded-lg text-white ${
-                loadingParticipation ? "bg-gray-500" : isParticipating ? "bg-green-600" : "bg-red-500"
+                loadingParticipation ? "bg-gray-500" : isParticipating ? "bg-green-700" : "bg-red-500"
               }`}>
                 {loadingParticipation ? "Procesando..." : isParticipating ? "Tu asistencia está confirmada." : "Solicitar unirme"}
               </button>
@@ -235,7 +244,11 @@ const EventDetails = () => {
         <ShareModal showModal={isShareModalOpen} closeShareModal={closeShareModal} eventUrl={event.url} />
       </div>
       {isEmailModalOpen && (
-        <EmailConfirmationModal isOpen={isEmailModalOpen} onClose={() => setIsEmailModalOpen(false)} onConfirm={handleConfirmEmail} />
+        <EmailConfirmationModal 
+        isOpen={isEmailModalOpen}
+        event={event} 
+        onClose={() => setIsEmailModalOpen(false)} 
+        onConfirm={handleConfirmEmail} />
       )}
     </div>
   );
