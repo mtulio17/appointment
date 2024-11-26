@@ -4,8 +4,6 @@ import { useUser } from "@clerk/clerk-react";
 import { X } from "lucide-react";
 import { useState } from "react";
 import { validateEmail } from "../../lib/validateEmail";
-import useFetch from "../../hooks/use-fetch";
-import { getSingleEventAndHost } from "../../api/apievents";
 
 export const EmailConfirmationModal = ({ event, onClose, onConfirm }) => {
   const [email, setEmail] = useState("");
@@ -36,11 +34,10 @@ export const EmailConfirmationModal = ({ event, onClose, onConfirm }) => {
         { to_email: email, ...eventParams }, 
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       );
-    
+
       await onConfirm(email);
       setSuccessMessage("¡Email enviado con éxito! Por favor revisa tu casilla de correo para ver la información del evento al que te registraste.");
     } catch (error) {
-      console.error("Error:", error);
       setErrorMessage(error.message || "Error inesperado al enviar el email.");
     } finally {
       setIsSending(false);

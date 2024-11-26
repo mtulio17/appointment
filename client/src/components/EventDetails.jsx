@@ -49,7 +49,7 @@ const EventDetails = () => {
     if (showToast) {
       setTimeout(() => {
         toast.success("¡Participación confirmada! Por favor revisa tu casilla de correo para ver la información del evento.");
-      }, 2000); // Mostrar toast después de 1 segundo
+      }, 2000);
       sessionStorage.removeItem("showToast"); // Limpiar el indicador
     }
   }, []);
@@ -88,7 +88,6 @@ const EventDetails = () => {
   
       toast.success("¡Participación confirmada! Por favor revisa tu casilla de correo para ver la información del evento.");
       setTimeout(() => {
-        // navigate(0);
       }, 2000); 
   
     } catch (error) {
