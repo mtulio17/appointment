@@ -83,15 +83,15 @@ const EventsPage = () => {
 
   return (
     <section className="my-32">
-      <div className="container max-w-5xl mx-auto px-4">
-        <div className="flex flex-col pb-6">
+      <div className="container max-w-5xl mx-auto">
+        <div className="flex flex-col mb-8">
           <h2 className="text-[#2C2C2C] lg:text-3xl font-semibold">Eventos cerca de tú zona</h2>
-          <div className="flex justify-end space-x-4 mt-4">
+          <div className="flex justify-start space-x-8 mt-10 mx-2">
             {/* Filtro de categorías */}
             <select 
               value={selectedCategory} 
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="text-sm cursor-pointer font-medium bg-Button/80 rounded-full text-white text-gray-700 mx-4 py-2.5 px-4 w-64 transition duration-300 ease-in-out"
+              className="text-sm cursor-pointer font-medium bg-Button/80 rounded-full text-white text-gray-700 py-2.5 px-4 w-64 transition duration-300 ease-in-out"
             >
               <option value="">Todas las categorías</option>
               {categories.map((category) => (
@@ -116,7 +116,7 @@ const EventsPage = () => {
         {/* Listado de eventos */}
         <div className="w-full">
           {loadingEvents || loadingSavedEvents ? (
-            Array(8).fill().map((_, index) => <SkeletonHorizontaCard key={index} />)
+            Array(8).fill().map((_, i) => <SkeletonHorizontaCard key={i} />)
           ) : (
             displayedEvents.map((event) => {
               const isSaved = savedEventIds.includes(event.id);

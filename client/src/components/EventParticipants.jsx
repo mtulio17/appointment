@@ -27,6 +27,7 @@ const EventParticipants = ({ participants = [], hostId, isHost, userId }) => {
     (participant, index, self) =>
       index === self.findIndex((p) => p.user_id === participant.user_id)
   );
+  
 
   return (
     <div className="max-w-3xl">
@@ -49,7 +50,7 @@ const EventParticipants = ({ participants = [], hostId, isHost, userId }) => {
                   <img
                     src={p.users?.avatar_url}
                     alt={p.users?.first_name}
-                    className="w-10 h-10 rounded-full mx-auto mb-2"
+                    className="w-8 h-8 rounded-full mx-auto mb-2"
                   />
                   <p className="font-medium">{p.users?.first_name}</p>
                   <p className="text-xs text-gray-500">
@@ -68,27 +69,29 @@ const EventParticipants = ({ participants = [], hostId, isHost, userId }) => {
                 </div>
               ))}
           {/* Mostrar imágenes de participantes adicionales si hay más de 3 */}
-          {uniqueParticipants.length > 3 && (
-            <div key="extra-participants" className="bg-white rounded-lg shadow-md p-4 text-center flex items-center justify-center">
-              <div>
-                <div className="flex items-start justify-center">
-                  {uniqueParticipants.slice(3, 7).map((p, index) => (
-                    <img key={p.user_id} src={p?.avatar_url} alt={p.users?.first_name} className="w-12 h-12 rounded-full mb-2" style={{ marginLeft: index === 0 ? 0 : "-48px" }}
-                    />
-                  ))}
+            {uniqueParticipants.length > 3 && (
+              <div key="extra-participants" className="bg-white rounded-lg shadow-md p-4 text-center flex items-center justify-center">
+                <div>
+                  <div className="flex items-start justify-center">
+                    {uniqueParticipants.slice(3, 7).map((p, index) => (
+                      <img key={p.user_id} src={p?.avatar_url} alt={p.users?.first_name} className="w-12 h-12 rounded-full mb-2" style={{ marginLeft: index === 0 ? 0 : "-48px" }}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-gray-500 mt-2">
+                    +{uniqueParticipants.length - 3} más
+                  </span>
                 </div>
-                <span className="text-gray-500 mt-2">
-                  +{uniqueParticipants.length - 3} más
-                </span>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
       </div>
       <EventParticipantsModal
         showModal={isModalOpen}
         participants={uniqueParticipants}
         closeModal={closeModal}
+        isHost={isHost}
+        // onRemoveParticipant={handleRemoveParticipant}
       />
     </div>
   );

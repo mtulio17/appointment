@@ -2,26 +2,21 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import VerticalCards from "./VerticalCards";
 import useFetch from "../hooks/use-fetch";
-import { getMyEvents } from "../api/apievents";
+import {  getMyEvents } from "../api/apievents";
 import SkeletonCard from "../ui/skeleton/SkeletonCard";
-// import ConfirmCancelModal from "./ConfirmCancelModal";
-// import { Link } from "react-router-dom";
-// import HorizontalCards from "./HorizontalCards";
 import { PlusCircle } from "lucide-react";
 import PostEvent from "./PostEvent";
-// import OptionsModal from '../ui/OptionsModal';
+import ManageParticipantsModal from "./modal/ManageParticipantsModal";
 
-const MyCreatedEvents = () => {
+const EventsCreated = () => {
   const { user, isSignedIn } = useUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isManageParticipantsModalOpen, setIsManageParticipantsModalOpen] = useState(false);
+  const [isPostEventModalOpen, setIsPostEventModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
-
-  const {
-    fn: fetchMyEvents,
-    data: events,
-    error,
-    isLoading: loadingEvents,
-  } = useFetch(getMyEvents);
+  // hooks para manejar fetch de eventos y participantes
+  const {fn: fetchMyEvents,data: events,error, isLoading: loadingEvents} = useFetch(getMyEvents);
+ 
 
   useEffect(() => {
     if (isSignedIn && user) {
@@ -34,9 +29,19 @@ const MyCreatedEvents = () => {
     setIsModalOpen(true);
   };
 
-  // Función para cerrar el modal
-   const handleOpenModal = () => setIsModalOpen(true);
-    const handleCloseModal = () => setIsModalOpen(false);
+  const handleManageParticipantsModal = (event) => {
+    setSelectedEvent(event);
+    setIsManageParticipantsModalOpen(true);
+  };
+  
+  const closeManageParticipantsModal = () => {
+    setIsManageParticipantsModalOpen(false);
+  };
+
+
+  // función para abrir y cerrar el modal de PostEvent
+  const openPostEventModal = () => {setIsPostEventModalOpen(true)};
+  const closePostEventModal = () => {setIsPostEventModalOpen(false)};
 
   if (!isSignedIn) {
     return <div>No estás autenticado.</div>;
@@ -52,11 +57,8 @@ const MyCreatedEvents = () => {
         <h2 className="gradient-title lg:text-2xl sm:text-4xl text-start font-semibold">
           Eventos que has creado recientemente
         </h2>
-        <button
-        onClick={handleOpenModal}
-        className="text-white bg-[#00798a] mr-4 font-medium lg:text-sm rounded-md px-5 py-2.5 flex items-center text-center focus:outline-none"
-      >
-        Crear un Evento
+        <button onClick={openPostEventModal} className="text-white bg-[#00798a] mr-4 font-medium lg:text-sm rounded-md px-5 py-2.5 flex items-center text-center focus:outline-none">
+         Crear un Evento
         <PlusCircle className="ml-2 flex justify-start items-center" size={18} stroke="white" strokeWidth={2} />
       </button>
       </div>
@@ -64,10 +66,9 @@ const MyCreatedEvents = () => {
       <div className="container mx-auto px-4 w-full">
         <div className="mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-10">
-                {loadingEvents ? (
-                Array(4)
-                  .fill()
-                  .map((_, index) => <SkeletonCard key={index} />)
+                {loadingEvents ? 
+                (Array(4).fill().map((_, index) => <SkeletonCard key={index}
+                 />)
                   ) : // mostrar eventos si están disponibles
                   events && events.length > 0 ? (
                     events.map((event) => (
@@ -76,6 +77,7 @@ const MyCreatedEvents = () => {
                         event={event}
                         isHost={event.host_id === user.id}
                         onEdit={() => handleCancelEvent(event)}
+                        onManageParticipants={() => handleManageParticipantsModal(event)}
                       />
                     ))
                   ) : (
@@ -93,9 +95,17 @@ const MyCreatedEvents = () => {
           </div>
         </div>
       </div>
-      {isModalOpen &&  <PostEvent onClose={handleCloseModal} />}
+          
+      {isManageParticipantsModalOpen && selectedEvent && (
+        <ManageParticipantsModal
+          event={selectedEvent}
+          closeModal={closeManageParticipantsModal}
+        />
+      )}
+
+      {isPostEventModalOpen && <PostEvent onClose={closePostEventModal} />}
     </section>
   );
 };
 
-export default MyCreatedEvents;
+export default EventsCreated;

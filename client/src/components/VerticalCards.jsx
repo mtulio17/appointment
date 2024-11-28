@@ -13,15 +13,15 @@ import useFetch from "../hooks/use-fetch";
 import { toast } from 'react-toastify';
 
 // eslint-disable-next-line react/prop-types
-const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isMyEvent = false, isHost, onEdit, onDelete }) => {
+const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isHost }) => {
   const [saved, setSaved] = useState(savedInit);
   const { user, isSignedIn } = useUser();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const { openModal } = useModal();
-  const {fn: saveFn, error: saveError, loading: saveLoading} = useFetch(saveEvent)
-  const {toggleFavorite, isFavorite} = useFavorites();
+  const { fn: saveFn, error: saveError, loading: saveLoading } = useFetch(saveEvent);
+  const { toggleFavorite, isFavorite } = useFavorites();
 
   const combinedDateTime = new Date(`${event.start_date}T${event.start_time}`);
   const formattedDate = format(combinedDateTime, "d 'de' MMM yyyy", { locale: es });
@@ -31,7 +31,6 @@ const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isM
     setSaved(savedInit);
   }, [savedInit]);
 
-  // useMutation para manejar el guardado y eliminación de eventos
 
   // Función para manejar el guardado o eliminación del evento en favoritos
   const handleSaveEvent = async () => {
@@ -136,10 +135,7 @@ const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isM
         <PencilIcon className="mr-2" size={14} strokeWidth={2} />
         Editar evento
       </button>
-      <button
-        className="w-full bg-transparent text-black text-xs font-medium py-2 rounded-md mt-2 flex items-center justify-center border border-gray-200 hover:border-gray-300 duration-200"
-        onClick={handleManageParticipants}
-      >
+      <button onClick={handleManageParticipants} className="w-full bg-transparent text-black text-xs font-medium py-2 rounded-md mt-2 flex items-center justify-center border border-gray-200 hover:border-gray-300 duration-200">
         <UsersIcon className="mr-2" size={14} strokeWidth={2} />
         Gestionar Participantes
       </button>

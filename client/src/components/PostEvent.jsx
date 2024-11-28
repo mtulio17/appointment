@@ -136,10 +136,7 @@ const PostEvent = ({onClose}) => {
   if (categoriesError) return <p>Error loading categories: {categoriesError.message}</p>;
 
   return (
-    <div
-      id="modal-overlay"
-      className="fixed inset-0 z-50 bg-black bg-opacity-70 flex justify-center items-center overflow-auto"
-    >
+    <div id="modal-overlay" className="fixed inset-0 z-50 bg-black bg-opacity-70 flex justify-center items-center overflow-auto">
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
