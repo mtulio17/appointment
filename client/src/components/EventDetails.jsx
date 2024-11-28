@@ -48,9 +48,11 @@ const EventDetails = () => {
     const showToast = sessionStorage.getItem("showToast");
     if (showToast) {
       setTimeout(() => {
-        toast.success("¡Participación confirmada! Por favor revisa tu casilla de correo para ver la información del evento.");
-      }, 2000);
-      sessionStorage.removeItem("showToast"); // Limpiar el indicador
+        toast.success("¡Asistencia confirmada! Revisa tu casilla de correo para ver los detalles del evento.", {
+          autoClose: 8000 // 5 segundos
+        });
+      }, 2000); // se muestra después de 2 segundos
+      sessionStorage.removeItem("showToast"); //limpiar alerta
     }
   }, []);
 
@@ -58,7 +60,6 @@ const EventDetails = () => {
     if (!user) {
       navigate("/?sign-in=true");
     } else {
-      console.log("evento al abir el modal", event);
       setIsEmailModalOpen(true);
     }
   };
@@ -79,7 +80,7 @@ const EventDetails = () => {
       const success = await participateInEvent(supabaseAccessToken, id, user.id, email);
       if (!success) {
         sessionStorage.setItem("showToast", "true");
-        navigate(0); // Recargar la página
+        navigate(0);
         return;
       }
   
@@ -175,10 +176,8 @@ const EventDetails = () => {
             {/* Right Section */}
             {/* Mapa */}
             <div className="relative shadow rounded-lg p-4 mb-4">
-              <MapComponent
+            <MapComponent
                 address={event.address}
-                city={event.city}
-                count={event.country}
               />
             </div>
           </div>
@@ -208,10 +207,10 @@ const EventDetails = () => {
             <div>
               {/* Participante y modal*/}
               <EventParticipants
-                participants={participants}
-                hostId={event.host_id}
-                isHost={isHost}
-                userId={user ? user.id : null}
+                 participants={participants}
+                 hostId={event.host_id}
+                 isHost={isHost}
+                 userId={user ? user.id : null}
               />
             </div>
           </div>
