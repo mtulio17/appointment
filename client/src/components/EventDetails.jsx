@@ -5,7 +5,7 @@ import { BarLoader } from "react-spinners";
 import { Share, Bookmark } from "lucide-react";
 import { MapPin, Calendar } from "lucide-react";
 import { getEventParticipants, getSingleEventAndHost, participateInEvent} from "../api/apievents";
-import { EmailConfirmationModal } from "./modal/EmailConfirmationModal ";
+import { EmailConfirmationModal } from "./modal/EmailConfirmationModal";
 import { es } from "date-fns/locale";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
@@ -27,7 +27,6 @@ const EventDetails = () => {
   // fetch events and participants
   const { isLoading: loadingEvent, data: event, fn: fetchEvent } = useFetch(getSingleEventAndHost, { event_id: id });
   const { isLoading: loadingParticipants, data: participants = [], fn: fetchParticipants } = useFetch(getEventParticipants, { event_id: id });
-
 
   useEffect(() => {
     if (isLoaded && id) {
@@ -176,9 +175,7 @@ const EventDetails = () => {
             {/* Right Section */}
             {/* Mapa */}
             <div className="relative shadow rounded-lg p-4 mb-4">
-            <MapComponent
-                address={event.address}
-              />
+            <MapComponent address={event.address} />
             </div>
           </div>
 

@@ -1,7 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import EventModal from "../components/modal/EventModal";
 import ManageParticipantsModal from "../components/modal/ManageParticipantsModal";
-import { EmailConfirmationModal } from "../components/modal/EmailConfirmationModal ";
+import { EmailConfirmationModal } from "../components/modal/EmailConfirmationModal";
 
 const ModalContext = createContext();
 
