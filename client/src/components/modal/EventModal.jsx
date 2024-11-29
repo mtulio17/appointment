@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import AutocompleteAddressInput from '../../ui/AutocompleteAdressInput';
-import { editEvent, getCategories } from '../../api/apievents';
+import { getCategories, updateEvent } from '../../api/apievents';
 import useFetch from '../../hooks/use-fetch';
 import { toast } from 'react-toastify';
 import { yupResolver} from '@hookform/resolvers/yup';
@@ -15,7 +15,7 @@ const EventModal = ({ event, onClose }) => {
     resolver: yupResolver(eventSchema),
   });
 
-  const {data: eventData, loading: editEventLoading, error: editEventError, fn: editEventFn} = useFetch(editEvent);
+  const {data: eventData, loading: updateEventLoading, error: updateEventError, fn: updateEventFn} = useFetch(updateEvent);
   const { data: categories, error: categoriesError, fn: fetchCategories } = useFetch(getCategories);
 
   useEffect(() => {
@@ -48,13 +48,14 @@ const EventModal = ({ event, onClose }) => {
     if (event?.id) {
       try {
         const updatedEventData = { ...data };
+        console.log("datos enviados", updatedEventData);
 
-        await editEventFn(event.id, updatedEventData);
+        await updateEventFn(event.id, updatedEventData);
         toast.success("Evento actualizado con éxito. ✔");
         onClose();
       } catch (error) {
+        console.error("Error actualizando el evento:", error);
         toast.error("Hubo un error al intentar actualizar el evento.");
-        // console.error("Error actualizando el evento:", error);
       }
     }
   };
@@ -71,7 +72,7 @@ const EventModal = ({ event, onClose }) => {
   }, [eventData]);
 
 
-  if (editEventLoading) return <p>Cargando...</p>;
+  if (updateEventLoading) return <p>Cargando...</p>;
   if (categoriesError) return <p>Error cargando categorías: {categoriesError.message}</p>;
 
   return (
@@ -252,8 +253,8 @@ const EventModal = ({ event, onClose }) => {
           </div>
 
           {/* Mensaje de Error en la Creación del Evento */}
-          {editEventError && (
-            <p className="text-red-500 col-span-1 md:col-span-4">{editEventError.message}</p>
+          {updateEventError && (
+            <p className="text-red-500 col-span-1 md:col-span-4">{updateEventError.message}</p>
           )}
 
           {/* Botones de Acción */}
@@ -261,13 +262,13 @@ const EventModal = ({ event, onClose }) => {
             <button
               type="submit"
               className="bg-[#18181b] text-white font-medium py-2 px-4 rounded-lg shadow focus:outline-none"
-              disabled={editEventLoading}
+              disabled={updateEventLoading}
             >
-              {editEventLoading ? "Actualizando evento..." : "Actualizar evento"}
+              {updateEventLoading ? "Actualizando evento..." : "Actualizar evento"}
             </button>
           </div>
         </form>
-        {editEventError && <p>Error actualizando el evento: {editEventError.message}</p>}
+        {updateEventError && <p>Error actualizando el evento: {updateEventError.message}</p>}
       </div>
     </div>
   );
