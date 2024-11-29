@@ -346,14 +346,6 @@ const PostEvent = ({onClose}) => {
             >
               {createEventLoading ? "Creando evento..." : "Crear Evento"}
             </button>
-
-            {/* <button
-              type="button"
-              onClick={handleCancel}
-              className="bg-red-600 text-white font-medium py-2 px-4 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-            >
-              Cancelar
-            </button> */}
           </div>
         </form>
       </motion.div>
