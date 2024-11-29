@@ -183,7 +183,7 @@ export async function cancelEvent(token, eventId) {
 
   const { data, error } = await supabase
     .from("events")
-    .update({ status: "cancelled" })
+    .update({ status: "cancelado" })
     .eq("id", eventId)
     .single();
 
@@ -195,8 +195,8 @@ export async function cancelEvent(token, eventId) {
   return data;
 }
 
-// Función para editar un evento
-export async function editEvent(token, eventId, updatedData) {
+// Función para actualizar/editar un evento
+export async function updateEvent(token, eventId, updatedData) {
   await setSupabaseSession(token);
 
   const { data, error } = await supabase

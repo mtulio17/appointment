@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect } from 'react';
+import { useEffect} from 'react';
 import { useForm } from 'react-hook-form';
 import AutocompleteAddressInput from '../../ui/AutocompleteAdressInput';
 import { getCategories, updateEvent } from '../../api/apievents';
@@ -12,7 +12,7 @@ import { X } from 'lucide-react';
 const EventModal = ({ event, onClose }) => {
   const { register, handleSubmit, setValue, formState: { errors }, watch } = useForm({
     mode: 'onSubmit',
-    resolver: yupResolver(eventSchema),
+    resolver: yupResolver(eventSchema(false)),
   });
 
   const {data: eventData, loading: updateEventLoading, error: updateEventError, fn: updateEventFn} = useFetch(updateEvent);
@@ -22,6 +22,10 @@ const EventModal = ({ event, onClose }) => {
     fetchCategories();
   }, [])
 
+
+  console.log("Errores del formulario:", errors);
+
+
   const handleAddressSelect = ({ address, city, country }) => {
     setValue('address', address);
     setValue('city', city);   
@@ -30,6 +34,7 @@ const EventModal = ({ event, onClose }) => {
 
   useEffect(() => {
     if (event) {
+      console.log("")
       setValue('name', event.name);
       setValue('gender', event.gender);
       setValue('description', event.description);
@@ -44,37 +49,47 @@ const EventModal = ({ event, onClose }) => {
     }
   }, [event, setValue]);
 
-  const onSubmit = async (data) => {
-    if (event?.id) {
-      try {
-        const updatedEventData = { ...data };
-        console.log("datos enviados", updatedEventData);
 
-        await updateEventFn(event.id, updatedEventData);
-        toast.success("Evento actualizado con éxito. ✔");
-        onClose();
-      } catch (error) {
-        console.error("Error actualizando el evento:", error);
-        toast.error("Hubo un error al intentar actualizar el evento.");
-      }
+  const onSubmit = async (data) => {
+    if (!event?.id) {
+      toast.error("No se encontró el ID del evento.");
+      return;
+    }
+    try {
+      // Llama a la función para actualizar el evento
+      await updateEventFn(event.id, data);
+  
+      toast.success("Evento actualizado con éxito.");
+      onClose();
+      setTimeout(() => {
+        window.location.reload(); // recarga la página
+      }, 3000);
+    } catch (error) {
+      toast.error("Hubo un error al intentar actualizar el evento.");
+      console.error("Error en la actualización del evento:", error);
     }
   };
-
-   useEffect(() => {
+  
+  useEffect(() => {
     if (eventData?.success) {
       toast.success("Evento actualizado con éxito.");
-      // console.log("Evento actualizado con éxito", eventData.data);
+      onClose();
       setTimeout(() => {
         window.location.reload();
       }, 3000);
-      onClose();
+    }
+  
+    if (updateEventError) {
+      toast.error("Error al actualizar el evento.");
     }
   }, [eventData]);
-
+  
 
   if (updateEventLoading) return <p>Cargando...</p>;
   if (categoriesError) return <p>Error cargando categorías: {categoriesError.message}</p>;
 
+  if(updateEventError) return <p className="text-red-500 col-span-1 md:col-span-4">{updateEventError.message}</p>
+        
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50 modal-overlay">
          {/* Botón de cierre */}
@@ -251,19 +266,10 @@ const EventModal = ({ event, onClose }) => {
               }`}
             />
           </div>
-
-          {/* Mensaje de Error en la Creación del Evento */}
-          {updateEventError && (
-            <p className="text-red-500 col-span-1 md:col-span-4">{updateEventError.message}</p>
-          )}
-
+          
           {/* Botones de Acción */}
           <div className="col-span-1 md:col-span-4 flex justify-start space-x-4 absolute bottom-2 left-2">
-            <button
-              type="submit"
-              className="bg-[#18181b] text-white font-medium py-2 px-4 rounded-lg shadow focus:outline-none"
-              disabled={updateEventLoading}
-            >
+            <button type="submit" className="bg-[#18181b] text-white font-medium py-2 px-4 rounded-lg shadow focus:outline-none" disabled={updateEventLoading}>
               {updateEventLoading ? "Actualizando evento..." : "Actualizar evento"}
             </button>
           </div>
