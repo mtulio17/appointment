@@ -18,7 +18,7 @@ const PostEvent = ({onClose}) => {
   const navigate = useNavigate();
   const [preview, setPreview] =useState(null)
 
-  const { register, handleSubmit, setValue, formState: { errors }} = useForm({ resolver: yupResolver(eventSchema), mode: "onSubmit" });
+  const { register, handleSubmit, setValue, formState: { errors }} = useForm({ resolver: yupResolver(eventSchema(true)), mode: "onSubmit" });
   const { data: categories, error: categoriesError, fn: fetchCategories } = useFetch(getCategories);
   const { data: eventData, loading: createEventLoading, error: createEventError, fn: createEventFn } = useFetch(createEvent);
 
@@ -120,17 +120,6 @@ const PostEvent = ({onClose}) => {
   }, [eventData]);
 
   
-  const handleOverlayClick = (e) => {
-    if (e.target.id === "modal-overlay") {
-      onClose();
-    }
-  };
-
-  
-  const handleCancel = () => {
-    onClose();
-  };
-
   if (createEventLoading) return <p>Cargando...</p>;
 
   if (categoriesError) return <p>Error loading categories: {categoriesError.message}</p>;
