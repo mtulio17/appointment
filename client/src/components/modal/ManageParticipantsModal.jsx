@@ -1,70 +1,71 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
-import useFetch from "../../hooks/use-fetch";
-import { getEventParticipants } from "../../api/apievents";
 import { X } from "lucide-react";
-import { useUser } from "@clerk/clerk-react";
+import { useEffect } from "react";
+import ClipLoader from "react-spinners/ClipLoader";
 
-const ManageParticipantsModal = ({ event, closeModal, token}) => {
-  const [isParticipating, setIsParticipating] = useState(false);
-  const { user } = useUser(); // Obtener usuario actual
-  const { data: participants = [], error, isLoading: loadingParticipants, fn: fetchParticipants } = useFetch(getEventParticipants);
-
+const ManageParticipantsModal = ({participants = [], loading = false, eventId, closeModal}) => {
+  
   useEffect(() => {
-    // Asegúrate de que token y event.id existan antes de hacer la consulta
-    if (token && event?.id) {
-      fetchParticipants(token, event.id);
+    if (eventId) {
+      console.log("Participantes recibidos en el modal:", participants);
     }
-  }, [event, token, fetchParticipants]); // Solo vuelve a ejecutar cuando cambien event o token
+  }, [eventId, participants]);
 
-  useEffect(() => {
-    if (user && participants) {
-      setIsParticipating(participants.some((participant) => participant.user_id === user.id));
-      console.log(participants)
-    }
-  }, [user, participants])
-
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <ClipLoader color={"#212121"} size={40} />
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
-    <div className="absolute inset-0 bg-black opacity-80"></div>
-    <div className="animate-fade-up bg-white rounded-md shadow-lg p-6 z-10 max-w-lg w-full">
-      <div className="flex justify-between items-center mb-10">
-        <h2 className="text-2xl font-semibold">
-          Gestionar Participantes
-        </h2>
-        <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">
-        <X size={18} />
-        </button>
-      </div>
-      <div className="max-h-64 overflow-y-auto">
-          {loadingParticipants ? (
-            <p>Cargando participantes...</p>
-          ) : error ? (
-            <p>Error al cargar participantes.</p>
-          ) : participants.length > 0 ? (
-            participants.map((p, i) => (
-              <div key={i} className="flex items-center mb-4">
+      <div className="absolute inset-0 bg-black opacity-80"></div>
+      <div className="animate-fade-up bg-white rounded-lg shadow-lg p-6 z-10 max-w-lg w-full">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-semibold">Gestionar Participantes</h2>
+          <button
+            onClick={closeModal}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <X size={18} />
+          </button>
+        </div>
+        <div className="max-h-64 overflow-y-auto">
+          {participants && participants.length > 0 ? (
+            participants.map((participant) => (
+              <div key={participant.user_id} className="flex items-center mb-4">
                 <img
-                  src={p.users?.avatar_url || "/placeholder-avatar.png"}
-                  alt={p.users?.full_name || "Usuario"}
+                  src={participant.users?.avatar_url || "/placeholder-avatar.png"}
+                  alt={participant.users?.full_name || "Usuario"}
                   className="w-10 h-10 rounded-full mr-4"
                 />
                 <div className="flex justify-between w-full">
-                  <p className="font-medium text-base">{p.users?.full_name}</p>
-                  <p className="text-xs px-2 py-1.5 bg-gray-100 border border-slate-100 rounded-lg">
-                    {p?.status}
+                  <p className="font-medium text-base">
+                    {participant.users?.full_name || "Usuario desconocido"}
+                  </p>
+                  <p
+                    className={`text-xs px-2 py-1 border rounded-lg ${
+                      participant?.status === "confirmed"
+                        ? "bg-green-100 border-green-300 text-green-800"
+                        : "bg-gray-100 border-gray-300 text-gray-800"
+                    }`}
+                  >
+                    {participant?.status || "Sin estado"}
                   </p>
                 </div>
               </div>
             ))
           ) : (
-            <p>No hay participantes para este evento.</p>
+            <p className="text-gray-500 text-center">
+              Aún no hay participantes registrados para este evento.
+            </p>
           )}
         </div>
       </div>
     </div>
-);
+  );
 };
 
-export default ManageParticipantsModal
+export default ManageParticipantsModal;

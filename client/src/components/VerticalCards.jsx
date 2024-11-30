@@ -6,23 +6,26 @@ import { useFavorites } from "../context/SaveEventContext";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useUser } from "@clerk/clerk-react";
-import { saveEvent } from "../api/apievents";
-import { Link, useNavigate } from "react-router-dom";
+import {  saveEvent, getEventParticipants } from "../api/apievents";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useModal } from "../context/ModalContext";
 import useFetch from "../hooks/use-fetch";
 import { toast } from 'react-toastify';
+// import ManageParticipantsModal from "./modal/ManageParticipantsModal";
 
-// eslint-disable-next-line react/prop-types
 const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isHost }) => {
-  const [saved, setSaved] = useState(savedInit);
-  const { user, isSignedIn } = useUser();
-  const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [saved, setSaved] = useState(savedInit);
+  // const [showManageParticipantsModal, setShowManageParticipantsModal] = useState(false);
 
+  const navigate = useNavigate();
+  const { user, isSignedIn, isLoaded } = useUser();
   const { openModal } = useModal();
-  const { fn: saveFn, error: saveError, loading: saveLoading } = useFetch(saveEvent);
-  const { toggleFavorite, isFavorite } = useFavorites();
 
+  const { fn: saveFn, error: saveError, loading: saveLoading } = useFetch(saveEvent);
+  // const { isLoading: loadingParticipants, data: participants = [], fn: fetchParticipants } = useFetch(getEventParticipants,{ event_id: id } 
+  // );
+  const { toggleFavorite, isFavorite } = useFavorites();
   const combinedDateTime = new Date(`${event.start_date}T${event.start_time}`);
   const formattedDate = format(combinedDateTime, "d 'de' MMM yyyy", { locale: es });
   const formattedTime = format(combinedDateTime, "HH:mm'hs'");
@@ -31,8 +34,20 @@ const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isH
     setSaved(savedInit);
   }, [savedInit]);
 
+  // useEffect(() => {
+  //   console.log("Datos obtenidos de la API para participantes:", participants);
+  // }, [participants]);
 
-  // Función para manejar el guardado o eliminación del evento en favoritos
+
+  // useEffect(() => {
+  //   if (isLoaded && id) {
+  //     console.log("Participantes cargados en VerticalCards:", participants);
+  //     fetchParticipants(Number(id));
+  //   }
+  // }, [isLoaded, id]);
+  
+
+  // función para manejar el guardado o eliminación del evento en favoritos
   const handleSaveEvent = async () => {
     if (!isSignedIn || !user) {
       navigate("/?sign-in=true");
@@ -68,15 +83,20 @@ const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isH
     }
   };
 
-  // Función para editar el evento
+  // función para editar/actualizar el evento
   const handleEditEvent = () => {
     openModal({ type: "edit", event });
   };
 
-  // Función para manejar la gestión de participantes
-  const handleManageParticipants = () => {
-    openModal({ type: "manageParticipants", event });
-  };
+
+  // const handleManageParticipants = () => {
+  //   openModal({ type: "manageParticipants", event });
+  //   console.log("Abriendo modal de gestión de participantes", event);
+  // };
+
+  // const handleCloseManageParticipantsModal = () => {
+  //   setShowManageParticipantsModal(false);
+  // };
 
 
   const truncateText = (text, wordLimit) => {
@@ -135,10 +155,18 @@ const VerticalCards = ({ event, savedInit = false, onEventAction = () => {}, isH
         <PencilIcon className="mr-2" size={14} strokeWidth={2} />
         Editar evento
       </button>
-      <button onClick={handleManageParticipants} className="w-full bg-transparent text-black text-xs font-medium py-2 rounded-md mt-2 flex items-center justify-center border border-gray-200 hover:border-gray-300 duration-200">
+      {/* <button onClick={handleManageParticipants} className="w-full bg-transparent text-black text-xs font-medium py-2 rounded-md mt-2 flex items-center justify-center border border-gray-200 hover:border-gray-300 duration-200">
         <UsersIcon className="mr-2" size={14} strokeWidth={2} />
         Gestionar Participantes
       </button>
+      {showManageParticipantsModal && (
+         <ManageParticipantsModal
+         eventId={event.id}
+         participants={participants}
+         loading={loadingParticipants}
+         closeModal={handleCloseManageParticipantsModal}
+       />
+      )} */}
         {isDropdownOpen && (
           <div className="absolute right-0 mt-2 lg:w-56 bg-white shadow-lg rounded-lg">
             <ul>

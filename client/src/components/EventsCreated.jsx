@@ -6,7 +6,7 @@ import {  getMyEvents } from "../api/apievents";
 import SkeletonCard from "../ui/skeleton/SkeletonCard";
 import { PlusCircle } from "lucide-react";
 import PostEvent from "./PostEvent";
-import ManageParticipantsModal from "./modal/ManageParticipantsModal";
+
 
 const EventsCreated = () => {
   const { user, isSignedIn } = useUser();
@@ -34,9 +34,9 @@ const EventsCreated = () => {
     setIsManageParticipantsModalOpen(true);
   };
   
-  const closeManageParticipantsModal = () => {
-    setIsManageParticipantsModalOpen(false);
-  };
+  // const closeManageParticipantsModal = () => {
+  //   setIsManageParticipantsModalOpen(false);
+  // };
 
 
   // función para abrir y cerrar el modal de PostEvent
@@ -95,13 +95,13 @@ const EventsCreated = () => {
           </div>
         </div>
       </div>
-          
+{/*           
       {isManageParticipantsModalOpen && selectedEvent && (
         <ManageParticipantsModal
           event={selectedEvent}
           closeModal={closeManageParticipantsModal}
         />
-      )}
+      )} */}
 
       {isPostEventModalOpen && <PostEvent onClose={closePostEventModal} />}
     </section>
