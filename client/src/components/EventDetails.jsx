@@ -205,6 +205,7 @@ const EventDetails = () => {
               {/* Participante y modal*/}
               <EventParticipants
                  participants={participants}
+                 host={event.host}
                  hostId={event.host_id}
                  isHost={isHost}
                  userId={user ? user.id : null}
