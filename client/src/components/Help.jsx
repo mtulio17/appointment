@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import BackButton from '../ui/button/BackButton';
 
 const faqs = [
   {
@@ -49,6 +50,9 @@ const Help = () => {
 
   return (
     <div className="w-full max-w-4xl mx-auto my-32">
+       <div className="absolute top-30 left-16 mb-10">
+        <BackButton label="Volver" />
+      </div>
       <h2 className="text-3xl font-bold mb-10 text-start underline">Centro de Ayuda</h2>
       {faqs.map((faq, index) => (
         <div key={index} className="border-b">
