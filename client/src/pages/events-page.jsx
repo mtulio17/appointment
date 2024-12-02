@@ -2,20 +2,20 @@ import { useEffect, useState } from "react"
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useSession, useUser } from "@clerk/clerk-react"
+import { Listbox } from '@headlessui/react';
 // import useFetch from "../hooks/use-fetch";
 import { getCategories, getEvents, getEventsByCategory, getSavedEvents } from "../api/apievents";
 import { BarLoader } from "react-spinners";
-import ReactPaginate from 'react-paginate';
 import HorizontalCards from "../components/HorizontalCards"
 import SkeletonHorizontaCard from "../ui/skeleton/SkeletonHorizontaCard";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 
 const EventsPage = () => {
   const { isLoaded, session } = useSession();
   const { user, isSignedIn } = useUser();
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [sortOption, setSortOption] = useState("relevance");
+  const [sortOptions, setSortOptions] = useState("Ordenar por:");
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -59,9 +59,9 @@ const EventsPage = () => {
   const handleSort = (eventsToSort) => {
     let sortedEvents = [...eventsToSort];
 
-    if (sortOption === "recent") {
-      sortedEvents.sort((a, b) => new Date(b.start_time) - new Date(a.start_time));
-    } else if (sortOption === "relevance") {
+    if (sortOptions === "recent") {
+      sortedEvents.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    } else if (sortOptions === "relevance") {
       sortedEvents.sort((a, b) => b.participants - a.participants);
     }
     return sortedEvents;
@@ -85,31 +85,128 @@ const EventsPage = () => {
     <section className="my-32">
       <div className="container max-w-5xl mx-auto">
         <div className="flex flex-col mb-8">
-          <h2 className="text-[#2C2C2C] lg:text-3xl font-semibold">Eventos cerca de tú zona</h2>
+          <h2 className="text-[#2C2C2C] lg:text-3xl font-bold">Eventos cerca de tú zona</h2>
           <div className="flex justify-start space-x-8 mt-10 mx-2">
             {/* Filtro de categorías */}
-            <select 
-              value={selectedCategory} 
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="text-sm cursor-pointer font-medium bg-Button/80 rounded-full text-white text-gray-700 py-2.5 px-4 w-64 transition duration-300 ease-in-out"
-            >
-              <option value="">Todas las categorías</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id} className="text-gray-600 bg-white">
-                  {category.name}
-                </option>
-              ))}
-            </select>
-
+            <div className="w-72">
+              <Listbox value={selectedCategory} onChange={setSelectedCategory}>
+                <div className="relative">
+                  <Listbox.Button className="relative w-full cursor-pointer rounded-full bg-[#00798a] py-2.5 px-4 lg:text-sm text-left text-white font-medium shadow transition duration-300 ease-in-out hover:bg-[#00798a]/90 focus:outline-none focus:ring-1 focus:ring-[#00798a]/80">
+                    <span className="block truncate">
+                      {categories.find((cat) => cat.id === selectedCategory)?.name || 'Todas las categorías'}
+                    </span>
+                    <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                      <ChevronsUpDownIcon className="h-5 w-5 text-white" aria-hidden="true" />
+                    </span>
+                  </Listbox.Button>
+                  <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <Listbox.Option
+                      key=""
+                      value=""
+                      className={({ active }) =>
+                        `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
+                          active ? 'bg-[#00798a]/20 text-[#00798a]' : 'text-gray-900'
+                        }`
+                      }
+                    >
+                      {({ selected }) => (
+                        <>
+                          <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
+                            Todas las categorías
+                          </span>
+                          {selected && (
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                              <CheckIcon className="h-5 w-5 text-[#00798a]" aria-hidden="true" />
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </Listbox.Option>
+                    {categories.map((category) => (
+                      <Listbox.Option
+                        key={category.id}
+                        value={category.id}
+                        className={({ active }) =>
+                          `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
+                            active ? 'bg-[#00798a]/20 text-[#00798a]' : 'text-gray-900'
+                          }`
+                        }
+                      >
+                        {({ selected }) => (
+                          <>
+                            <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
+                              {category.name}
+                            </span>
+                            {selected && (
+                              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <CheckIcon className="h-5 w-5 text-Button" aria-hidden="true" />
+                              </span>
+                            )}
+                          </>
+                        )}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </div>
+              </Listbox>
+            </div>
             {/* Filtro de orden */}
-            <select 
-              value={sortOption} 
-              onChange={(e) => setSortOption(e.target.value)} 
-              className="text-sm cursor-pointer font-medium bg-Button/80 rounded-full text-white text-gray-700 mx-4 py-2.5 px-4 w-64 transition duration-300 ease-in-out"
-            >
-              <option value="relevance" className="text-gray-600 bg-white">Ordenar por: Relevancia</option>
-              <option value="recent" className="text-gray-600 bg-white">Ordenar por: Más recientes</option>
-            </select>
+            <div className="w-72">
+            <Listbox value={sortOptions} onChange={setSortOptions}>
+              <div className="relative">
+                <Listbox.Button className="relative w-full cursor-pointer rounded-full bg-[#00798a] py-2.5 px-4 lg:text-sm text-left text-white font-medium shadow transition duration-300 ease-in-out hover:bg-[#00798a]/90 focus:outline-none focus:ring-2 focus:ring-[#00798a]/80">
+                  <span className="block truncate">
+                    {sortOptions || 'Ordenar por'}
+                  </span>
+                  <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                    <ChevronsUpDownIcon className="h-5 w-5 text-white" aria-hidden="true" />
+                  </span>
+                </Listbox.Button>
+                <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <Listbox.Option
+                    // key="relevance"
+                    value="Ordenar por: relevancia"
+                    className={({ active }) =>
+                      `relative cursor-pointer select-none py-2 pl-10 pr-4 ${active ? 'bg-[#00798a]/20 text-[#00798a]' : 'text-gray-900'}`
+                    }
+                  >
+                    {({ selected }) => (
+                      <>
+                        <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
+                          Por relevancia
+                        </span>
+                        {selected && (
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <CheckIcon className="h-5 w-5 text-[#00798a]" aria-hidden="true" />
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </Listbox.Option>
+                  <Listbox.Option
+                    // key="recent"
+                    value="Ordenar por: recientes"
+                    className={({ active }) =>
+                      `relative cursor-pointer select-none py-2 pl-10 pr-4 ${active ? 'bg-[#00798a]/20 text-[#00798a]' : 'text-gray-900'}`
+                    }
+                  >
+                    {({ selected }) => (
+                      <>
+                        <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
+                          Más recientes
+                        </span>
+                        {selected && (
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <CheckIcon className="h-5 w-5 text-[#00798a]" aria-hidden="true" />
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </Listbox.Option>
+                </Listbox.Options>
+              </div>
+            </Listbox>
+          </div>
           </div>
         </div>
 
