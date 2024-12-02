@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import  { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,16 +9,15 @@ import {toast} from 'react-toastify';
 import ShareModal from './modal/ShareModal'
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { saveEvent } from "../api/apievents";
+import { getCategories, saveEvent } from "../api/apievents";
 import { useFavorites } from '../context/SaveEventContext';
-// import { dataEvents } from "../data/dataEvents";
 
 
 
 const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent = false , isHost, onEdit, onDelete, onCancel}) => {
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [saved, setSaved] = useState(savedInit);
-    const { user, isSignedIn } = useUser();
+    const { user, isSignedIn, isLoaded } = useUser();
     const navigate = useNavigate();
     const { toggleFavorite, isFavorite } = useFavorites();
     
@@ -29,6 +29,14 @@ const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent
     const combinedDateTime = new Date(`${event.start_date}T${event.start_time}`);
     const formattedDate = format(combinedDateTime, "d 'de' MMM yyyy", { locale: es });
     const formattedTime = format(combinedDateTime, "HH:mm'hs'");
+
+    const truncateText = (text, maxWords) => {
+        const words = text.split(' ');
+        if (words.length > maxWords) {
+          return words.slice(0, maxWords).join(' ') + '...';
+        }
+        return text; 
+      };
     
     useEffect(() => {
       if (isShareModalOpen) {
@@ -86,42 +94,42 @@ const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent
 
     return (
         <div className="flex items-center justify-between border-b border-gray-200 rounded-lg p-4 mb-2 py-8 transition-shadow duration-300">
-            <Link to={`/event/${event.id}`} className="h-32 lg:h-24 lg:w-48 rounded-lg overflow-hidden hover:opacity-80 duration-200" style={{ aspectRatio: '16 / 9' }}>
-                <img
-                    src={event.image}
-                    alt={event.name}
-                    className="w-full h-full object-cover"
+            <Link to={`/event/${event.id}`} className="h-32 lg:h-36 lg:w-56 rounded-lg overflow-hidden hover:opacity-80 duration-200" style={{ aspectRatio: '16/9' }}>
+                <img src={event.image} alt={event.name} className="w-full h-full object-cover hover:opacity-95 duration-200"
                 />
             </Link>
             <div className="flex-1 ml-4">
-                {/* Fecha y Hora */}
-                <div className="text-xs text-yellow-800 font-semibold mb-1 uppercase">
-                {formattedDate} - {formattedTime}
+        {/* Título del evento */}
+            <Link to={`/event/${event.id}`} className="block">
+                <div className="lg:text-lg font-semibold text-gray-600 mb-2">
+                    {event.name}
                 </div>
-
-                <Link to={`/event/${event.id}`} className="block">
-                    <div className="lg:text-md font-semibold text-gray-800 mb-1">
-                        {event.name}
-                    </div>
-                </Link>
-                {/* ubicación */}
-                <div className="text-xs text-gray-600">
-                    {event.address}, {event.city}, {event.country}
-                </div>
-              </div>
-            <div className="flex items-center space-x-3">
-                {/* icono compartir */}
-                <button className="text-black hover:text-gray-700" onClick={shareModalOpen}>
-                    <Share size={20} strokeWidth={1.5} />
-                </button>
-                <button disabled={saveLoading} onClick={handleSaveEvent} className="text-black hover:text-gray-700">
-                    {isFavorite(event.id) ? (
-                        <Bookmark size={20} fill="red" stroke="red" strokeWidth={1.5} />
-                    ) : (
-                        <Bookmark size={20}  strokeWidth={1.5} />
-                    )}
-                </button>
+            </Link>
+            {/* Descripción o ubicación del evento */}
+            <div className="lg:text-sm font-medium text-gray-500 mb-6 max-w-xl">
+                {truncateText(event.description, 28)}
             </div>
+            {/* Fecha, hora y ciudad del evento */}
+            <div className="flex items-center space-x-2">
+                <span className="lg:text-sm text-amber-900 font-medium uppercase">{formattedDate} - {formattedTime}</span>
+                <span className="text-gray-400">|</span>
+                <span className="lg:text-sm font-medium text-amber-900">{event.city}</span>
+            </div>
+        </div>
+         <div className="flex items-center space-x-6">
+            {/* Icono de compartir */}
+            <button className="text-black hover:text-gray-700" onClick={shareModalOpen}>
+                <Share size={20} strokeWidth={1.5} />
+            </button>
+            {/* Icono de guardar */}
+            <button disabled={saveLoading} onClick={handleSaveEvent} className="text-black hover:text-gray-700">
+                {isFavorite(event.id) ? (
+                    <Bookmark size={20} fill="red" stroke="red" strokeWidth={1.5} />
+                ) : (
+                    <Bookmark size={20} strokeWidth={1.5} />
+                )}
+            </button>
+          </div>
             <ShareModal showModal={isShareModalOpen} closeShareModal={closeShareModal} eventUrl={event.url} />
         </div>
     )
