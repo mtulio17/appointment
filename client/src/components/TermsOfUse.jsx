@@ -2,34 +2,34 @@ import React from 'react'
 
 const TermsOfUse = () => {
     return (
-        <div className="privacy-policy p-8 max-w-4xl mx-auto bg-white shadow-lg rounded-lg mt-24">
-            <h1 className="text-3xl font-bold mb-6 text-indigo-700"><strong>Condiciones de uso</strong></h1>
-            <p className="text-sm text-gray-500 mb-4"><strong>Resumen de las Condiciones de uso</strong></p>
+        <div className="privacy-policy p-8 max-w-6xl mx-auto bg-slate-50 rounded-lg mt-24 text-justify">
+            <h1 className="text-3xl font-bold mb-6 text-ambar-700"><strong>Condiciones de uso</strong></h1>
+            <p className="text-sm text-gray-600 font-medium uppercase mb-4"><strong>Resumen de las Condiciones de uso</strong></p>
             <p className="mb-6 text-gray-700">
             A continuación, figura un resumen de las Condiciones de uso de nuestra “Plataforma”, que engloba cualquier sitio web, aplicación o servicio que ofrezcamos. Le recomendamos leer el texto completo de las Condiciones de uso porque ese documento (y no este resumen) es nuestro acuerdo legalmente vinculante. Las Condiciones de uso incluyen información sobre sus derechos legales y abarcan áreas como, por ejemplo, la renovación automática de la suscripción, limitaciones de responsabilidad, la resolución de controversias por arbitraje obligatorio en lugar de por un juez o jurado en un tribunal ordinario, y la renuncia a demandas colectivas.
             </p>
-            <h4 className="text-xl font-semibold mb-4 text-indigo-500">Su relación con Appointment</h4>
+            <h4 className="text-xl font-semibold mb-4 text-ambar-500">Su relación con Appointment</h4>
             
             <p className="mb-6 text-gray-700">
             Al usar nuestra Plataforma, usted acepta nuestras Condiciones de uso, que representan un acuerdo legalmente vinculante entre usted y Appointment.
             Si usted infringe las normas, podemos suspender o cancelar su cuenta.
             Cobramos por ciertos aspectos de nuestra Plataforma, y algunos de estos cobros se facturan de forma recurrente y periódica (a menos que desactive la renovación automática o cancele su suscripción).
             </p>
-            <h4 className="text-xl font-semibold mb-4 text-indigo-500">Miembros, organizadores y grupos de Appointment</h4>
+            <h4 className="text-xl font-semibold mb-4 text-ambar-500">Miembros, organizadores y grupos de Appointment</h4>
             <p className="mb-6 text-gray-700">
             
             Los organizadores pueden establecer criterios para ser miembro en sus grupos de Appointment. Aunque probablemente exista algún grupo de Appointment para todas las personas, no todos los grupos de Appointment son para usted. Si no puede encontrar el grupo adecuado, puede crear su propio grupo de Appointment fácilmente.
             Los organizadores pueden realizar cobros por ser miembro o asistir a eventos.
             El hecho de usar nuestra Plataforma implica conocer gente y hacer cosas en el mundo real, lo que algunas veces puede provocar situaciones inesperadas. No podemos controlar lo que sucede en el mundo real y no somos responsables de ello. Utilice el sentido común al interactuar con otras personas.
             </p>
-            <h4 className="text-xl font-semibold mb-4 text-indigo-500">Su contenido y el contenido de otras personas</h4>
+            <h4 className="text-xl font-semibold mb-4 text-ambar-500">Su contenido y el contenido de otras personas</h4>
             <p className="mb-6 text-gray-700">
             
             Usted es responsable de su Contenido, es decir, de cualquier información u otro tipo de material publicado en nuestra Plataforma. Su Contenido debe cumplir con nuestras Condiciones de uso, incluidas las Políticas de uso y de contenido, las Políticas de grupos y eventos, los Estándares de organizadores y equipos de organización, las Restricciones para ser miembro, las Políticas de pago, las Pautas para el uso de marcas registradas y las Condiciones de licencia de la API. Su Contenido también está sujeto a nuestras Políticas sobre controversias de propiedad intelectual.
             No somos propietarios del Contenido que usted publica. Sin embargo, exigimos que usted nos otorgue una licencia de uso de este Contenido para que nosotros hagamos funcionar, mejoremos, promovamos y protejamos Appointment y nuestra Plataforma tanto para su beneficio como el de otras personas.
             No somos responsables del Contenido que publican los miembros ni de las comunicaciones que envían los miembros mediante nuestra Plataforma. Generalmente, no revisamos el Contenido antes de ser publicado. Si usted ve Contenido que incumple nuestras Condiciones de uso, puede informarnos del Contenido inapropiado.
             </p>
-            <h4 className="text-xl font-semibold mb-4 text-indigo-500">Nuestra Plataforma</h4>
+            <h4 className="text-xl font-semibold mb-4 text-ambar-500">Nuestra Plataforma</h4>
             <p className="mb-6 text-gray-700">
             
             Nos esforzamos para que nuestra Plataforma esté siempre disponible y en funcionamiento, pero no podemos garantizarlo. En ocasiones, es posible que las cosas no ocurran según lo previsto. Nos disculpamos de antemano por cualquier inconveniente.
@@ -37,7 +37,7 @@ const TermsOfUse = () => {
             Al usar nuestra Plataforma, usted acepta las limitaciones de responsabilidad y exoneración de nuestras Condiciones de uso. También acepta resolver cualquier disputa que pueda tener con nosotros de la manera descrita en las Condiciones de uso. A menos que resida en la Unión Europea, acepta el arbitraje obligatorio y renuncia a su derecho a solicitar compensación alguna a un juez o jurado en un tribunal de justicia. Las reclamaciones solo pueden interponerse a título individual y no como parte de una demanda colectiva.
             Es probable que usted resida en un país en el que las leyes vigentes estipulen derechos y obligaciones diferentes o adicionales. Estas Condiciones de uso puntualizarán los ámbitos de divergencia.
             </p>
-            <h2 className="text-xl font-semibold mb-4 text-indigo-500">Condiciones de uso</h2>
+            <h2 className="text-xl font-semibold mb-4 text-ambar-500">Condiciones de uso</h2>
             <p className="mb-6 text-gray-700">
             
             Última actualización: 1/6/2019
@@ -46,7 +46,7 @@ const TermsOfUse = () => {
             Nuestras Condiciones de uso contienen información importante sobre sus derechos legales. Para facilitar la comprensión del presente, hemos elaborado resúmenes y consejos en estas casillas grises. Estos resúmenes no forman parte de las condiciones oficiales y es importante que usted lea con atención el contenido de cada sección.
             </p>
                     
-            <h3 className="text-xl font-semibold mb-4 text-indigo-500">   1. Este Acuerdo</h3>
+            <h3 className="text-xl font-semibold mb-4 text-ambar-500">   1. Este Acuerdo</h3>
             <p className="mb-6 text-gray-700">
             Resumen: Usted acepta seguir algunas normas básicas cuando use la Plataforma de Appointment. Estas normas se describen en estas Condiciones de uso, incluidas las políticas y pautas relacionadas que se abordan a continuación. Podemos cambiar estas normas.
             </p>
@@ -65,7 +65,7 @@ const TermsOfUse = () => {
             <p className="mb-6 text-gray-700">
             1.2 Revisiones de este Acuerdo. Podemos modificar este Acuerdo cuando corresponda. Si hacemos alguna modificación, se lo comunicaremos; para ello, publicaremos la versión más reciente y actualizaremos la fecha en la parte superior de esta página. En caso de que hagamos una modificación sustancial en este Acuerdo, se lo comunicaremos de alguna otra forma; por ejemplo, le enviaremos un correo electrónico o mostraremos una notificación destacada en nuestra Plataforma. Si usted continúa usando la Plataforma después de la entrada en vigor de cualquier modificación, significará que acepta el Acuerdo revisado. Si no desea aceptar el Acuerdo revisado, puede cerrar su cuenta.
             </p>
-            <h3 className="text-xl font-semibold mb-4 text-indigo-500">2. Su cuenta y ser miembro</h3>
+            <h3 className="text-xl font-semibold mb-4 text-ambar-500">2. Su cuenta y ser miembro</h3>
             <p className="mb-6 text-gray-700">
             
             Resumen: Usted necesita tener, como mínimo, 18 años de edad para usar nuestra Plataforma. Los organizadores de Appointment controlan el Contenido y la pertenencia a sus grupos de Appointment. Sin embargo, podemos eliminar cualquier Contenido que usted publique o cancelar su cuenta en cualquier momento.
@@ -85,7 +85,7 @@ const TermsOfUse = () => {
             <p className="mb-6 text-gray-700">
             2.4 Licencia para la plataforma y los servicios de Appointment. Appointment le concede un derecho limitado, no exclusivo, revocable, sin posibilidad de sublicenciarse y no transferible de usar la Plataforma para acceder a los servicios y a las funcionalidades que ponemos a su disposición y utilizarlos, siempre que se cumplan las disposiciones de este Acuerdo.
             </p>
-            <h3 className="text-xl font-semibold mb-4 text-indigo-500">3. Cargos, pagos y ofertas</h3>
+            <h3 className="text-xl font-semibold mb-4 text-ambar-500">3. Cargos, pagos y ofertas</h3>
             <p className="mb-6 text-gray-700">
             Resumen: Cobramos por ciertas funciones de nuestra Plataforma. Si usted es el organizador de un grupo de Appointment, será responsable de pagar la suscripción de organizador correspondiente a su grupo de Appointment. Estos cargos se facturan de forma periódica y recurrente (a menos que usted desactive la renovación automática o cancele su suscripción), y pueden cambiar en el futuro. Además de eso, algunos organizadores cobran dinero por participar en grupos o eventos de Appointment.
             </p>
@@ -122,7 +122,7 @@ const TermsOfUse = () => {
             <p className="mb-6 text-gray-700">
             3.7 Facturas de terceros. De acuerdo con la normativa fiscal del país donde el organizador usa la Plataforma, este puede recibir facturas de Appointment por parte de un proveedor externo. Dicha facturación a proveedores externos no afecta de ninguna manera a los derechos y obligaciones dispuestos en este Acuerdo, ni afecta a la tarifa que se cobra por el uso de la Plataforma.
             </p>
-            <h3 className="text-xl font-semibold mb-4 text-indigo-500">4. Su Contenido y privacidad</h3>
+            <h3 className="text-xl font-semibold mb-4 text-ambar-500">4. Su Contenido y privacidad</h3>
             <p className="mb-6 text-gray-700">
             
             Resumen: Usted es responsable del Contenido que publique en nuestra Plataforma. Usted nos otorga una licencia para usar este Contenido a fin de hacer funcionar, mejorar, promover y proteger Appointment y nuestra Plataforma. Nuestra Política de privacidad describe cómo recopilamos y usamos la información que suministra sobre usted mismo y la información que puede estar asociada con usted, y explica las formas limitadas en que podemos compartir esta información.
@@ -156,7 +156,7 @@ const TermsOfUse = () => {
             <p className="mb-6 text-gray-700">
             Consejo: Appointment no puede controlar la forma en que otros miembros usan la información que usted les suministra; por ende, es muy importante que obre con sentido común y buen criterio al compartir información con otras personas en nuestra Plataforma.
             </p>
-            <h3 className="text-xl font-semibold mb-4 text-indigo-500">   5. Su uso de nuestra Plataforma</h3>
+            <h3 className="text-xl font-semibold mb-4 text-ambar-500">   5. Su uso de nuestra Plataforma</h3>
             <p className="mb-6 text-gray-700">
          
             Resumen: Exigimos que usted siga nuestras políticas y pautas al usar nuestra Plataforma. No asumimos responsabilidad alguna por el Contenido que publique cualquier persona en nuestra Plataforma.
@@ -197,7 +197,7 @@ const TermsOfUse = () => {
             <p className="mb-6 text-gray-700">
             5.7 Sitios y servicios de terceros. La Plataforma contiene enlaces a sitios de terceros y está integrada con varios servicios, aplicaciones y sitios de terceros que pueden poner su contenido y productos a disposición de usted. No controlamos a estos terceros y no somos responsables de esos sitios o servicios, ni de su contenido o productos. Estos terceros pueden tener sus propias condiciones y políticas, y el uso que usted haga de ellos estará regido por dichas condiciones y políticas. Usted no tiene licencia para utilizar la propiedad intelectual de terceros simplemente por tener acceso a nuestra Plataforma.
             </p>
-            <h3 className="text-xl font-semibold mb-4 text-indigo-500">6. Exoneración de responsabilidades</h3>
+            <h3 className="text-xl font-semibold mb-4 text-ambar-500">6. Exoneración de responsabilidades</h3>
             <p className="mb-6 text-gray-700">
             
             Resumen: En la medida en que lo permita la ley vigente, usted acepta no considerarnos responsables de lo que suceda en relación con transacciones con terceros, interacciones entre miembros, o un grupo o evento de Appointment. También acepta no considerar a los organizadores responsables de negligencias en relación con su Contenido, un grupo o un evento de Appointment.
