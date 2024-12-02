@@ -73,9 +73,9 @@ const PopularCategories = () => {
     if (error) return <div>Error al cargar las categorías: {error.message}</div>;
   
     return (
-      <section className="py-12">
+      <section className="my-28">
         <div className="container max-w-7xl mx-auto px-4">
-          <h2 className="text-lg lg:text-2xl font-bold mb-6">Explorar las categorías populares</h2>
+          <h2 className="text-lg lg:text-2xl font-bold mb-4">Explorar las categorías populares</h2>
           <div className="relative p-4 rounded-lg ">
             <Slider {...settings}>
             {trendCategories.map((category) => (
