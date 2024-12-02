@@ -1,8 +1,12 @@
 import React from 'react'
+import BackButton from '../ui/button/BackButton'
 
 const TermsOfUse = () => {
     return (
         <div className="privacy-policy p-8 max-w-6xl mx-auto bg-slate-50 rounded-lg mt-24 text-justify">
+             <div className="absolute top-30 left-16 mb-10">
+                <BackButton label="Volver" />
+            </div>
             <h1 className="text-3xl font-bold mb-6 text-ambar-700"><strong>Condiciones de uso</strong></h1>
             <p className="text-sm text-gray-600 font-medium uppercase mb-4"><strong>Resumen de las Condiciones de uso</strong></p>
             <p className="mb-6 text-gray-700">

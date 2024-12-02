@@ -1,8 +1,12 @@
 import React from 'react';
+import BackButton from '../ui/button/BackButton';
 
 const PrivacyPolicy = () => {
   return (
     <div className="privacy-policy p-8 my-32 max-w-6xl mx-auto bg-transparent text-justify rounded-lg">
+       <div className="absolute top-30 left-16 mb-10">
+        <BackButton label="Volver" />
+      </div>
       <h1 className="text-3xl font-bold mb-6 text-ambar-700"><strong>Política de Privacidad</strong></h1>
       <p className="text-sm text-gray-500 mb-4"><strong>Fecha de vigencia:</strong> 15 de Agosto de 2024</p>
 
