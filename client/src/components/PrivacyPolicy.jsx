@@ -2,8 +2,8 @@ import React from 'react';
 
 const PrivacyPolicy = () => {
   return (
-    <div className="privacy-policy p-8 my-32 max-w-4xl mx-auto bg-transparent rounded-lg">
-      <h1 className="text-3xl font-bold mb-6 text-indigo-700"><strong>Política de Privacidad</strong></h1>
+    <div className="privacy-policy p-8 my-32 max-w-6xl mx-auto bg-transparent text-justify rounded-lg">
+      <h1 className="text-3xl font-bold mb-6 text-ambar-700"><strong>Política de Privacidad</strong></h1>
       <p className="text-sm text-gray-500 mb-4"><strong>Fecha de vigencia:</strong> 15 de Agosto de 2024</p>
 
       <p className="mb-6 text-gray-700">
@@ -12,7 +12,7 @@ const PrivacyPolicy = () => {
         Los términos “miembro,” “tú” y “tu” se refieren a cualquier persona que use nuestra Plataforma o asista a eventos relacionados, 
         incluyendo cualquier organización o persona que use la Plataforma en nombre de una organización. 
         Esta Política de Privacidad se aplica al procesamiento de información de miembros y otras personas que recopilamos 
-        cuando usas nuestra "Plataforma", que incluye cualquier sitio web, aplicación o servicio que ofrecemos, o cuando te comunicas con nosotros.
+        cuando usas nuestra &quot;Plataforma&quot;, que incluye cualquier sitio web, aplicación o servicio que ofrecemos, o cuando te comunicas con nosotros.
       </p>
 
       <p className="mb-6 text-gray-700">
@@ -21,7 +21,7 @@ const PrivacyPolicy = () => {
         puedas compartir información personal. Para más detalles sobre el alcance de nuestra Política de Privacidad, consulta la Sección 4.5.
       </p>
 
-      <h2 className="text-2xl font-semibold mb-4 text-indigo-600">1. Recopilación de Información</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-ambar-600">1. Recopilación de Información</h2>
       <p className="mb-4 text-gray-700">
         Recopilamos información sobre ti cuando:
         <ul className="list-disc list-inside pl-6 mb-6 space-y-2 text-gray-700">
@@ -35,7 +35,7 @@ const PrivacyPolicy = () => {
         Si eliges usar ciertas funciones, también recopilamos información de otras fuentes, como servicios de redes sociales, invitaciones y contactos importados.
       </p>
 
-      <h3 className="text-xl font-semibold mb-4 text-indigo-500">1.1 Información que nos proporcionas</h3>
+      <h3 className="text-xl font-semibold mb-4 text-ambar-500">1.1 Información que nos proporcionas</h3>
       <p className="mb-4 text-gray-700">
         Recopilamos la información que nos proporcionas directamente, por ejemplo, cuando creas una cuenta, 
         seleccionas intereses o grupos, completas un formulario o te comunicas con nosotros. 
@@ -49,7 +49,7 @@ const PrivacyPolicy = () => {
         Tu elección de grupos también es opcional, pero es necesaria para administrar tu cuenta.
       </p>
 
-      <h3 className="text-xl font-semibold mb-4 text-indigo-500">1.2 Información que recopilamos automáticamente</h3>
+      <h3 className="text-xl font-semibold mb-4 text-ambar-500">1.2 Información que recopilamos automáticamente</h3>
       <p className="mb-4 text-gray-700">
         Cuando usas nuestra Plataforma, recopilamos información automáticamente sobre tu actividad en internet y otros datos electrónicos, como:
         <ul className="list-disc list-inside pl-6 mb-6 space-y-2 text-gray-700">
@@ -60,7 +60,7 @@ const PrivacyPolicy = () => {
         </ul>
       </p>
 
-      <h3 className="text-xl font-semibold mb-4 text-indigo-500">1.3 Información que recopilamos de otras fuentes</h3>
+      <h3 className="text-xl font-semibold mb-4 text-ambar-500">1.3 Información que recopilamos de otras fuentes</h3>
       <p className="mb-4 text-gray-700">
         Podemos recopilar información de otras fuentes si decides usar ciertas características de la Plataforma, como:
         <ul className="list-disc list-inside pl-6 mb-6 space-y-2 text-gray-700">
@@ -71,7 +71,7 @@ const PrivacyPolicy = () => {
         </ul>
       </p>
 
-      <h2 className="text-2xl font-semibold mb-4 text-indigo-600">2. Uso de la Información</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-ambar-600">2. Uso de la Información</h2>
       <p className="mb-4 text-gray-700">Usamos la información recopilada para:</p>
       <ul className="list-disc list-inside pl-6 mb-6 space-y-2 text-gray-700">
         <li>Operar, mejorar, promover y proteger Appointment y nuestra Plataforma;</li>
@@ -79,7 +79,7 @@ const PrivacyPolicy = () => {
         <li>Personalizar el contenido que ves en la Plataforma.</li>
       </ul>
 
-      <h3 className="text-xl font-semibold mb-4 text-indigo-500">2.1 Operación de nuestra Plataforma</h3>
+      <h3 className="text-xl font-semibold mb-4 text-ambar-500">2.1 Operación de nuestra Plataforma</h3>
       <p className="mb-6 text-gray-700">
         Usamos la información para operar nuestra Plataforma, lo que incluye:
         <ul className="list-disc list-inside pl-6 mb-6 space-y-2 text-gray-700">
@@ -92,12 +92,12 @@ const PrivacyPolicy = () => {
         </ul>
       </p>
 
-      <h3 className="text-xl font-semibold mb-4 text-indigo-500">2.2 Comunicación contigo</h3>
+      <h3 className="text-xl font-semibold mb-4 text-ambar-500">2.2 Comunicación contigo</h3>
       <p className="mb-6 text-gray-700">
         Podemos usar la información para responder a tus comentarios o preguntas, y para enviarte avisos técnicos, actualizaciones de seguridad y otros mensajes de soporte.
       </p>
 
-      <h3 className="text-xl font-semibold mb-4 text-indigo-500">2.3 Publicidad y otros usos</h3>
+      <h3 className="text-xl font-semibold mb-4 text-ambar-500">2.3 Publicidad y otros usos</h3>
       <p className="mb-6 text-gray-700">
         Usamos la información para:
         <ul className="list-disc list-inside pl-6 mb-6 space-y-2 text-gray-700">
@@ -108,13 +108,13 @@ const PrivacyPolicy = () => {
         </ul>
       </p>
 
-      <h3 className="text-xl font-semibold mb-4 text-indigo-500">2.4 Base legal para el procesamiento</h3>
+      <h3 className="text-xl font-semibold mb-4 text-ambar-500">2.4 Base legal para el procesamiento</h3>
       <p className="mb-6 text-gray-700">
         Dependiendo de tu jurisdicción, procesamos tu información bajo diferentes bases legales, como el cumplimiento de nuestros Términos de Servicio, 
         nuestros intereses legítimos, tu consentimiento o cuando sea necesario para cumplir con una obligación legal.
       </p>
 
-      <h2 className="text-2xl font-semibold mb-4 text-indigo-600">3. Compartir información</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-ambar-600">3. Compartir información</h2>
       <p className="mb-6 text-gray-700">
         No compartimos tu información personal salvo en los casos descritos en esta política. Podríamos divulgar información:
         <ul className="list-disc list-inside pl-6 mb-6 space-y-2 text-gray-700">
