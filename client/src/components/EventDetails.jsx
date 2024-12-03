@@ -13,6 +13,7 @@ import ShareModal from "./modal/ShareModal";
 import EventParticipants from "./EventParticipants";
 import useFetch from "../hooks/use-fetch";
 import MapComponent from "./MapComponent";
+import BackButton from "../ui/button/BackButton";
 // import { getUserDetailsFromClerk } from "../utils/clerkService";
 
 const EventDetails = () => {
@@ -225,11 +226,11 @@ const EventDetails = () => {
             <button className="p-2 rounded-lg hover:text-slate-800 hover:scale-95 duration-300 focus:outline-none">
               <Bookmark className="text-slate-600" size={22} strokeWidth={1.5} />
             </button>
-            <button onClick={shareModalOpen} className="border border-gray-300 bg-white text-[#00798a] hover:scale-95 duration-300 px-5 py-3 rounded-lg flex items-center">
+            <button onClick={shareModalOpen} className="border-2 border-[#00798a] bg-white text-[#00798a] hover:scale-95 duration-300 text-base font-medium px-6 py-3 rounded-lg flex items-center">
               <Share className="mr-3" size={20} /> Compartir
             </button>
             {!isHost && (
-              <button onClick={openEmailModal} disabled={loadingParticipation || isParticipating} className={`px-5 py-2 duration-300 rounded-lg text-white ${
+              <button onClick={openEmailModal} disabled={loadingParticipation || isParticipating} className={`px-5 py-3 text-base font-medium duration-300 rounded-lg text-white ${
                 loadingParticipation ? "bg-gray-500" : isParticipating ? "bg-green-700" : "bg-red-500"
               }`}>
                 {loadingParticipation ? "Procesando..." : isParticipating ? "Tu asistencia está confirmada." : "Solicitar unirme"}
