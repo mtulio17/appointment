@@ -6,6 +6,7 @@ import {  getMyEvents } from "../api/apievents";
 import SkeletonCard from "../ui/skeleton/SkeletonCard";
 import { PlusCircle } from "lucide-react";
 import PostEvent from "./PostEvent";
+import { toast } from "react-toastify";
 
 
 const EventsCreated = () => {
@@ -23,6 +24,18 @@ const EventsCreated = () => {
       fetchMyEvents({ host_id: user.id });
     }
   }, [isSignedIn, user]);
+
+   // Mostrar el toast si se debe mostrar después de la recarga
+   useEffect(() => {
+    const showToast = sessionStorage.getItem("showToast");
+    const toastMessage = sessionStorage.getItem("toastMessage");
+
+    if (showToast && toastMessage) {
+      toast.success(toastMessage, { autoClose: 8000 });
+      sessionStorage.removeItem("showToast");
+      sessionStorage.removeItem("toastMessage");
+    }
+  }, []);
 
   const handleCancelEvent = (event) => {
     setSelectedEvent(event);

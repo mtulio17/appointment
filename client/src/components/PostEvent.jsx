@@ -16,16 +16,41 @@ import { eventSchema } from "../schemas/EventSchema";
 const PostEvent = ({onClose}) => {
   const { user } = useUser();
   const navigate = useNavigate();
-  const [preview, setPreview] =useState(null)
+  const [preview, setPreview] =useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // estado de carga
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const { register, handleSubmit, setValue, formState: { errors }} = useForm({ resolver: yupResolver(eventSchema(true)), mode: "onSubmit" });
   const { data: categories, error: categoriesError, fn: fetchCategories } = useFetch(getCategories);
-  const { data: eventData, loading: createEventLoading, error: createEventError, fn: createEventFn } = useFetch(createEvent);
+  const { fn: createEventFn, error: createEventError } = useFetch(createEvent);
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = "hidden"; // bloquear el scroll cuando se abre el modal
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  useEffect(() => {
+    const showToast = sessionStorage.getItem("showToast");
+    const toastMessage = sessionStorage.getItem("toastMessage");
+    if (showToast && toastMessage) {
+      toast.success(toastMessage, {
+        autoClose: 5000
+      });
+  
+      //limpiar sessionStorage después de mostrar el toast
+      sessionStorage.removeItem("showToast");
+      sessionStorage.removeItem("toastMessage");
+    }
+  }, []);
+  
+  
   const handleAddressSelect = ({ address, city, country }) => {
     setValue('address', address); // Actualiza el campo de dirección en el formulario
     setValue('city', city);       // Actualiza el campo de ciudad en el formulario
@@ -33,42 +58,22 @@ const PostEvent = ({onClose}) => {
   };
 
 
+  // cargar la imagen en el storage de supabase
   const handleImageUpload = async (file) => {
-    if (file && file instanceof File) {
-      const fileName = `${Date.now()}_${file.name}`;
-      try {
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("event-images")
-          .upload(fileName, file);
-
-        if (uploadError) {
-          console.error("Hubo un error al subir el archivo", uploadError);
-          return null;
-        }
-
-        const { data: publicURLData, error: urlError } = supabase.storage
-          .from("event-images")
-          .getPublicUrl(fileName);
-
-        if (urlError) {
-          console.error("Error al obtener la URL pública:", urlError);
-          return null;
-        }
-
-        return publicURLData.publicUrl;
-      } catch (error) {
-        toast.error("Hubo un error al cargar la imagen. Intente con otro.");
-        console.error("Error en el manejo de la imagen:", error);
-        return null;
-      }
-    } else {
-      toast.error("Archivo inválido o no seleccionado.");
+    const fileName = `${Date.now()}_${file.name}`;
+    try {
+      const { data, error } = await supabase.storage.from("event-images").upload(fileName, file);
+      if (error) throw new Error("Error al subir la imagen.");
+      const { data: urlData } = supabase.storage.from("event-images").getPublicUrl(fileName);
+      return urlData.publicUrl;
+    } catch (err) {
+      toast.error("Error al subir la imagen.");
+      console.error(err);
       return null;
     }
   };
   
-
-   const handleImageChange = (e) => {
+  const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -77,76 +82,51 @@ const PostEvent = ({onClose}) => {
     }
   };
 
-   // función que maneja el envío del formulario
-   const onSubmit = async (data) => {
-    if (user) {
-      try {
-        const imageFile = data.image[0]; // Obtiene el archivo cargado
-        const imageUrl = await handleImageUpload(imageFile); // Sube el archivo y obtiene la URL
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+    setErrorMessage("");
 
-        if (!imageUrl) {
-          toast.error("Hubo un error al subir la imagen.");
-          return;
-        }
-        // Prepara los datos del evento incluyendo la URL de la imagen
-        const eventData = {
-          ...data,
-          image: imageUrl, 
-          host_id: user.id,
-        };
-        
-        await createEventFn(eventData);
-      } catch (error) {
-        toast.error("Hubo un error al intentar crear el evento.");
-        console.error("Error al crear el evento:", error);
+    try {
+      const imageFile = data.image[0];
+      const imageUrl = await handleImageUpload(imageFile);
+
+      if (!imageUrl) {
+        throw new Error("No se pudo cargar la imagen.");
       }
-    } else {
-      toast.error("Usuario no autenticado. Por favor, inicia sesión.");
-      console.error("Usuario no autenticado.");
+
+      const eventData = { ...data, image: imageUrl, host_id: user.id };
+      await createEventFn(eventData);
+
+      // cerrar el modal y recargar la página
+      onClose();
+      sessionStorage.setItem("showToast", "true"); // guardar flag para el toast
+      sessionStorage.setItem("toastMessage", "El evento ha sido creado exitosamente! Gracias por ser un miembro de Appointment 🎉");
+      navigate(0); // forzamos la recarga de la página
+    } catch (error) {
+      setErrorMessage(error.message || "Hubo un error al crear el evento. Por favor, verifique los datos ingresados.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
-  
 
-  // redirige si el evento fue creado con éxito
-  useEffect(() => {
-    if (eventData?.success) {
-      toast.success("Evento creado con éxito.");
-      // console.log("Evento creado con éxito", eventData.data);
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
-      onClose();
-    }
-  }, [eventData]);
-
-  
-  if (createEventLoading) return <p>Cargando...</p>;
-
-  if (categoriesError) return <p>Error loading categories: {categoriesError.message}</p>;
+  if (categoriesError) return <p>Hubo un error al obtener las categorias: {categoriesError.message}</p>;
 
   return (
-    <div id="modal-overlay" className="fixed inset-0 z-50 bg-black bg-opacity-70 flex justify-center items-center overflow-auto">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.8 }}
-        className="bg-white rounded-lg shadow-lg w-full max-w-4xl p-6 relative"
-      >
+    <div id="modal-overlay" className="fixed inset-0 z-50 bg-black bg-opacity-80 flex justify-center items-center overflow-auto">
+      <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="bg-white rounded-lg shadow-lg w-full max-w-4xl p-6 relative">
         {/* Botón de cierre */}
-        <button
-          className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
-          onClick={onClose}
-          aria-label="Cerrar Modal"
-        >
-          <X size={20} />
-        </button>
-
+          <button type="button" onClick={onClose} aria-label="Cerrar modal" className="absolute right-6 top-10 transform -translate-y-1/2 text-Button focus:outline-none rounded-full">
+            <X size={20} />
+          </button>
+        {/* contenido del modal */}
         <div className="mb-10 p-2">
-        <h1 className="lg:text-3xl font-bold text-start mb-1">Crear un Evento</h1>
-        <p className="text-justify text-gray-500 text-sm">Rellene los siguientes campos para crear un nuevo evento.</p>
+        <h1 className="lg:text-3xl font-bold text-start mb-2">Crear un Evento en {" "}
+           <span className="text-[#f65858]">Appointment</span>
+         </h1>
+        <p className="text-justify text-gray-600 text-sm px-1">Rellene los siguientes campos para crear un nuevo evento.</p>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-4 gap-4 relative pb-28">
-          {/* Nombre del Evento */}
+          {/* nombre del evento */}
           <div className="col-span-1 md:col-span-2">
             <label className="block text-sm font-medium text-gray-700">Nombre del Evento</label>
             <input
@@ -157,8 +137,7 @@ const PostEvent = ({onClose}) => {
               }`}
             />
           </div>
-
-          {/* Género */}
+          {/* género */}
           <div className="col-span-1">
             <label className="block text-sm font-medium text-gray-700">Género</label>
             <select
@@ -239,11 +218,11 @@ const PostEvent = ({onClose}) => {
             <AutocompleteAddressInput
               onSelect={handleAddressSelect}
               name="address"
-              placeholder="Buscar dirección"
-              className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-            {/* Error de validación para dirección */}
-            {errors.address && <p className="text-red-600 text-sm p-1">{errors.address?.message}</p>}
+              placeholder={errors.address ? errors.address.message : "Buscar dirección"}
+              className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                errors.address ? "border-red-600 placeholder-red-600 focus:ring-red-500 focus:border-red-500" : " "
+              }`}
+              />
           </div>
 
           {/* Categoría */}
@@ -320,22 +299,23 @@ const PostEvent = ({onClose}) => {
               }`}
             />
           </div>
-
-          {/* Mensaje de Error en la Creación del Evento */}
-          {createEventError && (
-            <p className="text-red-500 col-span-1 md:col-span-4">{createEventError.message}</p>
-          )}
-
-          {/* Botones de Acción */}
+          {/* Botones de acción */}
           <div className="col-span-1 md:col-span-4 flex justify-start space-x-4 absolute bottom-2 left-2">
-            <button
-              type="submit"
-              className="bg-[#18181b] text-white font-medium py-2 px-4 rounded-lg shadow focus:outline-none"
-              disabled={createEventLoading}
-            >
-              {createEventLoading ? "Creando evento..." : "Crear Evento"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`w-full bg-[#18181b] text-white font-medium rounded-lg p-2 px-4 shadow focus:outline-none rounded-lg hover:bg-black ${
+              isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {isSubmitting ? "Creando evento..." : "Crear Evento"}
+          </button>
+          
+           </div>
+            {/* mensaje de error si la solicitud falla */}
+            {createEventError && (
+            <p className="text-red-500 col-span-1 md:col-span-4">{createEventError.message}</p>
+            )}
         </form>
       </motion.div>
     </div>
