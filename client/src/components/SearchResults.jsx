@@ -4,6 +4,7 @@ import { BarLoader } from "react-spinners";
 import { useSearchParams } from "react-router-dom";
 import VerticalCards from "./VerticalCards";
 import useFetch from "../hooks/use-fetch";
+import BackButton from "../ui/button/BackButton";
 
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
@@ -25,6 +26,9 @@ const SearchResults = () => {
 
   return (
     <div className="container lg:max-w-7xl mx-auto my-36 mt-8 p-16">
+      <div className="absolute top-30 left-16 mb-10">
+        <BackButton label="Volver" />
+      </div>
       <h2 className="text-2xl font-medium mb-4">
         Resultado de tú búsqueda: {" "}
         <span className="font-extrabold">
