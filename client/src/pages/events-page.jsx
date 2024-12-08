@@ -9,6 +9,7 @@ import { BarLoader } from "react-spinners";
 import HorizontalCards from "../components/HorizontalCards"
 import SkeletonHorizontaCard from "../ui/skeleton/SkeletonHorizontaCard";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
+import BackButton from "../ui/button/BackButton";
 
 const EventsPage = () => {
   const { isLoaded, session } = useSession();
@@ -83,9 +84,13 @@ const EventsPage = () => {
 
   return (
     <section className="my-32">
+       <div className="absolute top-30 left-16 mb-10">
+        <BackButton label="Volver" />
+      </div>
       <div className="container max-w-5xl mx-auto">
         <div className="flex flex-col mb-8">
-          <h2 className="text-[#2C2C2C] lg:text-3xl font-bold">Eventos cerca de tú zona</h2>
+          <h2 className="text-[#2C2C2C] lg:text-3xl font-bold">Eventos más destacados en Appointment
+          </h2>
           <div className="flex justify-start space-x-8 mt-10 mx-2">
             {/* Filtro de categorías */}
             <div className="w-72">
