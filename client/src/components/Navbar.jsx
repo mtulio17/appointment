@@ -3,7 +3,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Disclosure } from "@headlessui/react";
 // import { Country } from "country-state-city";
 import { SignedIn, SignedOut, SignIn, UserButton} from "@clerk/clerk-react";
-import { Calendar, Search, Info, Bookmark} from "lucide-react";
+import { Calendar, Search, Info, Bookmark, X} from "lucide-react";
 import { getEvents } from "../api/apievents";
 import useFetch from "../hooks/use-fetch";
 
@@ -53,10 +53,10 @@ const Navbar = () => {
     }
   }, [search]);
 
+
   // Manejo de cambios en el input de búsqueda
   useEffect(() => {
     if (searchQuery) {
-      // Asegúrate de que `country` tenga el formato correcto (valor del país)
       fnEvents({ searchQuery: searchQuery || "" });
     }
   }, [searchQuery]);
@@ -78,7 +78,7 @@ const Navbar = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     const query = searchQuery.trim();
-    // Navega a la página de resultados con los parámetros de búsqueda
+    // Redirigir a la página de resultados con los parámetros de búsqueda
     if (query) {
       navigate(`/search?query=${query}`);
     }
@@ -97,10 +97,32 @@ const Navbar = () => {
                     <span className="font-bold text-[#f65858] text-lg">Appointment</span>
                   </div>
                 </Link>
-                <form onSubmit={handleSearch} className="relative flex items-center border border-gray-300 rounded-lg overflow-hidden bg-gray-50 focus-within:ring-1 focus-within:ring-Button">
-                  <input type="text" placeholder="Buscar por nombre de evento.." value={searchQuery} onChange={handleInputChange} className="w-96 rounded-md border-0 py-1.5 px-4 pr-16 text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm"/>
-                  <button type="submit" className="absolute right-2 bg-transparent flex items-center justify-center h-full">
-                    <Search className="w-5 h-5" stroke="#032f62" />
+                <form onSubmit={handleSearch} className="relative flex items-center border border-gray-300 rounded-lg bg-gray-50 focus-within:border-[#00798a]">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleInputChange} 
+                    placeholder="Buscar por nombre de actividad"
+                    className="w-96 py-1.5 px-4 pr-10 rounded-md border-0 text-gray-900 placeholder:text-gray-500 placeholder:font-normal focus:outline-none sm:text-sm"
+                  />
+                  
+                  {/* Botón de limpiar */}
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery("")}
+                      className="absolute right-8 top-1/2 transform -translate-y-1/2 text-Button focus:outline-none rounded-full transition-all duration-300 animate-fade"
+                    >
+                      <X size={18} />
+                    </button>
+                  )}
+
+                  {/* Botón de búsqueda */}
+                  <button
+                    type="submit" 
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-Button/70 focus:outline-none"
+                  >
+                    <Search size={20} />
                   </button>
                 </form>
               </div>
