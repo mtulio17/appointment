@@ -140,19 +140,19 @@ const Navbar = () => {
                 <SignedIn>
                   <div className="flex items-center space-x-10 mr-2">
                     <Link to="/my-created-events" className="flex flex-col items-center group">
-                      <Calendar className="w-5 h-5 mb-1.5 text-gray-800 group-hover:text-[#00798a] duration-200" strokeWidth={1.5} />
+                      <Calendar className="mb-1.5 group-hover:text-[#00798a] duration-200" strokeWidth={1} size={20} />
                       <span className="text-xs text-gray-600 font-medium group-hover:text-[#00798a]">Eventos</span>
                     </Link>
 
                     <Link to="/saved-events" className="flex flex-col items-center group">
-                      <Bookmark className="w-5 h-5 mb-1.5 text-gray-800 group-hover:text-[#00798a] duration-200" strokeWidth={1.5} />
+                      <Bookmark className="mb-1.5 group-hover:text-[#00798a] duration-200" strokeWidth={1} size={20} />
                       <span className="text-xs text-gray-600 font-medium group-hover:text-[#00798a]">Favoritos</span>
                     </Link>
 
                     <div className="flex items-center space-x-6">
-                      <div className="border-l border-gray-300 h-8" /> {/* línea vertical */}
+                      <div className="border-l border-gray-300 h-12" /> {/* línea vertical */}
                       <Link to="/help" className="flex flex-col items-center group">
-                        <Info className="w-5 h-5 mb-1.5 text-gray-800 group-hover:text-[#00798a] duration-200" strokeWidth={1.5} />
+                        <Info className="mb-1.5 group-hover:text-[#00798a] duration-200" strokeWidth={1} size={20} />
                         <span className="text-xs text-gray-600 font-medium group-hover:text-[#00798a]">Ayuda</span>
                       </Link>
                     </div>
