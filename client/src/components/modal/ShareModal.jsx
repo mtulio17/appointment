@@ -1,43 +1,90 @@
-import { Facebook, Linkedin, Twitter, Mail, Link, X   } from "lucide-react";
+/* eslint-disable react/prop-types */
+import { FacebookIcon, Linkedin, Twitter, Mail, Link, X   } from "lucide-react";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
-const ShareModal = ({ eventUrl, showModal, closeShareModal }) => {
+
+const ShareModal = ({ eventUrl, eventTitle, showModal, closeShareModal }) => {
+  useEffect(() => {
+    document.body.style.overflow = "hidden"; // bloquear el scroll cuando se abre el modal
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   if (!showModal) return null;
-
+  
+  // opciones de redes sociales
   const shareOptions = [
-    { name: 'Facebook', icon: <Facebook />, url: `https://www.facebook.com/sharer/sharer.php?u=${eventUrl}` },
-    { name: 'Twitter', icon: <Twitter />, url: `https://twitter.com/intent/tweet?url=${eventUrl}` },
-    { name: 'LinkedIn', icon: <Linkedin />, url: `https://www.linkedin.com/sharing/share-offsite/?url=${eventUrl}` },
-    { name: 'Email', icon: <Mail />, url: `mailto:?subject=Check out this event&body=${eventUrl}` },
+    {
+      name: "Twitter",
+      icon: <Twitter  size={22}/>,
+      url: `https://twitter.com/intent/tweet?url=${encodeURIComponent(eventUrl)}&text=${encodeURIComponent(eventTitle)}`,
+    },
+    {
+      name: "LinkedIn",
+      icon: <Linkedin size={22}/>,
+      url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(eventUrl)}&text=${encodeURIComponent(eventTitle)}`,
+    },
+    {
+      name: "Facebook",
+      icon: <FacebookIcon size={22} />,
+      url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}&text=${encodeURIComponent(eventTitle)}`,
+    },
+    {
+      name: "Email",
+      icon: <Mail size={22} />,
+      url: `mailto:?subject=${encodeURIComponent(`Te invito al evento: ${eventTitle}`)}&body=${encodeURIComponent(`${eventTitle} - ${eventUrl}`)}`,
+    },
   ];
 
   const copyLink = () => {
-    const copied = navigator.clipboard.writeText(eventUrl);
-    alert('Link copiado al portapapeles!');
+    navigator.clipboard.writeText(eventUrl).then(() => {
+      toast.success("¡Enlace copiado al portapapeles!");
+    });
   };
 
-
   return (
-    <div className="fixed inset-0 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black opacity-50"></div>
-      <div className="animate-fade-up bg-slate-100 rounded-lg shadow-lg p-6 z-10 max-w-lg w-full">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Compartir</h2>
-          <button onClick={closeShareModal} className="text-gray-500 hover:text-gray-700">
-          <X />
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+      {/* Fondo oscuro */}
+      <div className="absolute inset-0 bg-black opacity-70" onClick={closeShareModal}></div>
+      
+      {/* Contenedor del modal */}
+      <div className="animate-fade-up bg-slate-100 rounded-lg shadow-lg p-8 z-10 max-w-lg w-full">
+        {/* Encabezado */}
+        <div>
+          <h2 className="flex text-center justify-center text-2xl font-bold text-pretty">Compartir este evento</h2>
+          <button onClick={closeShareModal} className="absolute text-gray-600 top-4 right-4">
+            <X size={20} />
           </button>
         </div>
-        <div className="flex flex-col space-y-4">
-          {shareOptions.map((option) => (
-            <a key={option.name} href={option.url} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-3 text-gray-700 hover:text-gray-900">
-              {option.icon}
-              <span>{option.name}</span>
-            </a>
-          ))}
-          <button onClick={copyLink} className="flex items-center gap-2 text-gray-700 hover:text-gray-900">
-          <Link />
-            <span>Copiar link</span>
-          </button>
-        </div>
+        
+
+        {/* Opciones para compartir */}
+        <div className="flex flex-col space-y-4 p-4">
+        {shareOptions.map((option) => (
+          <a
+            key={option.name}
+            href={option.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-start gap-3 p-3 rounded-lg text-gray-600 hover:text-[#00798a] transition duration-300 transform hover:-translate-y-1"
+          >
+            <span className="text-[#00798a] text-xl">{option.icon}</span>
+            <span className="font-medium">{option.name}</span>
+          </a>
+        ))}
+
+        {/* Botón para copiar enlace */}
+        <button
+          onClick={copyLink}
+          className="flex items-center justify-start gap-3 p-3 rounded-lg text-gray-600 hover:text-[#00798a]  transition duration-300 transform hover:-translate-y-1"
+        >
+          <Link size={24} className="text-[#00798a]" />
+          <span className="font-medium">Copiar enlace</span>
+        </button>
+      </div>
+
       </div>
     </div>
   );

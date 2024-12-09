@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSession, useUser } from "@clerk/clerk-react";
 import { BarLoader } from "react-spinners";
-import { Share, Bookmark } from "lucide-react";
+import { Share, Bookmark, ClockIcon } from "lucide-react";
 import { MapPin, Calendar } from "lucide-react";
 import { getEventParticipants, getSingleEventAndHost, participateInEvent} from "../api/apievents";
 import { EmailConfirmationModal } from "./modal/EmailConfirmationModal";
@@ -13,7 +13,6 @@ import ShareModal from "./modal/ShareModal";
 import EventParticipants from "./EventParticipants";
 import useFetch from "../hooks/use-fetch";
 import MapComponent from "./MapComponent";
-import BackButton from "../ui/button/BackButton";
 // import { getUserDetailsFromClerk } from "../utils/clerkService";
 
 const EventDetails = () => {
@@ -28,6 +27,10 @@ const EventDetails = () => {
   // fetch events and participants
   const { isLoading: loadingEvent, data: event, fn: fetchEvent } = useFetch(getSingleEventAndHost, { event_id: id });
   const { isLoading: loadingParticipants, data: participants = [], fn: fetchParticipants } = useFetch(getEventParticipants, { event_id: id });
+
+   // construir la URL del evento dinámicamente para el ShareModal
+   const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5173";
+   const eventUrl = `${baseURL}/event/${event?.id}`; // generar la URL dinámica
 
   useEffect(() => {
     if (isLoaded && id) {
@@ -49,7 +52,7 @@ const EventDetails = () => {
     if (showToast) {
       setTimeout(() => {
         toast.success("¡Asistencia confirmada! Revisa tu casilla de correo para ver los detalles del evento.", {
-          autoClose: 8000 // 5 segundos
+          autoClose: 6000
         });
       }, 2000); // se muestra después de 2 segundos
       sessionStorage.removeItem("showToast"); //limpiar alerta
@@ -124,7 +127,7 @@ const EventDetails = () => {
       <div className="my-32 bg-transparent">
         {/* subNav */}
         <div className="max-w-7xl mx-auto p-4">
-          <h2 className="lg:text-4xl font-semibold mb-8 max-w-5xl">{event.name}</h2>
+          <h2 className="lg:text-2xl font-bold mb-8 max-w-3xl">{event.name}</h2>
           {/* avatar y host del evento */}
           <div className="flex items-center mt-2">
             {event.host?.avatar_url && (
@@ -142,7 +145,7 @@ const EventDetails = () => {
         <div className="max-w-7xl mx-auto p-4 flex flex-col lg:flex-row-reverse lg:justify-between">
           {/* Card Right Section */}
           <div className="lg:w-1/3 p-4 sticky rounded-md">
-            <div className="rounded-lg p-4 mb-4 bg-white shadow">
+            <div className="rounded-lg p-4 mb-4 bg-white">
               <div className="mb-4">
                 <div className="px-4 justify-center">
                   <p className="lg:text-md font-semibold">{event.name}</p>
@@ -150,9 +153,9 @@ const EventDetails = () => {
               </div>
               <div className="flex justify-start items-center ">
                 <div>
-                  <Calendar
-                    className="text-sm text-gray-500 mb-4 mr-2"
-                    size={16}
+                  <ClockIcon
+                    className="text-sm text-gray-600 mb-4 mr-2"
+                    size={20}
                     strokeWidth={1.5}
                   />
                 </div>
@@ -163,8 +166,8 @@ const EventDetails = () => {
               <div className="flex justify-start items-start bg-white">
                 <div>
                   <MapPin
-                    className="text-sm text-gray-500 mb-4 mr-2"
-                    size={16}
+                    className="text-sm text-gray-600 mb-4 mr-2"
+                    size={20}
                     strokeWidth={1.5}
                   />
                 </div>
@@ -175,7 +178,7 @@ const EventDetails = () => {
             </div>
             {/* Right Section */}
             {/* Mapa */}
-            <div className="relative shadow rounded-lg p-4 mb-4">
+            <div className="relative rounded-lg p-4 mb-4">
             <MapComponent address={event.address} />
             </div>
           </div>
@@ -238,7 +241,7 @@ const EventDetails = () => {
             )}
           </div>
         </div>
-        <ShareModal showModal={isShareModalOpen} closeShareModal={closeShareModal} eventUrl={event.url} />
+        <ShareModal showModal={isShareModalOpen} closeShareModal={closeShareModal} eventUrl={eventUrl} eventTitle={event.name} />
       </div>
       {isEmailModalOpen && (
         <EmailConfirmationModal 
