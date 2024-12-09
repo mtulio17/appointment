@@ -30,6 +30,10 @@ const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent
     const formattedDate = format(combinedDateTime, "d 'de' MMM yyyy", { locale: es });
     const formattedTime = format(combinedDateTime, "HH:mm'hs'");
 
+    // construir la URL del evento dinámicamente para el ShareModal
+    const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5173";
+    const eventUrl = `${baseURL}/event/${event?.id}`; // generar la URL dinámica
+
     const truncateText = (text, maxWords) => {
         const words = text.split(' ');
         if (words.length > maxWords) {
@@ -122,15 +126,15 @@ const HorizontalCards = ({ event, savedInit, onEventAction = () => {}, isMyEvent
                 <Share size={20} strokeWidth={1.5} />
             </button>
             {/* Icono de guardar */}
-            <button disabled={saveLoading} onClick={handleSaveEvent} className="text-black hover:text-gray-700">
+            <button disabled={saveLoading} onClick={handleSaveEvent} className="text-gray-500 hover:text-gray-700 transition-colors duration-200">
                 {isFavorite(event.id) ? (
-                    <Bookmark size={20} fill="red" stroke="red" strokeWidth={1.5} />
+                    <Bookmark size={20} fill="red" stroke="red" strokeWidth={2} />
                 ) : (
-                    <Bookmark size={20} strokeWidth={1.5} />
+                    <Bookmark size={20} strokeWidth={2} />
                 )}
             </button>
           </div>
-            <ShareModal showModal={isShareModalOpen} closeShareModal={closeShareModal} eventUrl={event.url} />
+            <ShareModal showModal={isShareModalOpen} closeShareModal={closeShareModal} eventUrl={eventUrl} eventTitle={event.name} />
         </div>
     )
 }

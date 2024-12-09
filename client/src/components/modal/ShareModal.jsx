@@ -50,7 +50,7 @@ const ShareModal = ({ eventUrl, eventTitle, showModal, closeShareModal }) => {
       <div className="absolute inset-0 bg-black opacity-70" onClick={closeShareModal}></div>
       
       {/* Contenedor del modal */}
-      <div className="animate-fade-up bg-slate-100 rounded-lg shadow-lg p-8 z-10 max-w-lg w-full">
+      <div className="animate-fade-up bg-slate-100 rounded-lg shadow-lg p-6 z-10 max-w-lg w-full">
         {/* Encabezado */}
         <div>
           <h2 className="flex text-center justify-center text-2xl font-bold text-pretty">Compartir este evento</h2>
@@ -68,7 +68,7 @@ const ShareModal = ({ eventUrl, eventTitle, showModal, closeShareModal }) => {
             href={option.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-start gap-3 p-3 rounded-lg text-gray-600 hover:text-[#00798a] transition duration-300 transform hover:-translate-y-1"
+            className="flex items-center justify-start gap-3 p-3 rounded-lg text-gray-600 hover:text-[#00798a] transition duration-300"
           >
             <span className="text-[#00798a] text-xl">{option.icon}</span>
             <span className="font-medium">{option.name}</span>
@@ -78,9 +78,9 @@ const ShareModal = ({ eventUrl, eventTitle, showModal, closeShareModal }) => {
         {/* Botón para copiar enlace */}
         <button
           onClick={copyLink}
-          className="flex items-center justify-start gap-3 p-3 rounded-lg text-gray-600 hover:text-[#00798a]  transition duration-300 transform hover:-translate-y-1"
+          className="flex items-center justify-start gap-3 p-3 rounded-lg text-gray-600 hover:text-[#00798a]  transition duration-300"
         >
-          <Link size={24} className="text-[#00798a]" />
+          <Link size={22} className="text-[#00798a]" />
           <span className="font-medium">Copiar enlace</span>
         </button>
       </div>
