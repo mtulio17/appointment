@@ -11,17 +11,20 @@ import SkeletonHorizontaCard from "../ui/skeleton/SkeletonHorizontaCard";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import BackButton from "../ui/button/BackButton";
 
+export const SORT_OPTIONS = {
+  relevance: "relevancia",
+  recent: "más recientes",
+};
+
+
 const EventsPage = () => {
   const { isLoaded, session } = useSession();
   const { user, isSignedIn } = useUser();
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [sortOptions, setSortOptions] = useState("Ordenar por:");
+  const [sortOptions, setSortOptions] = useState("relevance"); 
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-
-  const currentPage = parseInt(searchParams.get('page')) || 1; 
-  const eventsPerPage = 10; 
 
   // Consulta para obtener eventos
   const { data: events, error: fetchError, isLoading: loadingEvents } = useQuery({
@@ -59,22 +62,23 @@ const EventsPage = () => {
   // Filtrar y ordenar eventos
   const handleSort = (eventsToSort) => {
     let sortedEvents = [...eventsToSort];
-
+  
     if (sortOptions === "recent") {
+      // Ordenar por fecha de creación descendente
       sortedEvents.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     } else if (sortOptions === "relevance") {
+      // Ordenar por cantidad de participantes (relevancia)
       sortedEvents.sort((a, b) => b.participants - a.participants);
     }
+  
     return sortedEvents;
   };
+  
 
   // Aplicar la ordenación
   const filteredEvents = events ? handleSort(events) : [];
-  
-  // Paginación
-  const startIndex = (currentPage - 1) * eventsPerPage;
-  const endIndex = startIndex + eventsPerPage;
-  const displayedEvents = filteredEvents.slice(startIndex, endIndex);
+  const displayedEvents = filteredEvents; // mostrar todos los eventos sin paginar
+
 
   if (!isLoaded) return <BarLoader className="mt-[78px]" width={"100%"} color="#2C2C2C" />;
 
@@ -157,76 +161,69 @@ const EventsPage = () => {
             </div>
             {/* Filtro de orden */}
             <div className="w-72">
-            <Listbox value={sortOptions} onChange={setSortOptions}>
-              <div className="relative">
-                <Listbox.Button className="relative w-full cursor-pointer rounded-full bg-[#00798a] py-2.5 px-4 lg:text-sm text-left text-white font-medium shadow transition duration-300 ease-in-out hover:bg-[#00798a]/90 focus:outline-none focus:ring-2 focus:ring-[#00798a]/80">
-                  <span className="block truncate">
-                    {sortOptions || 'Ordenar por'}
+  <Listbox value={sortOptions} onChange={setSortOptions}>
+    <div className="relative">
+      {/* Botón del Listbox */}
+      <Listbox.Button className="relative w-full cursor-pointer rounded-full bg-[#00798a] py-2.5 px-4 lg:text-sm text-left text-white font-medium shadow transition duration-300 ease-in-out hover:bg-[#00798a]/90 focus:outline-none focus:ring-2 focus:ring-[#00798a]/80">
+        <span className="block truncate">
+          Ordenar por: {SORT_OPTIONS[sortOptions] || "Seleccionar"}
+        </span>
+        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+          <ChevronsUpDownIcon className="h-5 w-5 text-white" aria-hidden="true" />
+        </span>
+      </Listbox.Button>
+
+      {/* Opciones del Listbox */}
+      <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        {Object.entries(SORT_OPTIONS).map(([value, label]) => (
+          <Listbox.Option
+            key={value}
+            value={value}
+            className={({ active }) =>
+              `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
+                active ? "bg-[#00798a]/20 text-[#00798a]" : "text-gray-900"
+              }`
+            }
+          >
+            {({ selected }) => (
+              <>
+                <span className={`block truncate ${selected ? "font-semibold" : "font-normal"}`}>
+                  {label}
+                </span>
+                {selected && (
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <CheckIcon className="h-5 w-5 text-[#00798a]" aria-hidden="true" />
                   </span>
-                  <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                    <ChevronsUpDownIcon className="h-5 w-5 text-white" aria-hidden="true" />
-                  </span>
-                </Listbox.Button>
-                <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  <Listbox.Option
-                    // key="relevance"
-                    value="Ordenar por: relevancia"
-                    className={({ active }) =>
-                      `relative cursor-pointer select-none py-2 pl-10 pr-4 ${active ? 'bg-[#00798a]/20 text-[#00798a]' : 'text-gray-900'}`
-                    }
-                  >
-                    {({ selected }) => (
-                      <>
-                        <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
-                          Por relevancia
-                        </span>
-                        {selected && (
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <CheckIcon className="h-5 w-5 text-[#00798a]" aria-hidden="true" />
-                          </span>
-                        )}
-                      </>
-                    )}
-                  </Listbox.Option>
-                  <Listbox.Option
-                    // key="recent"
-                    value="Ordenar por: recientes"
-                    className={({ active }) =>
-                      `relative cursor-pointer select-none py-2 pl-10 pr-4 ${active ? 'bg-[#00798a]/20 text-[#00798a]' : 'text-gray-900'}`
-                    }
-                  >
-                    {({ selected }) => (
-                      <>
-                        <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
-                          Más recientes
-                        </span>
-                        {selected && (
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <CheckIcon className="h-5 w-5 text-[#00798a]" aria-hidden="true" />
-                          </span>
-                        )}
-                      </>
-                    )}
-                  </Listbox.Option>
-                </Listbox.Options>
-              </div>
-            </Listbox>
-          </div>
+                )}
+              </>
+            )}
+          </Listbox.Option>
+        ))}
+      </Listbox.Options>
+    </div>
+  </Listbox>
+</div>
           </div>
         </div>
 
         {/* Listado de eventos */}
         <div className="w-full">
-          {loadingEvents || loadingSavedEvents ? (
-            Array(8).fill().map((_, i) => <SkeletonHorizontaCard key={i} />)
-          ) : (
-            displayedEvents.map((event) => {
-              const isSaved = savedEventIds.includes(event.id);
-              return (
-                <HorizontalCards key={event._id} event={event} savedInit={isSignedIn ? isSaved : false} />
-              );
-            })
-          )}
+        {loadingEvents || loadingSavedEvents ? (
+          Array(8)
+            .fill()
+            .map((_, i) => <SkeletonHorizontaCard key={i} />)
+        ) : (
+          displayedEvents.map((event) => {
+            const isSaved = savedEventIds.includes(event.id);
+            return (
+              <HorizontalCards
+                key={event.id}
+                event={event}
+                savedInit={isSignedIn ? isSaved : false}
+              />
+            );
+          })
+        )}
         </div>
         {/* paginación */}
       </div>
