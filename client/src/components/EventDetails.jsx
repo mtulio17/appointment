@@ -3,8 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSession, useUser } from "@clerk/clerk-react";
 import { BarLoader } from "react-spinners";
 import { Share, Bookmark, ClockIcon } from "lucide-react";
-import { MapPin, Calendar } from "lucide-react";
-import { getEventParticipants, getSingleEventAndHost, participateInEvent} from "../api/apievents";
+import { MapPin } from "lucide-react";
+import { getEventParticipants, getSingleEventAndHost, participateInEvent, saveEvent} from "../api/apievents";
 import { EmailConfirmationModal } from "./modal/EmailConfirmationModal";
 import { es } from "date-fns/locale";
 import { toast } from "react-toastify";
@@ -14,32 +14,43 @@ import EventParticipants from "./EventParticipants";
 import useFetch from "../hooks/use-fetch";
 import MapComponent from "./MapComponent";
 import { formatPrice } from "../lib/formatPrice";
+import { useFavorites } from "../context/SaveEventContext";
+import BackButton from "../ui/button/BackButton";
 // import { getUserDetailsFromClerk } from "../utils/clerkService";
 
+// eslint-disable-next-line react/prop-types
 const EventDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loadingParticipation, setLoadingParticipation] = useState(false);
   const [isParticipating, setIsParticipating] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const { isLoaded, user } = useUser();
+  const { isLoaded, user, isSignedIn } = useUser();
   const { session } = useSession();
   // fetch events and participants
   const { isLoading: loadingEvent, data: event, fn: fetchEvent } = useFetch(getSingleEventAndHost, { event_id: id });
   const { isLoading: loadingParticipants, data: participants = [], fn: fetchParticipants } = useFetch(getEventParticipants, { event_id: id });
+  const { fn: saveFn, error: saveError, loading: saveLoading } = useFetch(saveEvent);
+  const {isFavorite, toggleFavorite} = useFavorites();
 
    // construir la URL del evento dinámicamente para el ShareModal
    const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5173";
    const eventUrl = `${baseURL}/event/${event?.id}`; // generar la URL dinámica
 
-  useEffect(() => {
+   useEffect(() => {
     if (isLoaded && id) {
-      fetchEvent().then(() => {
-        fetchParticipants(Number(id));
+      Promise.all([
+        fetchEvent(),
+        fetchParticipants(Number(id))
+      ]).catch((error) => {
+        console.error("Error al cargar los datos del evento:", error);
       });
     }
   }, [isLoaded, id]);
+  
   
   useEffect(() => {
     if (user && participants?.length > 0) {
@@ -59,6 +70,41 @@ const EventDetails = () => {
       sessionStorage.removeItem("showToast"); //limpiar alerta
     }
   }, []);
+
+ // función para manejar el guardado o eliminación del evento en favoritos
+ const handleSaveEvent = async () => {
+  if (!isSignedIn || !user) {
+    navigate("/?sign-in=true");
+    return;
+  }
+
+  if (event.host_id === user.id) {
+    toast.error("No se puede añadir a favoritos un evento propio.");
+    return;
+  }
+
+  try {
+    const action = isFavorite(event.id) ? 'delete' : 'save';
+    const response = await saveFn({
+      user_id: user.id,
+      event_id: event.id,
+      action,
+    });
+
+    // Ejecuta toggleFavorite en el contexto
+    toggleFavorite(event);
+
+    if (action === 'delete') {
+      toast.info("El evento ha sido eliminado de favoritos.");
+    } else {
+      toast.success("¡Evento añadido a favoritos con éxito!");
+    }
+
+  } catch (err) {
+    toast.error("Error al intentar añadir un evento en favoritos:", err);
+  }
+};
+
 
   const openEmailModal = () => {
     if (!user) {
@@ -128,6 +174,9 @@ const EventDetails = () => {
       <div className="my-32 bg-transparent">
         {/* subNav */}
         <div className="max-w-7xl mx-auto p-4">
+        <div className="absolute top-30 left-16 mb-10">
+        <BackButton label="Volver" />
+      </div>
           <h2 className="lg:text-2xl font-bold mb-8 max-w-3xl">{event.name}</h2>
           {/* avatar y host del evento */}
           <div className="flex items-center mt-2">
@@ -190,7 +239,10 @@ const EventDetails = () => {
               <img
                 src={event.image}
                 alt={event.name}
-                className="flex items-start rounded-sm shadow justify-start object-cover object-contain mb-4"
+                onLoad={() => setImageLoaded(true)}
+                className={`rounded-sm shadow object-cover transition-opacity duration-300 ${
+                  imageLoaded ? "opacity-100" : "opacity-0"
+                }`}
                 style={{ aspectRatio: "16/9" }}
                 height={600}
                 width={700}
@@ -231,8 +283,16 @@ const EventDetails = () => {
             <div className="flex items-center text-lg font-semibold">
             <span className="text-gray-900">{formatPrice(event.price)}</span>
             </div>
-            <button className="p-2 rounded-lg hover:text-slate-800 hover:scale-95 duration-300 focus:outline-none">
-              <Bookmark className="text-slate-600" size={22} strokeWidth={1.5} />
+            <button
+              disabled={saveLoading}
+              onClick={handleSaveEvent}
+              className="p-2 rounded-lg hover:text-slate-800 hover:scale-95 duration-300 focus:outline-none"
+            >
+              {isFavorite(event.id) ? (
+                <Bookmark size={22} fill="red" stroke="red" strokeWidth={1.5} />
+              ) : (
+                <Bookmark size={22} strokeWidth={1.5} />
+              )}
             </button>
             <button
               onClick={shareModalOpen}

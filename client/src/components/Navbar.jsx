@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Disclosure } from "@headlessui/react";
-// import { Country } from "country-state-city";
 import { SignedIn, SignedOut, SignIn, UserButton} from "@clerk/clerk-react";
 import { Calendar, Search, Info, Bookmark, X} from "lucide-react";
 import { getEvents } from "../api/apievents";
 import useFetch from "../hooks/use-fetch";
+import { useFavorites } from "../context/SaveEventContext";
 
 
 const Navbar = () => {
@@ -18,6 +18,10 @@ const Navbar = () => {
   const [search, setSearch] = useSearchParams();
   const { fn: fnEvents} = useFetch(getEvents, { searchQuery });
 
+  const {favorites} = useFavorites();
+  const favoriteCount = favorites?.length || 0;
+
+
   const debounce = (fn, delay) => {
     let timeout;
     return (...args) => {
@@ -25,6 +29,7 @@ const Navbar = () => {
       timeout = setTimeout(() => fn(...args), delay);
     };
   };
+  
 
   const fetchSuggestions = useCallback(
     debounce(async () => {
@@ -139,14 +144,21 @@ const Navbar = () => {
                 </SignedOut>
                 <SignedIn>
                   <div className="flex items-center space-x-10 mr-2">
-                    <Link to="/my-created-events" className="flex flex-col items-center group">
-                      <Calendar className="mb-1.5 group-hover:text-[#00798a] duration-200" strokeWidth={1} size={20} />
-                      <span className="text-xs text-gray-600 font-medium group-hover:text-[#00798a]">Eventos</span>
+                  <Link to="/my-created-events" className="relative flex flex-col items-center group">
+                    <Calendar className="mb-1.5 group-hover:text-[#00798a] duration-200" strokeWidth={1} size={20} />
+                    <span className="text-xs text-gray-700 font-medium group-hover:text-[#00798a]">Eventos</span>
                     </Link>
 
-                    <Link to="/saved-events" className="flex flex-col items-center group">
+                    <Link to="/saved-events" className="relative flex flex-col items-center group">
                       <Bookmark className="mb-1.5 group-hover:text-[#00798a] duration-200" strokeWidth={1} size={20} />
-                      <span className="text-xs text-gray-600 font-medium group-hover:text-[#00798a]">Favoritos</span>
+                      {favoriteCount > 0 && (
+                        <span className="absolute -top-1 -right-2 bg-[#00798a] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                          {favoriteCount}
+                        </span>
+                      )}
+                      <span className="text-xs text-gray-700 font-medium group-hover:text-[#00798a]">
+                        Favoritos
+                      </span>
                     </Link>
 
                     <div className="flex items-center space-x-6">
